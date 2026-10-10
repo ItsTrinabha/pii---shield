@@ -60,7 +60,19 @@ _PHONE_CTX = re.compile(
 _YEAR_TAIL = re.compile(r"[ \t.\-](?:19|20|21)\d{2}$")
 
 
-_WRAP = re.compile(r"(\+\d{1,3}|\(\d{1,4}\))\n(?=[ \t]?\d)")
+# A number wrapped onto the next line, e.g. "+1 (704)\n555-0166" or "+46 8\n5555 0121". The head before the newline
+# must still be incomplete (< 8 digits), so a full number followed by an unrelated figure on the next line is not merged.
+_WRAP = re.compile(r"((?<![\w+])\+\d{1,3}(?:[ \t.\-]?\(?\d{1,4}\)?){0,3}|(?<![\w(])\(\d{1,4}\))[ \t]*\n(?=[ \t]?\(?\d)")
+
+
+def _unwrap(t: str) -> str:
+    """Replace the line break inside a wrapped phone number with a space (same length, so offsets are unchanged)."""
+    def fix(m: re.Match[str]) -> str:
+        head = m.group(1)
+        if len(_digits(head)) > 7:
+            return m.group(0)
+        return m.group(0).replace("\n", " ")
+    return _WRAP.sub(fix, t)
 
 
 def _nanp_trim(txt: str, s: int, e: int) -> tuple[str, int]:
@@ -73,7 +85,7 @@ def _nanp_trim(txt: str, s: int, e: int) -> tuple[str, int]:
 
 def detect_phone(t: str) -> list[Cand]:
     out: list[Cand] = []
-    t = _WRAP.sub(lambda m: m.group(1) + " ", t)  # number wrapped after its country/area code; same length keeps offsets
+    t = _unwrap(t)
     for m in _PHONE_INTL.finditer(t):
         s, e = m.start(), m.end()
         txt = t[s:e]

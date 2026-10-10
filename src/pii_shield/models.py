@@ -3,6 +3,10 @@
 from __future__ import annotations
 
 import enum
+import hashlib
+import hmac
+import json
+import os
 from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -148,14 +152,29 @@ class SanitizedBlock(BaseModel):
     text: str
 
 
+_SEAL_KEY = os.urandom(32)  # per process: a seal cannot be forged from outside this process or replayed across runs
+
+
+def compute_seal(document: str, blocks: tuple[SanitizedBlock, ...], approved_by: str | None) -> str:
+    h = hmac.new(_SEAL_KEY, digestmod=hashlib.sha256)
+    h.update(json.dumps([document, approved_by, [(b.id, b.text) for b in blocks]]).encode())
+    return h.hexdigest()
+
+
 class SanitizedText(BaseModel):
-    """Only the pipeline gate constructs this. LLM-facing code must accept this type, not str."""
+    """Only the pipeline gate (release()) constructs this. LLM-facing code must accept this type, not str, and check
+    is_sealed(): a hand-built or edited instance has no valid seal. This guards against mistakes, not against code that
+    deliberately imports the key."""
 
     model_config = ConfigDict(frozen=True)
 
     document: str
     blocks: tuple[SanitizedBlock, ...]
     approved_by: str | None = None  # set when a human releases a REVIEW result
+    seal: str = Field(default="", repr=False)
+
+    def is_sealed(self) -> bool:
+        return bool(self.seal) and hmac.compare_digest(self.seal, compute_seal(self.document, self.blocks, self.approved_by))
 
     def to_text(self) -> str:
         out: list[str] = []

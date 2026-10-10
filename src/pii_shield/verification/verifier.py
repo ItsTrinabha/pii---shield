@@ -19,8 +19,9 @@ _TOKEN_RX = re.compile(r"\[[A-Z_]+_\d+\]")
 
 _EMAIL = re.compile(r"[\w.+\-]+\s?@\s?[\w\-]+\.[\w.\-]*\w")
 _SSN = re.compile(r"(?<!\d)\d{3}[ \-–]\d{2}[ \-–]\d{4}(?!\d)")
-_PHONE_A = re.compile(r"(?<![\w\d])\+\d[\d ().\-]{7,}\d")
-_PHONE_B = re.compile(r"\(\d{3}\)[ ]?\d{3}[\- ]\d{4}|(?<!\d)\d{3}[.\-]\d{3}[.\-]\d{4}(?!\d)")
+# A single line break may sit anywhere inside a number (OCR and table cells wrap "+46 8" / "5555 0121").
+_PHONE_A = re.compile(r"(?<![\w\d])\+\d(?:[\d ().\-]|[ ]?\n(?=[ ]?\(?\d)){7,}\d")
+_PHONE_B = re.compile(r"\(\d{3}\)[ \n]?\d{3}[\- ]\d{4}|(?<!\d)\d{3}[.\-\n]\d{3}[.\-]\d{4}(?!\d)")
 _DIGITRUN = re.compile(r"(?<![\w\-/.])\d(?:[ \-.]?\d){8,}(?![\w])")
 _REFLIKE = re.compile(r"^(?:19|20)\d\d[\-/ ]\d{2,4}(?:[ \-]\d{1,3})?$")  # 2026-0417 1: a reference/date, not a number
 _DATEISH = re.compile(r"^\d{4}-\d{2}-\d{2}$")

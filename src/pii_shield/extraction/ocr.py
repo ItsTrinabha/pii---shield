@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import io
 import os
+import shutil
 import threading
 from collections import deque
 from concurrent.futures import Future, ThreadPoolExecutor
@@ -18,6 +19,21 @@ from ..errors import OcrError, SecurityError
 from ..settings import Settings
 
 os.environ.setdefault("OMP_THREAD_LIMIT", "1")  # one core per Tesseract process; we parallelise across processes
+
+
+def find_tesseract() -> str | None:
+    """PII_SHIELD_TESSERACT, then PATH, then the default Windows installer locations (which skip PATH)."""
+    cands = [os.environ.get("PII_SHIELD_TESSERACT"), shutil.which("tesseract")]
+    for base in (os.environ.get("ProgramFiles"), os.environ.get("ProgramFiles(x86)"), os.environ.get("LOCALAPPDATA")):
+        if base:
+            cands.append(os.path.join(base, "Tesseract-OCR", "tesseract.exe"))
+            cands.append(os.path.join(base, "Programs", "Tesseract-OCR", "tesseract.exe"))
+    return next((c for c in cands if c and os.path.isfile(c)), None)
+
+
+_TESS = find_tesseract()
+if _TESS:
+    pytesseract.pytesseract.tesseract_cmd = _TESS
 
 
 @dataclass

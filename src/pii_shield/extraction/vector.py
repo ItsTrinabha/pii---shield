@@ -14,12 +14,23 @@ from pathlib import Path
 from ..settings import Settings
 
 
+def _soffice() -> str | None:
+    found = shutil.which("soffice")
+    if found:
+        return found
+    for base in (os.environ.get("ProgramFiles"), os.environ.get("ProgramFiles(x86)")):
+        exe = os.path.join(base, "LibreOffice", "program", "soffice.exe") if base else ""
+        if exe and os.path.isfile(exe):
+            return exe
+    return None
+
+
 def have_renderer() -> bool:
-    return shutil.which("soffice") is not None
+    return _soffice() is not None
 
 
 def render_vector_to_png(data: bytes, ext: str, settings: Settings) -> bytes | None:
-    exe = shutil.which("soffice")
+    exe = _soffice()
     if not exe or ext.lower() not in (".emf", ".wmf"):
         return None
     env = os.environ.copy()

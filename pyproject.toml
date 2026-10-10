@@ -22,11 +22,13 @@ dependencies = [
   "defusedxml>=0.7",
   "lxml>=5",
   "faker>=24",
+  "wordfreq>=3.1",
+  "tldextract>=5",
   "streamlit>=1.35",
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=8", "pytest-timeout", "ruff", "reportlab", "pip-audit"]
+dev = ["pytest>=8", "pytest-timeout", "ruff", "mypy", "reportlab", "pip-audit"]
 
 [project.scripts]
 pii-shield = "pii_shield.cli:main"

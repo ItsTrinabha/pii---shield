@@ -1,0 +1,14 @@
+[server]
+maxUploadSize = 100          # MB; matches Limits.max_upload_bytes
+enableXsrfProtection = true
+headless = true
+
+[browser]
+gatherUsageStats = false     # no telemetry: the gateway must not phone home
+
+[client]
+toolbarMode = "minimal"
+showErrorDetails = false     # tracebacks could echo document content
+
+[logger]
+level = "warning"

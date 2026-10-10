@@ -13,7 +13,7 @@ from .errors import BlockedError, PiiShieldError
 from .extraction import extract
 from .masking import apply_masking, get_hmac_key, sanitized_to_original
 from .models import (
-    Block, ExtractedDocument, Finding, PipelineResult, SanitizedBlock, SanitizedText, Status, Verification,
+    Block, ExtractedDocument, Finding, PipelineResult, SanitizedBlock, SanitizedText, Status, Verification, compute_seal,
 )
 from .settings import Settings, allowlist
 from .verification import verify
@@ -199,4 +199,7 @@ def release(result: PipelineResult, approved_by: str | None = None) -> Sanitized
     if result.status == Status.REVIEW and not approved_by:
         raise BlockedError("document needs human review before release (REVIEW status)")
     assert result.document is not None
-    return SanitizedText(document=result.document.file_name, blocks=tuple(result.sanitized_blocks), approved_by=approved_by)
+    blocks = tuple(result.sanitized_blocks)
+    name = result.document.file_name
+    return SanitizedText(document=name, blocks=blocks, approved_by=approved_by,
+                         seal=compute_seal(name, blocks, approved_by))
