@@ -107,3 +107,10 @@ def test_all_synthetic_values_masked() -> None:
     out = "\n".join(b.text for b in run_blocks(SYN_TEXT).sanitized_blocks)
     for v in SYN_VALUES:
         assert v not in out, f"value of length {len(v)} survived"
+
+
+def test_eval_reports_blocked_document_without_crashing() -> None:
+    from pii_shield.eval import evaluate_result
+
+    m = evaluate_result(process_bytes(b"", "a.pdf", FAST), [{"type": "EMAIL", "value": "a.b@example.test"}])
+    assert m["status"] == "BLOCKED" and m["recall"] is None and m["leaked_values_in_sanitised_text"] == 0

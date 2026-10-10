@@ -48,7 +48,12 @@ def _occurrences(text: str, value: str) -> list[tuple[int, int]]:
 
 
 def evaluate_result(result: PipelineResult, truth: list[dict]) -> dict:
-    assert result.document is not None
+    if result.document is None or not result.sanitized_blocks:
+        # Extraction failed and nothing was released: nothing can leak, but nothing was measured either.
+        return {"status": result.status.value, "reasons": result.reasons, "gt_values": len(truth), "gt_occurrences": 0,
+                "covered": 0, "recall": None, "recall_ci95": None, "precision": None, "f1": None,
+                "leaked_values_in_sanitised_text": 0, "leak_rate": 0.0, "gt_values_not_extracted": len(truth),
+                "per_type": {}, "missed": [], "false_positives": []}
     blocks = {b.id: b for b in result.document.blocks}
     by_block: dict[str, list] = {}
     for f in result.findings:
