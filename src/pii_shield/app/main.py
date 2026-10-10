@@ -98,6 +98,8 @@ for reason in r.reasons:
 
 doc = r.document
 if doc is None:
+    st.caption("Extraction failed, so nothing was analysed or released. The audit report records why.")
+    st.download_button("Audit report (JSON)", audit_json(r), f"{Path(name).stem}.audit.json", "application/json")
     st.stop()
 
 ver = r.verification
