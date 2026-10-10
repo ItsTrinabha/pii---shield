@@ -83,9 +83,9 @@ Phase 3 - Detection core
  - Exit: runs end-to-end on all samples; per-detector contribution table.
 
 Phase 4 - Masking, traceability, safety
- - [ ] Stable-token masking and redaction preserving structure
- - [ ] Source traceability on every finding
- - [ ] Independent verification and fail-closed gate
+ - [x] Stable-token masking and redaction preserving structure
+ - [x] Source traceability on every finding
+ - [x] Independent verification and fail-closed gate
  - Exit: adversarial tests (corrupt file, empty file, password-protected, huge file, OCR garbage page) all end BLOCKED, never "safe".
 
 Phase 5 - Evaluation framework
@@ -100,8 +100,8 @@ Phase 6 - Improve from failure cases
  - [ ] Only then consider fine-tuning or a custom model (needs enough labelled data; otherwise state it as future work)
 
 Phase 7 - Product surface
- - [ ] Streamlit demo (upload, file info, findings table with locators, side-by-side original vs sanitized, download, status BLOCKED/PASS)
- - [ ] Audit/report generation (JSON + readable HTML/PDF)
+ - [x] Streamlit demo (upload, file info, findings table with locators, side-by-side original vs sanitized, download, status BLOCKED/PASS)
+ - [x] Audit/report generation (JSON + readable HTML/PDF)
  - Exit: a stranger can run the demo from the README in minutes.
 
 Phase 8 - Hardening
