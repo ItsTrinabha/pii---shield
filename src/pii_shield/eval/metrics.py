@@ -17,7 +17,10 @@ import math
 import re
 from pathlib import Path
 
+from ..masking.tokens import fingerprint, get_hmac_key
 from ..models import PipelineResult
+
+_DIGIT_TYPES = ("PHONE", "SSN", "FINANCIAL_ACCOUNT")  # entity identity = digits only (see masking.tokens.entity_key)
 
 
 def wilson(k: int, n: int, z: float = 1.96) -> tuple[float, float]:
@@ -45,6 +48,16 @@ def _occurrences(text: str, value: str) -> list[tuple[int, int]]:
         return []
     rx = re.compile(r"(?<![A-Za-z0-9])" + r"\s+".join(parts) + r"(?![A-Za-z0-9])", re.I)
     return [(m.start(), m.end()) for m in rx.finditer(text)]
+
+
+_TOKEN = re.compile(r"\[[A-Z_]+_\d+\]")
+
+
+def leaked_values(san_text: str, truth: list[dict]) -> list[int]:
+    """Indices of GT values still readable in the sanitised text. Tokens are deleted first, so a value whose parts are
+    separated only by another entity's token ('+44 20 [PERSON_3] 7555 0171') still counts as leaked."""
+    probe = _TOKEN.sub("", san_text)
+    return [i for i, t in enumerate(truth) if _occurrences(probe, t["value"])]
 
 
 def evaluate_result(result: PipelineResult, truth: list[dict]) -> dict:
@@ -84,14 +97,18 @@ def evaluate_result(result: PipelineResult, truth: list[dict]) -> dict:
         if not found_any:
             values_not_extracted.append({"type": typ, "length": len(val)})
 
-    # precision: findings that overlap no GT occurrence
+    # precision: findings that overlap no GT occurrence. A number split by layout ('+44 20 <cell>\n7555 0171', or across
+    # two OCR paragraphs) has no contiguous occurrence; its halves still count when their identity fingerprint (HMAC of
+    # the full number's digits) equals a GT value's.
+    hkey = get_hmac_key()
+    gt_fps = {fingerprint(t["type"], re.sub(r"\D", "", t["value"]), hkey) for t in truth if t["type"] in _DIGIT_TYPES}
     fp: list[dict] = []
     tp = 0
     per_type_tp: dict[str, int] = {}
     per_type_n: dict[str, int] = {}
     for f in result.findings:
         per_type_n[f.type] = per_type_n.get(f.type, 0) + 1
-        ok = any(min(f.end, e) - max(f.start, s) > 0 for s, e in gt_spans.get(f.block_id, []))
+        ok = any(min(f.end, e) - max(f.start, s) > 0 for s, e in gt_spans.get(f.block_id, [])) or f.fingerprint in gt_fps
         if ok:
             tp += 1
             per_type_tp[f.type] = per_type_tp.get(f.type, 0) + 1
@@ -99,14 +116,9 @@ def evaluate_result(result: PipelineResult, truth: list[dict]) -> dict:
             fp.append({"type": f.type, "locator": f.locator.label(), "block_id": f.block_id, "start": f.start, "end": f.end,
                        "confidence": f.confidence, "detectors": f.detectors, "token": f.token})
 
-    # leak: GT occurrences still readable in the sanitised text
     san_text = "\n".join(b.text for b in result.sanitized_blocks)
-    leaked = 0
-    total_vals = 0
-    for t in truth:
-        total_vals += 1
-        if _occurrences(san_text, t["value"]):
-            leaked += 1
+    leaked = len(leaked_values(san_text, truth))
+    total_vals = len(truth)
 
     types = sorted(occ_total)
     per_type = {}

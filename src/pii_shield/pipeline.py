@@ -11,7 +11,7 @@ from .detection import RawFinding, detect_document
 from .detection.normalize import normalize
 from .errors import BlockedError, PiiShieldError
 from .extraction import extract
-from .masking import apply_masking, get_hmac_key, sanitized_to_original
+from .masking import apply_masking, get_hmac_key, sanitized_to_original_parts
 from .models import (
     Block, ExtractedDocument, Finding, PipelineResult, SanitizedBlock, SanitizedText, Status, Verification, compute_seal,
 )
@@ -164,19 +164,19 @@ class Pipeline:
             known_types[re.sub(r"\s+", " ", by_id[f.block_id].text[f.start:f.end]).strip().lower()] = f.type
         for h in ver.hard_hits:
             b = by_id[h.block_id]
-            mp = sanitized_to_original(per_block.get(b.id, []), h.start, h.end)
-            if mp is None:
-                continue
-            s, e = mp
-            if (b.id, s, e) in seen or e <= s or e > len(b.text):
-                continue
-            seen.add((b.id, s, e))
-            typ = _RULE_TYPE.get(h.rule)
-            if h.rule == "residual-known-value":
-                typ = known_types.get(re.sub(r"\s+", " ", b.text[s:e]).strip().lower(), "UNCLASSIFIED")
-            out.append(RawFinding(block=b, type=typ or "UNCLASSIFIED", start=s, end=e, confidence=0.9,
-                                  detectors=["verifier:forced"], key="", ocr_derived=(b.source == "ocr"),
-                                  note="found by independent verifier, missed by detectors"))
+            # a hit that straddles existing tokens ('+44 20 [PERSON_3]\n7555 0171') is redacted piece by piece
+            for s, e in sanitized_to_original_parts(per_block.get(b.id, []), h.start, h.end):
+                seg = b.text[s:e]
+                s, e = s + len(seg) - len(seg.lstrip()), e - (len(seg) - len(seg.rstrip()))
+                if e <= s or e > len(b.text) or not any(ch.isalnum() for ch in b.text[s:e]) or (b.id, s, e) in seen:
+                    continue
+                seen.add((b.id, s, e))
+                typ = _RULE_TYPE.get(h.rule)
+                if h.rule == "residual-known-value":
+                    typ = known_types.get(re.sub(r"\s+", " ", b.text[s:e]).strip().lower(), "UNCLASSIFIED")
+                out.append(RawFinding(block=b, type=typ or "UNCLASSIFIED", start=s, end=e, confidence=0.9,
+                                      detectors=["verifier:forced"], key="", ocr_derived=(b.source == "ocr"),
+                                      note="found by independent verifier, missed by detectors"))
         return out
 
 

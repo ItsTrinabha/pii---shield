@@ -28,6 +28,8 @@ def entity_key(rf: RawFinding, text: str) -> str:
     if t == "EMAIL":
         return re.sub(r"\s+", "", text.lower())
     if t in ("PHONE", "SSN", "FINANCIAL_ACCOUNT"):
+        if rf.key:  # a number split by layout: both halves carry the full number's digits
+            return rf.key
         d = re.sub(r"\D", "", text)
         return d or text.lower()
     if t == "DATE_OF_BIRTH":
@@ -103,3 +105,24 @@ def sanitized_to_original(block_findings: list[Finding], s: int, e: int) -> tupl
         if san_end <= s:
             delta += len(f.token) - (f.end - f.start)
     return s - delta, e - delta
+
+
+def sanitized_to_original_parts(block_findings: list[Finding], s: int, e: int) -> list[tuple[int, int]]:
+    """Like sanitized_to_original, but a span that straddles tokens is cut into the untokenised pieces around them
+    (e.g. '+44 20 [PERSON_3]\\n7555 0171' -> '+44 20 ', '\\n7555 0171'). Callers trim whitespace."""
+    out: list[tuple[int, int]] = []
+    delta = 0
+    cur = s
+    for f in sorted(block_findings, key=lambda f: f.start):
+        san_start = f.start + delta
+        san_end = san_start + len(f.token)
+        if san_start >= e:
+            break
+        if san_end > cur:
+            if san_start > cur:
+                out.append((cur - delta, min(san_start, e) - delta))
+            cur = max(cur, san_end)
+        delta += len(f.token) - (f.end - f.start)
+    if cur < e:
+        out.append((cur - delta, e - delta))
+    return out

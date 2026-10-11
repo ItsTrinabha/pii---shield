@@ -83,9 +83,73 @@ def _nanp_trim(txt: str, s: int, e: int) -> tuple[str, int]:
     return txt, e
 
 
+# Prefix and continuation separated by layout: "+44 20 <neighbouring cell text>\n7555 0171", or the prefix ends one OCR
+# paragraph and the continuation starts the next. The head is exactly country code + one area group with nothing numeric
+# after it on its line; the tail is digit groups at the very start of the next line.
+_SPLIT_HEAD = re.compile(r"(?<![\w+])\+\d{1,3}(?:[ \t.\-]?\(\d{1,4}\)|[ \t.\-]\d{1,4})(?![\d%]|[ \t.\-]?\(?\d)")
+_SPLIT_REST = re.compile(r"[^\n+@]{0,60}$")
+_SPLIT_TAIL = re.compile(r"[ \t]*(\d{2,5}(?:[ \t.\-]\d{2,5}){0,3})(?![\w.\-]|[ \t]\d)")
+_YEARISH = re.compile(r"(?:19|20)\d\d")
+
+
+def split_phone_pair(a: str, b: str) -> tuple[tuple[int, int], tuple[int, int]] | None:
+    """Head on the LAST line of `a`, tail at the start of the FIRST line of `b`. Returns ((hs, he), (ts, te)) as offsets
+    into a and b, or None. Used within a block (consecutive lines) and across adjacent blocks on the same page."""
+    line0 = a.rfind("\n") + 1
+    last = a[line0:]
+    head = None
+    for m in _SPLIT_HEAD.finditer(last):
+        # the rest of the line is the neighbouring cell: words or IDs ('VND-ABC-123') are fine, a bare number is not
+        rest = last[m.end():]
+        if _SPLIT_REST.fullmatch(rest) and not any(re.fullmatch(r"[\d\W]*\d[\d\W]*", w) for w in rest.split()):
+            head = m
+    if head is None:
+        return None
+    first = b.split("\n", 1)[0]
+    tm = _SPLIT_TAIL.match(first)
+    if tm is None:
+        return None
+    hd = _digits(head.group(0))
+    nanp = hd.startswith("1") and len(hd) <= 4
+    groups = re.findall(r"\d+", tm.group(1))
+    seps = [g.end() for g in re.finditer(r"\d+", tm.group(1))]
+    # drop trailing groups that belong to the next cell ('555-0147 03/14/2026' -> '555-0147')
+    while len(groups) > 1 and (len(hd) + sum(map(len, groups)) > (11 if nanp else 15)):
+        groups.pop()
+        seps.pop()
+    if all(_YEARISH.fullmatch(g) for g in groups):
+        return None  # "2025 2026" is a pair of years, not a subscriber number
+    td = "".join(groups)
+    n = len(hd) + len(td)
+    if len(td) < 6 or not 8 <= n <= 15 or (nanp and n != 11):
+        return None
+    return (line0 + head.start(), line0 + head.end()), (tm.start(1), tm.start(1) + seps[-1])
+
+
+def _split_cands(t: str) -> list[Cand]:
+    out: list[Cand] = []
+    starts = [0] + [i + 1 for i, ch in enumerate(t) if ch == "\n"]
+    for i in range(len(starts) - 1):
+        a = t[starts[i]:starts[i + 1] - 1]
+        b = t[starts[i + 1]:]
+        pair = split_phone_pair(a, b)
+        if pair:
+            (hs, he), (ts, te) = pair
+            out += phone_split_cands((starts[i] + hs, starts[i] + he, a[hs:he]), (starts[i + 1] + ts, starts[i + 1] + te, b[ts:te]))
+    return out
+
+
+def phone_split_cands(head: tuple[int, int, str], tail: tuple[int, int, str]) -> list[Cand]:
+    """Two PHONE candidates sharing one identity key, so both halves get the same stable token."""
+    key = _digits(head[2] + tail[2])
+    return [Cand("PHONE", head[0], head[1], 0.93, "regex:phone-split", key=key),
+            Cand("PHONE", tail[0], tail[1], 0.93, "regex:phone-split", key=key)]
+
+
 def detect_phone(t: str) -> list[Cand]:
     out: list[Cand] = []
     t = _unwrap(t)
+    out += _split_cands(t)
     for m in _PHONE_INTL.finditer(t):
         s, e = m.start(), m.end()
         txt = t[s:e]

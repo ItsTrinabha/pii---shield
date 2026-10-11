@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import re
 import time
+from itertools import pairwise
 from dataclasses import dataclass, field
 
 from ..models import Block, ExtractedDocument
@@ -12,7 +13,7 @@ from .fusion import fuse
 from .names import ln, detect_people
 from .ner import NBlock, run_ner
 from .normalize import NormText, normalize
-from .patterns import Cand, run_patterns
+from .patterns import Cand, phone_split_cands, run_patterns, split_phone_pair
 
 _ORGS = None
 
@@ -75,6 +76,16 @@ def detect_document(doc: ExtractedDocument, settings: Settings) -> DetectionResu
         em = [c for c in cs if c.type == "EMAIL"]
         if em:
             email_cands[nb.idx] = em
+    # a number whose prefix ends one OCR paragraph and whose continuation starts the next one on the same page
+    for na, nb in pairwise(nblocks):
+        if na.unit_key != nb.unit_key:
+            continue
+        pair = split_phone_pair(na.text, nb.text)
+        if pair:
+            (hs, he), (ts, te) = pair
+            h, t = phone_split_cands((hs, he, na.text[hs:he]), (ts, te, nb.text[ts:te]))
+            per_block[na.idx].append(h)
+            per_block[nb.idx].append(t)
     res.timings["patterns"] = time.time() - t0
 
     t0 = time.time()

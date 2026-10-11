@@ -12,6 +12,7 @@ import pkgutil
 import re
 from collections.abc import Iterable
 from functools import lru_cache
+from itertools import pairwise
 
 from ..models import SanitizedBlock, Verification, VerificationHit
 
@@ -22,7 +23,10 @@ _SSN = re.compile(r"(?<!\d)\d{3}[ \-–]\d{2}[ \-–]\d{4}(?!\d)")
 # A single line break may sit anywhere inside a number (OCR and table cells wrap "+46 8" / "5555 0121").
 _PHONE_A = re.compile(r"(?<![\w\d])\+\d(?:[\d ().\-]|[ ]?\n(?=[ ]?\(?\d)){7,}\d")
 _PHONE_B = re.compile(r"\(\d{3}\)[ \n]?\d{3}[\- ]\d{4}|(?<!\d)\d{3}[.\-\n]\d{3}[.\-]\d{4}(?!\d)")
-_DIGITRUN = re.compile(r"(?<![\w\-/.])\d(?:[ \-.]?\d){8,}(?![\w])")
+# Any '+<country> <group>' with >= 4 digits: OCR regrouping ('+44 20755') or a wrapped number leaves prefixes too short
+# for _PHONE_A. A lone country code ('+44' then text) is not flagged: it identifies a country, not a person.
+_PHONE_PREFIX = re.compile(r"(?<![\w+])\+\d{1,3}(?:[ .\-]?\(\d{1,5}\)|[ .\-]\d{1,5})(?:[ .\-]\d{1,5})*(?![\d%])")
+_DIGITRUN =re.compile(r"(?<![\w\-/.])\d(?:[ \-.]?\d){8,}(?![\w])")
 _REFLIKE = re.compile(r"^(?:19|20)\d\d[\-/ ]\d{2,4}(?:[ \-]\d{1,3})?$")  # 2026-0417 1: a reference/date, not a number
 _DATEISH = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 _EMPID = re.compile(r"(?<![A-Za-z0-9])(?:EMP|DIR)[ ]?[\-–][ ]?[0-9OIlS]{3,}")
@@ -107,7 +111,8 @@ def verify(blocks: Iterable[SanitizedBlock], known_values: Iterable[str] = (), a
         h = VerificationHit(severity=sev, rule=rule, block_id=b.id, locator=b.locator, start=s, end=e)
         (hard if sev == "HARD" else soft).append(h)
 
-    for b in blocks:
+    blist = list(blocks)
+    for b in blist:
         t = _strip_tokens(b.text)
         low = t.lower()
         for rule, rx in (("residual-email", _EMAIL), ("residual-ssn-shape", _SSN), ("residual-phone-intl", _PHONE_A),
@@ -115,6 +120,9 @@ def verify(blocks: Iterable[SanitizedBlock], known_values: Iterable[str] = (), a
                          ("residual-passport", _PASSPORT), ("residual-dob-context", _DOB)):
             for m in rx.finditer(t):
                 hit("HARD", rule, b, m.start(), m.end())
+        for m in _PHONE_PREFIX.finditer(t):
+            if sum(ch.isdigit() for ch in m.group(0)) >= 4 and not any(h.block_id == b.id and h.start <= m.start() < h.end for h in hard):
+                hit("HARD", "residual-phone-intl", b, m.start(), m.end())
         for m in ([] if b.locator.unit in ("metadata", "hyperlink") else _DIGITRUN.finditer(t)):
             g = m.group(0).strip()
             if not _DATEISH.match(g) and not _REFLIKE.match(g):
@@ -142,6 +150,20 @@ def verify(blocks: Iterable[SanitizedBlock], known_values: Iterable[str] = (), a
         for m in _NEAR_TOKEN_B.finditer(t):
             if m.group(1).lower() not in _COMMON:
                 hit("SOFT", "name-fragment-next-to-token", b, m.start(1), m.end(1))
+
+    # ---- across adjacent blocks of the same page/slide: OCR can end a paragraph in the middle of a number -------------
+    for a, b in pairwise(blist):
+        if (a.locator.unit, a.locator.index) != (b.locator.unit, b.locator.index) or a.locator.unit in ("metadata", "hyperlink"):
+            continue
+        ta, tb = _strip_tokens(a.text), _strip_tokens(b.text)
+        cut = ta.rfind("\n") + 1
+        joined = ta[cut:] + "\n" + tb.split("\n", 1)[0]
+        seam = len(ta) - cut
+        for rule, rx in (("residual-phone-intl", _PHONE_A), ("residual-phone-local", _PHONE_B)):
+            for m in rx.finditer(joined):
+                if m.start() < seam < m.end():  # the match crosses the block boundary: flag both halves
+                    hit("HARD", rule, a, cut + m.start(), len(ta.rstrip()))
+                    hit("HARD", rule, b, 0, m.end() - seam - 1)
 
     passed = not hard and (not soft if strict else True)
     return Verification(passed=passed, hard_hits=hard, soft_hits=soft,
