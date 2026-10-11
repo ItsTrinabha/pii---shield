@@ -43,7 +43,7 @@
   it (`Frapenecrmas Dana ...`). Not fixed.
 
 ## TODO (in order)
-0. Six-step plan of 2026-10-11: [x] 1 independent GT, [ ] 2 structure metric, [ ] 3 OCR vs native, [ ] 4 demo check,
+0. Six-step plan of 2026-10-11: [x] 1 independent GT, [~] 2 structure metric (code + tests done; METRICS.md and eval run pending), [ ] 3 OCR vs native, [ ] 4 demo check,
    [ ] 5 deliverable docs, [ ] 6 RESULTS/STATUS after each.
 1. Close the leaks found by the independent GT (two-letter initials, UI-label-like names in OCR, SSN last-4 in prose,
    masked national IDs); needs a hold-out split first, since these documents are also the reporting set.

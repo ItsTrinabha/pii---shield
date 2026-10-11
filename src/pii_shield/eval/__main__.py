@@ -10,6 +10,7 @@ from pathlib import Path
 from ..pipeline import process_path
 from ..settings import Settings
 from .metrics import evaluate_result, load_truth
+from .structure import structure_retention
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -40,6 +41,7 @@ def main(argv: list[str] | None = None) -> None:
             continue
         r = process_path(src, settings)
         m = evaluate_result(r, load_truth(tf))
+        m["structure"] = structure_retention(src.read_bytes(), src.name, r.document)
         del r  # the extracted document (all blocks, OCR geometry) is not needed once scored
         gc.collect()
         out[name] = m
@@ -49,6 +51,10 @@ def main(argv: list[str] | None = None) -> None:
         print(f"{name}\n  status={m['status']} R={fmt(m['recall'])} CI95={m['recall_ci95']} P={fmt(m['precision'])} "
               f"F1={fmt(m['f1'])} leak={m['leaked_values_in_sanitised_text']}/{m['gt_values']} "
               f"missed={len(m['missed'])} fp={len(m['false_positives'])} not_extracted={m['gt_values_not_extracted']}\n  {pt}")
+        s = m["structure"]
+        if s:
+            print(f"  structure ({s['unit_level']}): retention={fmt(s['retention'])} ({s['retained']}/{s['units']}) "
+                  f"found={fmt(s['found_rate'])} locator={fmt(s['locator_rate'])} order={fmt(s['order_rate'])}")
     if a.out:
         Path(a.out).write_text(json.dumps(out, indent=2), encoding="utf-8")
 
