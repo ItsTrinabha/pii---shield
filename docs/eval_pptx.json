@@ -54,6 +54,7 @@
     },
     "missed": [],
     "false_positives": [],
+    "mode": "native",
     "structure": {
       "units": 410,
       "found": 410,

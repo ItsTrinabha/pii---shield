@@ -1,0 +1,505 @@
+{
+  "Cadence_TPRM_Training.docx": {
+    "status": "REVIEW",
+    "gt_values": 23,
+    "gt_occurrences": 48,
+    "covered": 44,
+    "recall": 0.9166666666666666,
+    "recall_ci95": [
+      0.804,
+      0.967
+    ],
+    "precision": 0.5641025641025641,
+    "f1": 0.6984126984126983,
+    "leaked_values_in_sanitised_text": 3,
+    "leak_rate": 0.13043478260869565,
+    "gt_values_not_extracted": 2,
+    "per_type": {
+      "PERSON": {
+        "occurrences": 48,
+        "covered": 44,
+        "recall": 0.9166666666666666,
+        "recall_ci95": [
+          0.804,
+          0.967
+        ],
+        "typed_recall": 0.9166666666666666,
+        "precision": 0.5641025641025641,
+        "f1": 0.6984126984126983
+      }
+    },
+    "missed": [
+      {
+        "type": "PERSON",
+        "locator": "page 9",
+        "block_id": "p9-o19",
+        "start": 35,
+        "end": 44
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 19",
+        "block_id": "p19-o25",
+        "start": 0,
+        "end": 9
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 10",
+        "block_id": "p10-o4",
+        "start": 991,
+        "end": 999
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 18",
+        "block_id": "p18-o16",
+        "start": 438,
+        "end": 447
+      }
+    ],
+    "false_positives": [
+      {
+        "type": "PERSON",
+        "locator": "page 5",
+        "block_id": "p5-o9",
+        "start": 94,
+        "end": 98,
+        "confidence": 0.55,
+        "detectors": [
+          "lexicon:variant"
+        ],
+        "token": "[PERSON_1]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 5",
+        "block_id": "p5-o9",
+        "start": 113,
+        "end": 117,
+        "confidence": 0.55,
+        "detectors": [
+          "lexicon:variant"
+        ],
+        "token": "[PERSON_1]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 5",
+        "block_id": "p5-o11",
+        "start": 32,
+        "end": 36,
+        "confidence": 0.55,
+        "detectors": [
+          "lexicon:variant"
+        ],
+        "token": "[PERSON_1]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 5",
+        "block_id": "p5-o13",
+        "start": 32,
+        "end": 36,
+        "confidence": 0.55,
+        "detectors": [
+          "lexicon:variant"
+        ],
+        "token": "[PERSON_1]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 5",
+        "block_id": "p5-o13",
+        "start": 74,
+        "end": 78,
+        "confidence": 0.55,
+        "detectors": [
+          "lexicon:variant"
+        ],
+        "token": "[PERSON_1]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 10",
+        "block_id": "p10-o4",
+        "start": 57,
+        "end": 61,
+        "confidence": 0.55,
+        "detectors": [
+          "lexicon:variant"
+        ],
+        "token": "[PERSON_1]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 10",
+        "block_id": "p10-o4",
+        "start": 283,
+        "end": 287,
+        "confidence": 0.55,
+        "detectors": [
+          "lexicon:variant"
+        ],
+        "token": "[PERSON_1]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 10",
+        "block_id": "p10-o4",
+        "start": 438,
+        "end": 442,
+        "confidence": 0.55,
+        "detectors": [
+          "lexicon:variant"
+        ],
+        "token": "[PERSON_1]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 10",
+        "block_id": "p10-o4",
+        "start": 577,
+        "end": 581,
+        "confidence": 0.55,
+        "detectors": [
+          "lexicon:variant"
+        ],
+        "token": "[PERSON_1]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 10",
+        "block_id": "p10-o4",
+        "start": 765,
+        "end": 769,
+        "confidence": 0.55,
+        "detectors": [
+          "lexicon:variant"
+        ],
+        "token": "[PERSON_1]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 10",
+        "block_id": "p10-o4",
+        "start": 956,
+        "end": 960,
+        "confidence": 0.55,
+        "detectors": [
+          "lexicon:variant"
+        ],
+        "token": "[PERSON_1]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 10",
+        "block_id": "p10-o4",
+        "start": 1083,
+        "end": 1087,
+        "confidence": 0.55,
+        "detectors": [
+          "lexicon:variant"
+        ],
+        "token": "[PERSON_1]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 16",
+        "block_id": "p16-o3",
+        "start": 420,
+        "end": 439,
+        "confidence": 0.6,
+        "detectors": [
+          "verifier:forced"
+        ],
+        "token": "[PERSON_14]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 18",
+        "block_id": "p18-o16",
+        "start": 410,
+        "end": 417,
+        "confidence": 0.55,
+        "detectors": [
+          "lexicon:variant"
+        ],
+        "token": "[PERSON_2]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 22",
+        "block_id": "p22-o13",
+        "start": 0,
+        "end": 4,
+        "confidence": 0.55,
+        "detectors": [
+          "lexicon:variant"
+        ],
+        "token": "[PERSON_1]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 29",
+        "block_id": "p29-o5",
+        "start": 46,
+        "end": 56,
+        "confidence": 0.9,
+        "detectors": [
+          "verifier:forced"
+        ],
+        "token": "[PERSON_17]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 29",
+        "block_id": "p29-o5",
+        "start": 107,
+        "end": 118,
+        "confidence": 0.62,
+        "detectors": [
+          "presidio:SpacyRecognizer"
+        ],
+        "token": "[PERSON_18]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 37",
+        "block_id": "p37-o10",
+        "start": 0,
+        "end": 5,
+        "confidence": 0.62,
+        "detectors": [
+          "presidio:SpacyRecognizer"
+        ],
+        "token": "[PERSON_20]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 37",
+        "block_id": "p37-o10",
+        "start": 414,
+        "end": 419,
+        "confidence": 0.9,
+        "detectors": [
+          "verifier:forced"
+        ],
+        "token": "[PERSON_21]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 38",
+        "block_id": "p38-o4",
+        "start": 0,
+        "end": 5,
+        "confidence": 0.9,
+        "detectors": [
+          "verifier:forced"
+        ],
+        "token": "[PERSON_21]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 38",
+        "block_id": "p38-o4",
+        "start": 835,
+        "end": 840,
+        "confidence": 0.9,
+        "detectors": [
+          "verifier:forced"
+        ],
+        "token": "[PERSON_21]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 39",
+        "block_id": "p39-o6",
+        "start": 0,
+        "end": 5,
+        "confidence": 0.9,
+        "detectors": [
+          "verifier:forced"
+        ],
+        "token": "[PERSON_21]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 48",
+        "block_id": "p48-o1",
+        "start": 520,
+        "end": 537,
+        "confidence": 0.9,
+        "detectors": [
+          "verifier:forced"
+        ],
+        "token": "[PERSON_22]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 48",
+        "block_id": "p48-o3",
+        "start": 7,
+        "end": 24,
+        "confidence": 0.9,
+        "detectors": [
+          "verifier:forced"
+        ],
+        "token": "[PERSON_22]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 50",
+        "block_id": "p50-o6",
+        "start": 678,
+        "end": 695,
+        "confidence": 0.9,
+        "detectors": [
+          "verifier:forced"
+        ],
+        "token": "[PERSON_23]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 50",
+        "block_id": "p50-o8",
+        "start": 7,
+        "end": 24,
+        "confidence": 0.9,
+        "detectors": [
+          "verifier:forced"
+        ],
+        "token": "[PERSON_23]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 51",
+        "block_id": "p51-o21",
+        "start": 7,
+        "end": 24,
+        "confidence": 0.9,
+        "detectors": [
+          "verifier:forced"
+        ],
+        "token": "[PERSON_23]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 54",
+        "block_id": "p54-o19",
+        "start": 0,
+        "end": 17,
+        "confidence": 0.81,
+        "detectors": [
+          "heuristic:name-line",
+          "presidio:SpacyRecognizer"
+        ],
+        "token": "[PERSON_24]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 54",
+        "block_id": "p54-o23",
+        "start": 376,
+        "end": 393,
+        "confidence": 0.81,
+        "detectors": [
+          "heuristic:name-line",
+          "presidio:SpacyRecognizer"
+        ],
+        "token": "[PERSON_25]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 63",
+        "block_id": "p63-o3",
+        "start": 77,
+        "end": 87,
+        "confidence": 0.9,
+        "detectors": [
+          "verifier:forced"
+        ],
+        "token": "[PERSON_17]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 63",
+        "block_id": "p63-o3",
+        "start": 177,
+        "end": 187,
+        "confidence": 0.9,
+        "detectors": [
+          "verifier:forced"
+        ],
+        "token": "[PERSON_17]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 63",
+        "block_id": "p63-o3",
+        "start": 299,
+        "end": 309,
+        "confidence": 0.7,
+        "detectors": [
+          "heuristic:name-line"
+        ],
+        "token": "[PERSON_26]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 75",
+        "block_id": "p75-o4",
+        "start": 23,
+        "end": 33,
+        "confidence": 0.9,
+        "detectors": [
+          "verifier:forced"
+        ],
+        "token": "[PERSON_17]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 75",
+        "block_id": "p75-o7",
+        "start": 25,
+        "end": 35,
+        "confidence": 0.9,
+        "detectors": [
+          "verifier:forced"
+        ],
+        "token": "[PERSON_17]"
+      }
+    ],
+    "mode": "ocr (rendered, rasterised at 200 dpi)",
+    "structure": {
+      "units": 2383,
+      "found": 1897,
+      "locator_ok": 0,
+      "in_order": 443,
+      "retained": 0,
+      "found_rate": 0.7960553923625682,
+      "locator_rate": 0.0,
+      "order_rate": 0.2335266209804955,
+      "retention": 0.0,
+      "unit_level": "paragraph/cell",
+      "by_kind": {
+        "table-cell": {
+          "units": 2043,
+          "retained": 0
+        },
+        "paragraph": {
+          "units": 334,
+          "retained": 0
+        },
+        "footer": {
+          "units": 5,
+          "retained": 0
+        },
+        "header": {
+          "units": 1,
+          "retained": 0
+        }
+      }
+    }
+  }
+}

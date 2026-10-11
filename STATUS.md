@@ -43,13 +43,13 @@
   it (`Frapenecrmas Dana ...`). Not fixed.
 
 ## TODO (in order)
-0. Six-step plan of 2026-10-11: [x] 1 independent GT, [x] 2 structure metric, [ ] 3 OCR vs native, [ ] 4 demo check,
+0. Six-step plan of 2026-10-11: [x] 1 independent GT, [x] 2 structure metric, [x] 3 OCR vs native, [ ] 4 demo check,
    [ ] 5 deliverable docs, [ ] 6 RESULTS/STATUS after each.
 1. Close the leaks found by the independent GT (two-letter initials, UI-label-like names in OCR, SSN last-4 in prose,
    masked national IDs); needs a hold-out split first, since these documents are also the reporting set.
 2. Reduce PDF forced redactions (detector misses split phones whose interleaved cell has standalone numbers, and
    OCR-regrouped digits) so PHONE precision recovers; fix the verifier bigram overlap gap.
-3. OCR-vs-native eval (structure metric done: docs/METRICS.md).
+3. (done: structure metric docs/METRICS.md, OCR vs native in RESULTS.md) OCR-name auto-redaction costs precision on fully scanned documents; revisit.
 4. Visual redaction of scanned PDFs (burn boxes from WordBox geometry). 5. pip-audit.
 6. Benchmarks on ai4privacy/Kaggle/Mendeley (download locally, check licences).
 7. THREAT_MODEL.md, README, RESULTS.md, FILE_ANALYSIS.md, DECISIONS.md, Mermaid diagrams, walkthrough, Optiv deck (14 Oct 2026).

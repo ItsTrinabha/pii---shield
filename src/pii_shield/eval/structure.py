@@ -40,7 +40,7 @@ class Unit:
 
 
 def _norm(s: str) -> str:
-    s = unicodedata.normalize("NFKC", s).replace("​", "").replace("­", "")
+    s = unicodedata.normalize("NFKC", s).replace("\u200b", "").replace("\u00ad", "")
     return re.sub(r"\s+", " ", s).strip().lower()
 
 

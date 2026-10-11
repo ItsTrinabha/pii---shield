@@ -33,3 +33,18 @@ def test_app_runs_on_sample() -> None:
     at.sidebar.radio[0].set_value("Cadence sample").run()
     assert not at.exception
     assert at.error or at.warning or at.success  # a status banner is always shown
+
+
+def test_blocks_with_residual_pii_are_hidden_unless_revealed() -> None:
+    from pii_shield.app.view import hidden_sanitized_blocks
+    from pii_shield.models import Locator, PipelineResult, Status, Verification, VerificationHit
+
+    loc = Locator(file="x.pdf", unit="page", index=1, block_id="b1")
+    hit = VerificationHit(severity="HARD", rule="residual-email", block_id="b1", locator=loc, start=0, end=5)
+    soft = VerificationHit(severity="SOFT", rule="possible-unmasked-name", block_id="b2", locator=loc, start=0, end=5)
+    r = PipelineResult(status=Status.BLOCKED, config_digest="x")
+    r.verification = Verification(passed=False, hard_hits=[hit], soft_hits=[soft])
+    assert hidden_sanitized_blocks(r, reveal=False) == {"b1"}
+    assert hidden_sanitized_blocks(r, reveal=True) == set()
+    r.verification = None
+    assert hidden_sanitized_blocks(r, reveal=False) == set()

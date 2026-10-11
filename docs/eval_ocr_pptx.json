@@ -1,0 +1,107 @@
+{
+  "Cadence_Financial_Group_Organizational_Pack.pptx": {
+    "status": "PASS",
+    "gt_values": 61,
+    "gt_occurrences": 110,
+    "covered": 110,
+    "recall": 1.0,
+    "recall_ci95": [
+      0.966,
+      1.0
+    ],
+    "precision": 0.9821428571428571,
+    "f1": 0.9909909909909909,
+    "leaked_values_in_sanitised_text": 0,
+    "leak_rate": 0.0,
+    "gt_values_not_extracted": 8,
+    "per_type": {
+      "EMAIL": {
+        "occurrences": 33,
+        "covered": 33,
+        "recall": 1.0,
+        "recall_ci95": [
+          0.896,
+          1.0
+        ],
+        "typed_recall": 1.0,
+        "precision": 0.9705882352941176,
+        "f1": 0.9850746268656716
+      },
+      "PERSON": {
+        "occurrences": 45,
+        "covered": 45,
+        "recall": 1.0,
+        "recall_ci95": [
+          0.921,
+          1.0
+        ],
+        "typed_recall": 1.0,
+        "precision": 0.9782608695652174,
+        "f1": 0.989010989010989
+      },
+      "PHONE": {
+        "occurrences": 32,
+        "covered": 32,
+        "recall": 1.0,
+        "recall_ci95": [
+          0.893,
+          1.0
+        ],
+        "typed_recall": 1.0,
+        "precision": 1.0,
+        "f1": 1.0
+      }
+    },
+    "missed": [],
+    "false_positives": [
+      {
+        "type": "PERSON",
+        "locator": "page 3",
+        "block_id": "p3-o7",
+        "start": 102,
+        "end": 117,
+        "confidence": 0.984,
+        "detectors": [
+          "lexicon:variant",
+          "presidio:SpacyRecognizer"
+        ],
+        "token": "[PERSON_9]"
+      },
+      {
+        "type": "EMAIL",
+        "locator": "page 8",
+        "block_id": "p8-o3",
+        "start": 62,
+        "end": 91,
+        "confidence": 0.85,
+        "detectors": [
+          "regex:email-ocr-space"
+        ],
+        "token": "[EMAIL_1]"
+      }
+    ],
+    "mode": "ocr (rendered, rasterised at 200 dpi)",
+    "structure": {
+      "units": 410,
+      "found": 384,
+      "locator_ok": 0,
+      "in_order": 59,
+      "retained": 0,
+      "found_rate": 0.9365853658536586,
+      "locator_rate": 0.0,
+      "order_rate": 0.15364583333333334,
+      "retention": 0.0,
+      "unit_level": "paragraph/cell",
+      "by_kind": {
+        "slide-text": {
+          "units": 172,
+          "retained": 0
+        },
+        "slide-table": {
+          "units": 238,
+          "retained": 0
+        }
+      }
+    }
+  }
+}

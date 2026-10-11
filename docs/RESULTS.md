@@ -117,6 +117,39 @@ same slide. The extractor emits table cells in document order, so these are case
 identical cells apart rather than real reordering: 0.951 is a lower bound. The PDF figure is page-level only (see
 METRICS.md); text completeness inside scanned pages is reflected by `not_extracted` above, not by this number.
 
+## OCR vs native (2026-10-11)
+
+Same documents, same ground truth, two paths: **native** (`python -m pii_shield.eval --only X`) and **OCR**
+(`--render-ocr`: LibreOffice renders the PPTX/DOCX to PDF, every page is rasterised at 200 dpi into an image-only PDF,
+then the full pipeline runs and is scored against the same GT). Output: `docs/eval_{pptx,docx}.json` (native) and
+`docs/eval_ocr_{pptx,docx}.json` (OCR). The scanned PDF has no native path, so it is not part of this comparison.
+LibreOffice was installed for this step; the native DOCX path now also renders the 5 EMF images for OCR, which is why
+the native DOCX row differs from the tables above (2 extra FP: switchboard numbers on the consultancy letterhead image,
+excluded from the GT by policy).
+
+| File | Path | Status | Leaked | Recall [95% CI] | Precision | FP | not_extracted | Content found (source units) |
+|---|---|---|---|---|---|---|---|---|
+| PPTX | native | PASS | 0 / 61 | 1.000 [0.97, 1.0] | 1.000 | 0 | 0 | 1.000 (410/410) |
+| PPTX | OCR | PASS | 0 / 61 | 1.000 [0.966, 1.0] | 0.982 | 2 | 8 | 0.937 (384/410) |
+| DOCX | native | REVIEW | 3 / 23 | 0.920 [0.812, 0.968] | 0.958 | 2 | 0 | 1.000 (2383/2383) |
+| DOCX | OCR | REVIEW | 3 / 23 | 0.917 [0.804, 0.967] | 0.564 | 34 | 2 | 0.796 (1897/2383) |
+
+"Content found" is the share of the original file's structure units whose text appears in the extraction (locators are
+pages after rendering, so only the found rate is comparable).
+
+**Accuracy cost of OCR on these two files:**
+
+- **Leaks:** none added. The same 3 DOCX values leak on both paths (see run (b)); the PPTX leaks nothing on either path.
+- **Recall:** essentially unchanged on the GT values that survive OCR. But OCR loses text before detection starts:
+  8 of 61 PPTX values and 2 of 23 DOCX values never appear in the OCR text in annotated form (`not_extracted`). The 2
+  DOCX values are document-metadata names, which a rendered image cannot carry at all.
+- **Text completeness:** content found drops from 1.000 to 0.937 (PPTX) and to 0.796 (DOCX): many source units are
+  not reproduced verbatim by OCR.
+- **Precision:** PPTX 1.000 -> 0.982; DOCX 0.958 -> 0.564. All 34 DOCX OCR false positives are PERSON: 15 come from the
+  OCR-noise name auto-redaction (`verifier:forced`), which on a fully scanned document applies to every page instead of a
+  few screenshots, and most of the rest from the name lexicon on OCR noise. Over-redaction is the safe direction, but the
+  2026-10-11 OCR-name rule has a large precision cost on scanned text.
+
 ## Known limits of these numbers
 
 - Three documents, synthetic data, one OCR engine version. Nothing here transfers to real Cadence documents without

@@ -1,4 +1,8 @@
-"""python -m pii_shield.eval --corpus data/samples --truth data/ground_truth [--out docs/eval.json] [--only pdf]"""
+"""python -m pii_shield.eval --corpus data/samples --truth data/ground_truth [--out docs/eval.json] [--only pdf]
+
+--render-ocr scores each sample after rendering it to an image-only PDF (LibreOffice + rasterise), i.e. through OCR,
+against the same ground truth as the native run: the OCR-vs-native comparison.
+"""
 
 from __future__ import annotations
 
@@ -7,10 +11,11 @@ import gc
 import json
 from pathlib import Path
 
-from ..pipeline import process_path
+from ..pipeline import process_bytes, process_path
 from ..settings import Settings
 from .metrics import evaluate_result, load_truth
-from .structure import structure_retention
+from .render import ocr_variant
+from .structure import reference_units, score, structure_retention
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -21,6 +26,8 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     ap.add_argument("--only", default="")
     # Each OCR worker holds a rendered page plus Tesseract's working set; 2 keeps a full run within laptop memory.
     ap.add_argument("--ocr-workers", type=int, default=2)
+    ap.add_argument("--render-ocr", action="store_true", help="score the OCR path: render to an image-only PDF first")
+    ap.add_argument("--render-dpi", type=int, default=200)
     return ap.parse_args(argv)
 
 
@@ -39,20 +46,31 @@ def main(argv: list[str] | None = None) -> None:
         src = Path(a.corpus) / name
         if not src.exists():
             continue
-        r = process_path(src, settings)
-        m = evaluate_result(r, load_truth(tf))
-        m["structure"] = structure_retention(src.read_bytes(), src.name, r.document)
+        if a.render_ocr:
+            data, pname = ocr_variant(src, a.render_dpi)
+            r = process_bytes(data, pname, settings)
+            m = evaluate_result(r, load_truth(tf))
+            m["mode"] = f"ocr (rendered, rasterised at {a.render_dpi} dpi)"
+            # locators are pages now, so only the found rate of the original's units is meaningful
+            m["structure"] = score(reference_units(src.read_bytes(), src.name), r.document) if r.document else None
+        else:
+            r = process_path(src, settings)
+            m = evaluate_result(r, load_truth(tf))
+            m["mode"] = "native"
+            m["structure"] = structure_retention(src.read_bytes(), src.name, r.document)
         del r  # the extracted document (all blocks, OCR geometry) is not needed once scored
         gc.collect()
         out[name] = m
         pt = ", ".join(f"{k}: R={v['recall']:.3f}" + (f" P={v['precision']:.3f}" if v["precision"] is not None else "")
                        for k, v in m["per_type"].items())
         fmt = lambda x: "n/a" if x is None else f"{x:.3f}"  # noqa: E731
-        print(f"{name}\n  status={m['status']} R={fmt(m['recall'])} CI95={m['recall_ci95']} P={fmt(m['precision'])} "
+        print(f"{name} [{m['mode']}]\n  status={m['status']} R={fmt(m['recall'])} CI95={m['recall_ci95']} P={fmt(m['precision'])} "
               f"F1={fmt(m['f1'])} leak={m['leaked_values_in_sanitised_text']}/{m['gt_values']} "
               f"missed={len(m['missed'])} fp={len(m['false_positives'])} not_extracted={m['gt_values_not_extracted']}\n  {pt}")
         s = m["structure"]
-        if s:
+        if s and a.render_ocr:
+            print(f"  content found (original units): {fmt(s['found_rate'])} ({s['found']}/{s['units']})")
+        elif s:
             print(f"  structure ({s['unit_level']}): retention={fmt(s['retention'])} ({s['retained']}/{s['units']}) "
                   f"found={fmt(s['found_rate'])} locator={fmt(s['locator_rate'])} order={fmt(s['order_rate'])}")
     if a.out:

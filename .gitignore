@@ -9,3 +9,4 @@ out/
 .pip-cache/
 build/
 dist/
+data/derived/

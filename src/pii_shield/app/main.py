@@ -13,6 +13,7 @@ from pathlib import Path
 import streamlit as st
 
 from pii_shield import process_bytes
+from pii_shield.app.view import hidden_sanitized_blocks
 from pii_shield.errors import BlockedError
 from pii_shield.models import CLASSIFICATION, PipelineResult, Status
 from pii_shield.pipeline import release
@@ -130,6 +131,7 @@ with tab_find:
 # ---- side by side ------------------------------------------------------------------------------------------
 with tab_side:
     san = {b.id: b for b in r.sanitized_blocks}
+    hidden_san = hidden_sanitized_blocks(r, reveal)
     by_block: dict[str, list] = {}
     for f in r.findings:
         by_block.setdefault(f.block_id, []).append(f)
@@ -150,7 +152,10 @@ with tab_side:
                           unsafe_allow_html=True)
         else:
             left.markdown("<span style='color:#888'>(hidden)</span>", unsafe_allow_html=True)
-        if b.id in san:
+        if b.id in hidden_san:
+            right.markdown("<span style='color:#888'>(hidden: residual PII flagged by the verifier)</span>",
+                           unsafe_allow_html=True)
+        elif b.id in san:
             right.markdown(_mark_tokens(san[b.id].text), unsafe_allow_html=True)
 
 # ---- exposure ---------------------------------------------------------------------------------------------
