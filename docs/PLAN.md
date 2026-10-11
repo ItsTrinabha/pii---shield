@@ -64,9 +64,9 @@ Phase 0 - Repo and foundations
  - Exit: `pytest` runs green on an empty suite; the three sample files sit in `data/samples`.
 
 Phase 1 - Artifact analysis and taxonomy
- - [ ] Analyse the three artifacts and PII categories (full inventory, all 35 pages, DOCX images, PPTX notes/masters/metadata)
+ - [x] Analyse the three artifacts and PII categories (full inventory, all 35 pages, DOCX images, PPTX notes/masters/metadata)
  - [ ] Define PII taxonomy and detection rules (section 3, finalised)
- - [ ] Write `docs/FILE_ANALYSIS.md` (deliverable 1 of the brief)
+ - [x] Write `docs/FILE_ANALYSIS.md` (deliverable 1 of the brief)
  - Exit: inventory table per file/type/page; every borderline type has a decision in `DECISIONS.md`.
 
 Phase 2 - Ingestion and OCR
@@ -89,9 +89,9 @@ Phase 4 - Masking, traceability, safety
  - Exit: adversarial tests (corrupt file, empty file, password-protected, huge file, OCR garbage page) all end BLOCKED, never "safe".
 
 Phase 5 - Evaluation framework
- - [ ] Ground-truth format and annotation tool/process (JSONL spans: file, page, start, end, type)
- - [ ] Annotate Cadence artifacts (start with pp. 1-4, 22-23, 32; then everything; second pass to check labels)
- - [ ] Metrics: precision, recall, F1 per type, leak rate (surviving PII spans / total), OCR-vs-native recall, false positives and negatives lists
+ - [x] Ground-truth format and annotation tool/process (value-based JSONL instead of spans; `data/ground_truth/ANNOTATION.md`)
+ - [ ] Annotate Cadence artifacts (start with pp. 1-4, 22-23, 32; then everything; second pass to check labels) -- all pages and images annotated 2026-10-11, single pass; second pass open
+ - [x] Metrics: precision, recall, F1 per type, leak rate (surviving PII spans / total), OCR-vs-native recall, false positives and negatives lists
  - [ ] Benchmark on the Kaggle PII dataset (check licence and domain fit first) and on the Cadence artifacts
  - Exit: `python -m pii_shield.eval` prints a reproducible results table and writes `docs/RESULTS.md`.
 
@@ -109,7 +109,7 @@ Phase 8 - Hardening
  - Exit: security checklist in `docs/SECURITY.md` all ticked or consciously accepted.
 
 Phase 9 - Submission
- - [ ] Architecture and results documents, limitations, live-walkthrough script
+ - [x] Architecture and results documents, limitations, live-walkthrough script
  - [ ] Final deck and package (code, README, results, demo recording)
 
 ## 6. Evaluation design (the part that makes claims honest)
