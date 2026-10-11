@@ -39,6 +39,7 @@ def audit_dict(result: PipelineResult, include_time: bool = True) -> dict:
             "by_classification": dict(by_class.most_common()),
             "ocr_derived_findings": sum(f.ocr_derived for f in result.findings),
             "forced_by_verifier": result.notes.get("forced_redactions", 0),
+            "forced_ocr_name_candidates": result.notes.get("forced_ocr_names", 0),
         },
         "verification": {
             "passed": ver.passed if ver else None,
@@ -92,7 +93,8 @@ status <span class="badge">{e(d['status'])}</span></p>
 <h2>Why this status</h2><ul>{reasons}</ul>
 <h2>Exposure by type</h2><table><tr><th>Type</th><th>Findings</th></tr>{types}</table>
 <p>Total {d['exposure']['total_findings']} findings, {d['exposure']['distinct_values']} distinct values,
-{d['exposure']['forced_by_verifier']} forced by the independent verifier.</p>
+{d['exposure']['forced_by_verifier']} forced by the independent verifier
+(of which {d['exposure']['forced_ocr_name_candidates']} OCR-noise name candidates).</p>
 <h2>Verification</h2><p>Hard hits: {d['verification']['hard_hits']} &middot; soft hits: {d['verification']['soft_hits']}</p>
 <h2>Findings</h2><table><tr><th>ID</th><th>Type</th><th>Class</th><th>Token</th><th>Location</th><th>Conf.</th><th>Detectors</th></tr>{rows}</table>
 """

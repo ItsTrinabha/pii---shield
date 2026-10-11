@@ -108,6 +108,7 @@ def ocr_array(bgr: np.ndarray, settings: Settings) -> OcrPage:
         raise OcrError("OCR timed out") from e
     except pytesseract.TesseractError as e:
         raise OcrError("OCR engine error") from e
+    del g  # the upscaled copy is only needed by the first OCR pass
 
     n = len(d["text"])
     groups: dict[tuple[int, int], dict[int, list[int]]] = {}
@@ -281,7 +282,9 @@ def ocr_pdf_pages(pdf_bytes: bytes, indices: list[int], settings: Settings) -> l
                 arr = np.frombuffer(pix.samples, dtype=np.uint8).reshape(pix.height, pix.width, 3)
                 bgr = cv2.cvtColor(arr, cv2.COLOR_RGB2BGR)
                 inflight.append((i, ex.submit(_safe, ocr_array, bgr, settings)))
-                while len(inflight) >= workers * 2:  # bound memory: at most 2 rendered pages per worker
+                # drop this thread's references: the worker's copy is the only one left and is freed when its OCR ends
+                del pix, arr, bgr
+                while len(inflight) > workers:  # bound memory: one rendered page per worker plus one queued
                     j, fut = inflight.popleft()
                     out[j] = fut.result()
             while inflight:

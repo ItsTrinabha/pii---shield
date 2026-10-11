@@ -26,6 +26,8 @@ Each item names the control and the test that proves it. "Accepted" items are kn
 - [x] Missing OCR engine -> OCR_FAILED -> BLOCKED (not silently skipped)
 - [x] Independent verifier (no imports from `detection`) catches detector misses and forces redaction - `test_verifier_does_not_import_detection`, `test_verifier_catches_detector_miss`
 - [x] Empty extraction -> BLOCKED - `test_empty_extraction_blocks`
+- [x] Verifier hits that straddle existing tokens are redacted piece by piece instead of blocking - `test_hit_straddling_a_token_maps_to_the_parts_around_it`
+- [x] SOFT name hits in OCR-derived blocks (scans, screenshots) are auto-redacted and counted as forced redactions; status stays REVIEW with `OCR_NAME_REDACTION`. Native-text SOFT hits are never auto-redacted (a human reviews them), and hits containing a UI label or business word (`allowlist.json` `ui_labels`, `business_vocabulary`) are skipped - `test_ocr_name_redaction.py`
 
 ## Privacy of the gateway itself
 - [x] No raw PII in logs, audit JSON/HTML or status reasons - `test_no_pii_in_logs_or_reports`
@@ -43,6 +45,8 @@ Each item names the control and the test that proves it. "Accepted" items are kn
 ## Evasion
 - [x] Zero-width characters, full-width digits, Cyrillic/Greek look-alikes, odd hyphens, `[at]/[dot]` e-mails - `test_unicode_and_obfuscation`
 - [x] Numbers wrapped across lines - `test_phone_wrap.py`
+- [x] Numbers split by OCR layout (neighbouring cell between prefix and continuation, or an OCR paragraph boundary); verifier checks adjacent blocks of the same page and any `+cc area` prefix with >= 4 digits - `test_split_phone.py`
+- [ ] Accepted (deliberate choice): a lone country code (`+1`, `+44`) stays readable when the rest of the number is tokenised or sits elsewhere. It identifies a country, not a person; masking every `+<digits>` would also hit scores and percentages (`+12 bps`, `+20%`).
 - [ ] Accepted: text drawn as vector paths in PDFs is only seen if the page is OCR'd; EMF/WMF needs LibreOffice, otherwise the document goes to REVIEW (`UNSUPPORTED_MEDIA`).
 - [ ] Accepted: prompt-injection text inside a document is passed through as (sanitised) content. The gateway removes PII; it does not judge instructions. Downstream prompts must treat document text as data.
 
