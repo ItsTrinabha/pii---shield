@@ -6,8 +6,8 @@ Every number here was printed by `python -m pii_shield.eval`. Raw output: `docs/
 ## How to read this
 
 - **Leaked values is the headline.** A ground-truth (GT) value counts as leaked if it is still readable anywhere in the
-  sanitised text. Since `3a180ae` other entities' tokens are deleted before the search, so `+44 20 [PERSON_3] 7555 0171`
-  counts as a leak of `+44 20 7555 0171`.
+  sanitised text. Since `3a180ae` other entities' tokens are deleted before the search, so `+NN NN [PERSON_3] NNNN NNNN`
+  counts as a leak of `+NN NN NNNN NNNN`.
 - **Since run (b) all three files have independent GT** (see `data/ground_truth/ANNOTATION.md`). Before that, the DOCX and
   PDF GT was built from detector output and hand-pruned, so the first run's DOCX/PDF scores are regression checks only: a
   recall of 1.000 there means "nothing we once found was lost", not "everything was found".
@@ -83,7 +83,7 @@ PERSON 0.941, PASSPORT 0.500, all others 1.000.
 **The circular GT hid real leaks.** Both documents stay REVIEW (no automatic release), but the detector misses:
 
 - DOCX: two people whose first name is written as two capital initials without dots (shape `AA Surname`), once in a native
-  table cell and once in a screenshot; and one person in a screenshot whose name reads like the UI label "Mark Read". The
+  table cell and once in a screenshot; and one person in a screenshot whose name reads like a UI label (a verb plus a noun). The
   OCR-name auto-redaction deliberately skips UI labels (decision of 2026-10-11), so this leak is a direct cost of that
   filter. The verifier still raises it as a SOFT hit.
 - PDF: an SSN given only as its last four digits in brackets in customer correspondence (page 23), and a partly masked

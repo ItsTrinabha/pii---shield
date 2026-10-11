@@ -12,7 +12,7 @@ Ground truth (GT) is value-based: one line per distinct PII value (`data/ground_
 | occurrence | a place where a GT value appears in one extracted block (whitespace- and case-insensitive, word-bounded) |
 | recall | occurrences covered by a finding that overlaps >= 50% of the occurrence / all occurrences; Wilson 95% interval |
 | precision | findings that overlap a GT occurrence, or whose identity fingerprint equals a GT value's (numbers split by layout) / all findings |
-| **leaked values** (headline) | GT values still readable anywhere in the sanitised text, after deleting other entities' tokens (`+44 20 [PERSON_3] 7555 0171` counts as a leak) |
+| **leaked values** (headline) | GT values still readable anywhere in the sanitised text, after deleting other entities' tokens (`+NN NN [PERSON_3] NNNN NNNN` counts as a leak) |
 | not_extracted | GT values that never appear in the extracted text (OCR misread or unread region); they can be neither detected nor leaked in annotated form |
 
 ## Structure retention (`eval/structure.py`)

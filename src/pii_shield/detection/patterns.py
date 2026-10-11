@@ -83,7 +83,7 @@ def _nanp_trim(txt: str, s: int, e: int) -> tuple[str, int]:
     return txt, e
 
 
-# Prefix and continuation separated by layout: "+44 20 <neighbouring cell text>\n7555 0171", or the prefix ends one OCR
+# Prefix and continuation separated by layout: "+NN NN <neighbouring cell text>\nNNNN NNNN", or the prefix ends one OCR
 # paragraph and the continuation starts the next. The head is exactly country code + one area group with nothing numeric
 # after it on its line; the tail is digit groups at the very start of the next line.
 _SPLIT_HEAD = re.compile(r"(?<![\w+])\+\d{1,3}(?:[ \t.\-]?\(\d{1,4}\)|[ \t.\-]\d{1,4})(?![\d%]|[ \t.\-]?\(?\d)")
@@ -154,7 +154,7 @@ def detect_phone(t: str) -> list[Cand]:
         s, e = m.start(), m.end()
         txt = t[s:e]
         txt, e = _nanp_trim(txt, s, e)
-        # drop a trailing year-like group that belongs to the next cell (e.g. "+44 20 7555 0171 2026")
+        # drop a trailing year-like group that belongs to the next cell (e.g. "+44 20 NNNN NNNN 2026")
         while len(_digits(txt)) > 11 and _YEAR_TAIL.search(txt):
             cut = _YEAR_TAIL.search(txt).start()  # type: ignore[union-attr]
             txt, e = txt[:cut], s + cut

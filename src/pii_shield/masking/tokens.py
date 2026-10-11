@@ -109,7 +109,7 @@ def sanitized_to_original(block_findings: list[Finding], s: int, e: int) -> tupl
 
 def sanitized_to_original_parts(block_findings: list[Finding], s: int, e: int) -> list[tuple[int, int]]:
     """Like sanitized_to_original, but a span that straddles tokens is cut into the untokenised pieces around them
-    (e.g. '+44 20 [PERSON_3]\\n7555 0171' -> '+44 20 ', '\\n7555 0171'). Callers trim whitespace."""
+    (e.g. '+44 20 [PERSON_3]\\nNNNN NNNN' -> '+44 20 ', '\\nNNNN NNNN'). Callers trim whitespace."""
     out: list[tuple[int, int]] = []
     delta = 0
     cur = s

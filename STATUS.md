@@ -23,9 +23,15 @@
   and business words skipped; status stays REVIEW, reason `OCR_NAME_REDACTION`; audit `forced_ocr_name_candidates`).
   Tests: `tests/test_ocr_name_redaction.py`. Eval OCR memory capped (`--ocr-workers 2`, page images freed after OCR).
 
+- 2026-10-11: demo check (`scripts/demo_check.py`, Streamlit AppTest on all three samples): no exceptions; PPTX PASS and
+  released; DOCX and PDF REVIEW, no sanitised download before approval, released after a named approval; reveal off by
+  default; audit downloads present. The released DOCX preview contains known leaked values (the leaks in RESULTS.md),
+  which is the reviewer's residual risk. Fixed: sanitised blocks with a verifier HARD hit are hidden unless reveal is on;
+  deprecated `use_container_width` replaced.
+
 ## Environment notes (Windows)
 - venv at `.venv`; Tesseract is auto-found in `C:\Program Files\Tesseract-OCR` (or set `PII_SHIELD_TESSERACT`).
-- LibreOffice optional (EMF/WMF); auto-found in `C:\Program Files\LibreOffice\program`.
+- LibreOffice installed 2026-10-11 (EMF/WMF OCR, `--render-ocr`); auto-found in `C:\Program Files\LibreOffice\program`.
 - Without Tesseract all three samples are BLOCKED (OCR_FAILED): every sample contains images. This is intended.
 
 ## Known caveats
@@ -34,7 +40,7 @@
   (forced redactions by the verifier, incl. OCR-noise name auto-redaction). PDF PHONE precision 0.903 is the cost.
 - 2026-10-11 (b): independent GT for DOCX and PDF (`data/ground_truth/ANNOTATION.md`); old GT in
   `data/ground_truth_regression/`. It exposed leaks the circular GT hid: DOCX 3/23 (two-letter-initial first names; a
-  person named like the UI label "Mark Read", skipped by the OCR-name UI filter), PDF 2/264 (SSN last-4 in brackets,
+  person named like a UI label, skipped by the OCR-name UI filter), PDF 2/264 (SSN last-4 in brackets,
   partly masked PESEL). Both documents stay REVIEW. Not fixed yet (tuning on the reporting set; see TODO).
 - Lone country codes (`+1`, `+44`) stay readable when the rest of the number is tokenised: deliberate, see SECURITY.md.
 - Eval memory: run one file at a time with `--only`; `--ocr-workers` defaults to 2. A full 3-file run in one process
@@ -43,7 +49,7 @@
   it (`Frapenecrmas Dana ...`). Not fixed.
 
 ## TODO (in order)
-0. Six-step plan of 2026-10-11: [x] 1 independent GT, [x] 2 structure metric, [x] 3 OCR vs native, [ ] 4 demo check,
+0. Six-step plan of 2026-10-11: [x] 1 independent GT, [x] 2 structure metric, [x] 3 OCR vs native, [x] 4 demo check,
    [ ] 5 deliverable docs, [ ] 6 RESULTS/STATUS after each.
 1. Close the leaks found by the independent GT (two-letter initials, UI-label-like names in OCR, SSN last-4 in prose,
    masked national IDs); needs a hold-out split first, since these documents are also the reporting set.

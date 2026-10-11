@@ -55,7 +55,7 @@ _TOKEN = re.compile(r"\[[A-Z_]+_\d+\]")
 
 def leaked_values(san_text: str, truth: list[dict]) -> list[int]:
     """Indices of GT values still readable in the sanitised text. Tokens are deleted first, so a value whose parts are
-    separated only by another entity's token ('+44 20 [PERSON_3] 7555 0171') still counts as leaked."""
+    separated only by another entity's token ('+NN NN [PERSON_3] NNNN NNNN') still counts as leaked."""
     probe = _TOKEN.sub("", san_text)
     return [i for i, t in enumerate(truth) if _occurrences(probe, t["value"])]
 
@@ -97,7 +97,7 @@ def evaluate_result(result: PipelineResult, truth: list[dict]) -> dict:
         if not found_any:
             values_not_extracted.append({"type": typ, "length": len(val)})
 
-    # precision: findings that overlap no GT occurrence. A number split by layout ('+44 20 <cell>\n7555 0171', or across
+    # precision: findings that overlap no GT occurrence. A number split by layout ('+44 20 <cell>\nNNNN NNNN', or across
     # two OCR paragraphs) has no contiguous occurrence; its halves still count when their identity fingerprint (HMAC of
     # the full number's digits) equals a GT value's.
     hkey = get_hmac_key()

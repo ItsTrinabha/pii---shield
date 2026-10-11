@@ -175,7 +175,7 @@ class Pipeline:
             known_types[re.sub(r"\s+", " ", by_id[f.block_id].text[f.start:f.end]).strip().lower()] = f.type
         for h in ver.hard_hits:
             b = by_id[h.block_id]
-            # a hit that straddles existing tokens ('+44 20 [PERSON_3]\n7555 0171') is redacted piece by piece
+            # a hit that straddles existing tokens ('+44 20 [PERSON_3]\nNNNN NNNN') is redacted piece by piece
             for s, e in sanitized_to_original_parts(per_block.get(b.id, []), h.start, h.end):
                 seg = b.text[s:e]
                 s, e = s + len(seg) - len(seg.lstrip()), e - (len(seg) - len(seg.rstrip()))

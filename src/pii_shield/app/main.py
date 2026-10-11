@@ -125,7 +125,7 @@ with tab_find:
          "confidence": round(f.confidence, 2), "detectors": ", ".join(f.detectors), "OCR": f.ocr_derived}
         for f in r.findings if f.type in sel
     ]
-    st.dataframe(rows, use_container_width=True, hide_index=True)
+    st.dataframe(rows, width="stretch", hide_index=True)
     st.caption("Values are never shown here: each row is traceable via file → location → block → char span → detector.")
 
 # ---- side by side ------------------------------------------------------------------------------------------
@@ -169,7 +169,7 @@ with tab_exp:
     st.subheader("By location")
     loc_counts = Counter(f.locator.label().split(" / ")[0] for f in r.findings)
     st.dataframe([{"location": k, "findings": v} for k, v in loc_counts.most_common()], hide_index=True,
-                 use_container_width=True)
+                 width="stretch")
     with st.expander("Extraction statistics"):
         st.json(doc.stats.model_dump())
         if doc.warnings:
@@ -185,12 +185,12 @@ with tab_ver:
         st.caption("The verifier shares no code with the detectors, so a detector blind spot is not repeated here.")
         hits = [{"severity": h.severity, "rule": h.rule, "location": h.locator.label(), "block": h.block_id,
                  "chars": f"{h.start}–{h.end}"} for h in ver.hard_hits + ver.soft_hits]
-        st.dataframe(hits, hide_index=True, use_container_width=True)
+        st.dataframe(hits, hide_index=True, width="stretch")
         st.write("Rules run:", ", ".join(ver.rules_run))
     cands = r.notes.get("review_candidates", [])
     if cands:
         st.subheader("Low-confidence candidates (not masked)")
-        st.dataframe(cands, hide_index=True, use_container_width=True)
+        st.dataframe(cands, hide_index=True, width="stretch")
 
 # ---- release + downloads ----------------------------------------------------------------------------------
 with tab_dl:
