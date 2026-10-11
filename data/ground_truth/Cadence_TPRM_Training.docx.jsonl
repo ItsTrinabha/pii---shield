@@ -1,23 +1,23 @@
-{"type": "PERSON", "value": "Bridgett Gatewood"}
-{"type": "PERSON", "value": "Chris Ott"}
-{"type": "PERSON", "value": "Chris Schmitz"}
-{"type": "PERSON", "value": "Daniela Figueroa"}
-{"type": "PERSON", "value": "Dayo Seton"}
-{"type": "PERSON", "value": "Divisha Kilari"}
-{"type": "PERSON", "value": "Erik Hansen"}
-{"type": "PERSON", "value": "Jonathan Szeto"}
-{"type": "PERSON", "value": "Jyoti Karwal"}
-{"type": "PERSON", "value": "Karen Caira-Ruiz"}
-{"type": "PERSON", "value": "Madhav Mehta"}
-{"type": "PERSON", "value": "Marc Otani"}
-{"type": "PERSON", "value": "Melisa Cardozo"}
-{"type": "PERSON", "value": "Nikhil Karkera"}
-{"type": "PERSON", "value": "Qi Bi"}
-{"type": "PERSON", "value": "Rob Tilney"}
-{"type": "PERSON", "value": "Shimane Smith"}
-{"type": "PERSON", "value": "Siddharth Gaikwad"}
-{"type": "PERSON", "value": "Skylar Damiano"}
-{"type": "PERSON", "value": "Srinivas Teppa"}
-{"type": "PERSON", "value": "Tamika Oliver"}
-{"type": "PHONE", "value": "800.574.0896"}
-{"type": "PHONE", "value": "888.732.9406"}
+{"type": "PERSON", "value": "Daniela Figueroa", "where": ["body-table"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Bridgett Gatewood", "where": ["body-table"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "KC Burney", "where": ["body-table"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Jyoti Karwal", "where": ["body-table"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Tamika Oliver", "where": ["body-table"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Shimane Smith", "where": ["body-table"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Chris Schmitz", "where": ["body-table"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Chris Ott", "where": ["body-table"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Rob Tilney", "where": ["body-table"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Jonathan Szeto", "where": ["body-table"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Marc Otani", "where": ["body-table"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Dayo Seton", "where": ["body-table"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Melisa Cardozo", "where": ["body-table"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "DK Koran", "where": ["body-table"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Erik Hansen", "where": ["body-table"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Siddharth Gaikwad", "where": ["version-control", "image35", "image38"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Srinivas Teppa", "where": ["version-control"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Nikhil Karkera", "where": ["version-control"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Madhav Mehta", "where": ["metadata"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Divisha Kilari", "where": ["metadata"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Skylar Damiano", "where": ["image10"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Mark Read", "where": ["image10"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Karen Caira-Ruiz", "where": ["image12"], "source": "manual-read-2026-10-11"}

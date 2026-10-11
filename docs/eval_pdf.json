@@ -1,19 +1,19 @@
 {
   "Cadence_Group_Risk_Management_Policy__v6.0.pdf": {
     "status": "REVIEW",
-    "gt_values": 260,
-    "gt_occurrences": 1070,
-    "covered": 1070,
-    "recall": 1.0,
+    "gt_values": 264,
+    "gt_occurrences": 799,
+    "covered": 797,
+    "recall": 0.9974968710888611,
     "recall_ci95": [
-      0.996,
-      1.0
+      0.991,
+      0.999
     ],
-    "precision": 0.9746136865342163,
-    "f1": 0.9871436556735607,
-    "leaked_values_in_sanitised_text": 0,
-    "leak_rate": 0.0,
-    "gt_values_not_extracted": 7,
+    "precision": 0.9105960264900662,
+    "f1": 0.9520675732322081,
+    "leaked_values_in_sanitised_text": 2,
+    "leak_rate": 0.007575757575757576,
+    "gt_values_not_extracted": 52,
     "per_type": {
       "ADDRESS": {
         "occurrences": 3,
@@ -40,16 +40,16 @@
         "f1": 1.0
       },
       "EMAIL": {
-        "occurrences": 166,
-        "covered": 166,
+        "occurrences": 126,
+        "covered": 126,
         "recall": 1.0,
         "recall_ci95": [
-          0.977,
+          0.97,
           1.0
         ],
         "typed_recall": 1.0,
-        "precision": 0.9936305732484076,
-        "f1": 0.9968051118210862
+        "precision": 0.802547770700637,
+        "f1": 0.8904593639575972
       },
       "EMPLOYEE_ID": {
         "occurrences": 189,
@@ -88,56 +88,97 @@
         "f1": 0.6666666666666666
       },
       "PERSON": {
-        "occurrences": 561,
-        "covered": 561,
+        "occurrences": 367,
+        "covered": 367,
         "recall": 1.0,
         "recall_ci95": [
-          0.993,
+          0.99,
           1.0
         ],
-        "typed_recall": 0.9126559714795008,
-        "precision": 0.9896907216494846,
-        "f1": 0.9948186528497409
+        "typed_recall": 1.0,
+        "precision": 0.9407216494845361,
+        "f1": 0.9694555112881806
       },
       "PHONE": {
-        "occurrences": 140,
-        "covered": 140,
+        "occurrences": 101,
+        "covered": 101,
         "recall": 1.0,
         "recall_ci95": [
-          0.973,
+          0.963,
           1.0
         ],
         "typed_recall": 1.0,
-        "precision": 0.9032258064516129,
-        "f1": 0.9491525423728813
+        "precision": 0.8451612903225807,
+        "f1": 0.9160839160839161
       },
       "SSN": {
-        "occurrences": 2,
+        "occurrences": 3,
         "covered": 2,
-        "recall": 1.0,
+        "recall": 0.6666666666666666,
         "recall_ci95": [
-          0.342,
-          1.0
+          0.208,
+          0.939
         ],
-        "typed_recall": 1.0,
+        "typed_recall": 0.6666666666666666,
         "precision": 1.0,
-        "f1": 1.0
+        "f1": 0.8
       },
       "TAX_ID": {
-        "occurrences": 4,
+        "occurrences": 5,
         "covered": 4,
-        "recall": 1.0,
+        "recall": 0.8,
         "recall_ci95": [
-          0.51,
-          1.0
+          0.376,
+          0.964
         ],
-        "typed_recall": 1.0,
+        "typed_recall": 0.8,
         "precision": 1.0,
-        "f1": 1.0
+        "f1": 0.888888888888889
       }
     },
-    "missed": [],
+    "missed": [
+      {
+        "type": "SSN",
+        "locator": "page 23",
+        "block_id": "p23-o11",
+        "start": 424,
+        "end": 428
+      },
+      {
+        "type": "TAX_ID",
+        "locator": "page 25",
+        "block_id": "p25-o28",
+        "start": 59,
+        "end": 70
+      }
+    ],
     "false_positives": [
+      {
+        "type": "EMAIL",
+        "locator": "page 2",
+        "block_id": "p2-o6",
+        "start": 190,
+        "end": 214,
+        "confidence": 0.99,
+        "detectors": [
+          "presidio:EmailRecognizer",
+          "regex:email"
+        ],
+        "token": "[EMAIL_4]"
+      },
+      {
+        "type": "PHONE",
+        "locator": "page 3",
+        "block_id": "p3-o21",
+        "start": 163,
+        "end": 177,
+        "confidence": 0.965,
+        "detectors": [
+          "presidio:PhoneRecognizer",
+          "regex:phone-us"
+        ],
+        "token": "[PHONE_6]"
+      },
       {
         "type": "UNCLASSIFIED",
         "locator": "page 3",
@@ -163,6 +204,19 @@
         "token": "[PHONE_9]"
       },
       {
+        "type": "PERSON",
+        "locator": "page 4",
+        "block_id": "p4-o9",
+        "start": 130,
+        "end": 144,
+        "confidence": 0.98,
+        "detectors": [
+          "lexicon:variant",
+          "presidio:SpacyRecognizer"
+        ],
+        "token": "[PERSON_13]"
+      },
+      {
         "type": "PHONE",
         "locator": "page 4",
         "block_id": "p4-o9",
@@ -173,6 +227,170 @@
           "verifier:forced"
         ],
         "token": "[PHONE_11]"
+      },
+      {
+        "type": "PHONE",
+        "locator": "page 4",
+        "block_id": "p4-o11",
+        "start": 104,
+        "end": 116,
+        "confidence": 0.65,
+        "detectors": [
+          "presidio:PhoneRecognizer"
+        ],
+        "token": "[PHONE_14]"
+      },
+      {
+        "type": "EMAIL",
+        "locator": "page 5",
+        "block_id": "p5-o41",
+        "start": 121,
+        "end": 145,
+        "confidence": 0.85,
+        "detectors": [
+          "regex:email-ocr-space"
+        ],
+        "token": "[EMAIL_16]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 6",
+        "block_id": "p6-o24",
+        "start": 5,
+        "end": 13,
+        "confidence": 0.7,
+        "detectors": [
+          "lexicon:variant"
+        ],
+        "token": "[PERSON_20]"
+      },
+      {
+        "type": "EMAIL",
+        "locator": "page 6",
+        "block_id": "p6-o83",
+        "start": 0,
+        "end": 25,
+        "confidence": 0.99,
+        "detectors": [
+          "presidio:EmailRecognizer",
+          "regex:email"
+        ],
+        "token": "[EMAIL_18]"
+      },
+      {
+        "type": "EMAIL",
+        "locator": "page 6",
+        "block_id": "p6-o85",
+        "start": 0,
+        "end": 25,
+        "confidence": 0.99,
+        "detectors": [
+          "presidio:EmailRecognizer",
+          "regex:email"
+        ],
+        "token": "[EMAIL_19]"
+      },
+      {
+        "type": "PHONE",
+        "locator": "page 6",
+        "block_id": "p6-o98",
+        "start": 0,
+        "end": 14,
+        "confidence": 0.965,
+        "detectors": [
+          "presidio:PhoneRecognizer",
+          "regex:phone-us"
+        ],
+        "token": "[PHONE_23]"
+      },
+      {
+        "type": "EMAIL",
+        "locator": "page 6",
+        "block_id": "p6-o99",
+        "start": 0,
+        "end": 25,
+        "confidence": 0.99,
+        "detectors": [
+          "presidio:EmailRecognizer",
+          "regex:email"
+        ],
+        "token": "[EMAIL_24]"
+      },
+      {
+        "type": "PHONE",
+        "locator": "page 6",
+        "block_id": "p6-o100",
+        "start": 0,
+        "end": 14,
+        "confidence": 0.965,
+        "detectors": [
+          "presidio:PhoneRecognizer",
+          "regex:phone-us"
+        ],
+        "token": "[PHONE_24]"
+      },
+      {
+        "type": "PHONE",
+        "locator": "page 6",
+        "block_id": "p6-o102",
+        "start": 0,
+        "end": 12,
+        "confidence": 0.65,
+        "detectors": [
+          "presidio:PhoneRecognizer"
+        ],
+        "token": "[PHONE_25]"
+      },
+      {
+        "type": "PHONE",
+        "locator": "page 6",
+        "block_id": "p6-o104",
+        "start": 0,
+        "end": 12,
+        "confidence": 0.65,
+        "detectors": [
+          "presidio:PhoneRecognizer"
+        ],
+        "token": "[PHONE_26]"
+      },
+      {
+        "type": "PHONE",
+        "locator": "page 7",
+        "block_id": "p7-o1",
+        "start": 84,
+        "end": 98,
+        "confidence": 0.965,
+        "detectors": [
+          "presidio:PhoneRecognizer",
+          "regex:phone-us"
+        ],
+        "token": "[PHONE_6]"
+      },
+      {
+        "type": "PHONE",
+        "locator": "page 7",
+        "block_id": "p7-o2",
+        "start": 99,
+        "end": 113,
+        "confidence": 0.965,
+        "detectors": [
+          "presidio:PhoneRecognizer",
+          "regex:phone-us"
+        ],
+        "token": "[PHONE_27]"
+      },
+      {
+        "type": "PHONE",
+        "locator": "page 7",
+        "block_id": "p7-o3",
+        "start": 85,
+        "end": 99,
+        "confidence": 0.965,
+        "detectors": [
+          "presidio:PhoneRecognizer",
+          "regex:phone-us"
+        ],
+        "token": "[PHONE_28]"
       },
       {
         "type": "EMAIL",
@@ -188,52 +406,79 @@
         "token": "[EMAIL_28]"
       },
       {
-        "type": "PHONE",
+        "type": "PERSON",
         "locator": "page 10",
-        "block_id": "p10-o32",
-        "start": 63,
-        "end": 69,
-        "confidence": 0.93,
+        "block_id": "p10-o12",
+        "start": 0,
+        "end": 10,
+        "confidence": 0.7,
         "detectors": [
-          "regex:phone-split"
+          "lexicon:variant"
         ],
-        "token": "[PHONE_35]"
+        "token": "[PERSON_4]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 10",
+        "block_id": "p10-o16",
+        "start": 16,
+        "end": 24,
+        "confidence": 0.7,
+        "detectors": [
+          "lexicon:variant"
+        ],
+        "token": "[PERSON_20]"
       },
       {
         "type": "PHONE",
         "locator": "page 10",
-        "block_id": "p10-o33",
+        "block_id": "p10-o30",
+        "start": 0,
+        "end": 14,
+        "confidence": 0.965,
+        "detectors": [
+          "presidio:PhoneRecognizer",
+          "regex:phone-us"
+        ],
+        "token": "[PHONE_34]"
+      },
+      {
+        "type": "EMAIL",
+        "locator": "page 10",
+        "block_id": "p10-o41",
+        "start": 54,
+        "end": 78,
+        "confidence": 0.99,
+        "detectors": [
+          "presidio:EmailRecognizer",
+          "regex:email"
+        ],
+        "token": "[EMAIL_32]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 12",
+        "block_id": "p12-o4",
+        "start": 39,
+        "end": 47,
+        "confidence": 0.7,
+        "detectors": [
+          "lexicon:variant"
+        ],
+        "token": "[PERSON_12]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 12",
+        "block_id": "p12-o36",
         "start": 0,
         "end": 9,
-        "confidence": 0.93,
+        "confidence": 0.886,
         "detectors": [
-          "regex:phone-split"
+          "lexicon:variant",
+          "presidio:SpacyRecognizer"
         ],
-        "token": "[PHONE_35]"
-      },
-      {
-        "type": "PHONE",
-        "locator": "page 10",
-        "block_id": "p10-o38",
-        "start": 59,
-        "end": 65,
-        "confidence": 0.93,
-        "detectors": [
-          "regex:phone-split"
-        ],
-        "token": "[PHONE_37]"
-      },
-      {
-        "type": "PHONE",
-        "locator": "page 10",
-        "block_id": "p10-o39",
-        "start": 0,
-        "end": 8,
-        "confidence": 0.93,
-        "detectors": [
-          "regex:phone-split"
-        ],
-        "token": "[PHONE_37]"
+        "token": "[PERSON_19]"
       },
       {
         "type": "PHONE",
@@ -258,6 +503,33 @@
           "verifier:forced"
         ],
         "token": "[PHONE_40]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 13",
+        "block_id": "p13-o22",
+        "start": 20,
+        "end": 34,
+        "confidence": 0.99,
+        "detectors": [
+          "lexicon:variant",
+          "pattern:name-before-id",
+          "presidio:SpacyRecognizer"
+        ],
+        "token": "[PERSON_13]"
+      },
+      {
+        "type": "EMAIL",
+        "locator": "page 13",
+        "block_id": "p13-o22",
+        "start": 47,
+        "end": 72,
+        "confidence": 0.99,
+        "detectors": [
+          "presidio:EmailRecognizer",
+          "regex:email"
+        ],
+        "token": "[EMAIL_34]"
       },
       {
         "type": "PHONE",
@@ -296,6 +568,19 @@
         "token": "[PERSON_38]"
       },
       {
+        "type": "EMAIL",
+        "locator": "page 18",
+        "block_id": "p18-o26",
+        "start": 50,
+        "end": 74,
+        "confidence": 0.99,
+        "detectors": [
+          "presidio:EmailRecognizer",
+          "regex:email"
+        ],
+        "token": "[EMAIL_32]"
+      },
+      {
         "type": "PERSON",
         "locator": "page 18",
         "block_id": "p18-o30",
@@ -308,6 +593,31 @@
         "token": "[PERSON_39]"
       },
       {
+        "type": "PERSON",
+        "locator": "page 18",
+        "block_id": "p18-o30",
+        "start": 41,
+        "end": 49,
+        "confidence": 0.7,
+        "detectors": [
+          "lexicon:variant"
+        ],
+        "token": "[PERSON_20]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 18",
+        "block_id": "p18-o37",
+        "start": 0,
+        "end": 10,
+        "confidence": 0.88,
+        "detectors": [
+          "heuristic:name-line",
+          "lexicon:variant"
+        ],
+        "token": "[PERSON_18]"
+      },
+      {
         "type": "PASSPORT",
         "locator": "page 18",
         "block_id": "p18-o52",
@@ -318,6 +628,19 @@
           "regex:passport-context"
         ],
         "token": "[PASSPORT_1]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 19",
+        "block_id": "p19-o7",
+        "start": 38,
+        "end": 49,
+        "confidence": 0.924,
+        "detectors": [
+          "lexicon:variant",
+          "presidio:SpacyRecognizer"
+        ],
+        "token": "[PERSON_13]"
       },
       {
         "type": "PERSON",
@@ -346,6 +669,369 @@
         "token": "[UNCLASSIFIED_2]"
       },
       {
+        "type": "EMAIL",
+        "locator": "page 21",
+        "block_id": "p21-o11",
+        "start": 74,
+        "end": 98,
+        "confidence": 0.99,
+        "detectors": [
+          "presidio:EmailRecognizer",
+          "regex:email"
+        ],
+        "token": "[EMAIL_32]"
+      },
+      {
+        "type": "EMAIL",
+        "locator": "page 24",
+        "block_id": "p24-o6",
+        "start": 67,
+        "end": 91,
+        "confidence": 0.99,
+        "detectors": [
+          "presidio:EmailRecognizer",
+          "regex:email"
+        ],
+        "token": "[EMAIL_4]"
+      },
+      {
+        "type": "EMAIL",
+        "locator": "page 26",
+        "block_id": "p26-o17",
+        "start": 53,
+        "end": 70,
+        "confidence": 0.99,
+        "detectors": [
+          "presidio:EmailRecognizer",
+          "regex:email"
+        ],
+        "token": "[EMAIL_40]"
+      },
+      {
+        "type": "EMAIL",
+        "locator": "page 26",
+        "block_id": "p26-o17",
+        "start": 72,
+        "end": 91,
+        "confidence": 0.99,
+        "detectors": [
+          "presidio:EmailRecognizer",
+          "regex:email"
+        ],
+        "token": "[EMAIL_41]"
+      },
+      {
+        "type": "EMAIL",
+        "locator": "page 26",
+        "block_id": "p26-o18",
+        "start": 54,
+        "end": 72,
+        "confidence": 0.99,
+        "detectors": [
+          "presidio:EmailRecognizer",
+          "regex:email"
+        ],
+        "token": "[EMAIL_42]"
+      },
+      {
+        "type": "EMAIL",
+        "locator": "page 26",
+        "block_id": "p26-o19",
+        "start": 55,
+        "end": 73,
+        "confidence": 0.99,
+        "detectors": [
+          "presidio:EmailRecognizer",
+          "regex:email"
+        ],
+        "token": "[EMAIL_42]"
+      },
+      {
+        "type": "EMAIL",
+        "locator": "page 26",
+        "block_id": "p26-o19",
+        "start": 75,
+        "end": 92,
+        "confidence": 0.99,
+        "detectors": [
+          "presidio:EmailRecognizer",
+          "regex:email"
+        ],
+        "token": "[EMAIL_40]"
+      },
+      {
+        "type": "EMAIL",
+        "locator": "page 26",
+        "block_id": "p26-o20",
+        "start": 54,
+        "end": 72,
+        "confidence": 0.99,
+        "detectors": [
+          "presidio:EmailRecognizer",
+          "regex:email"
+        ],
+        "token": "[EMAIL_42]"
+      },
+      {
+        "type": "EMAIL",
+        "locator": "page 26",
+        "block_id": "p26-o21",
+        "start": 50,
+        "end": 67,
+        "confidence": 0.99,
+        "detectors": [
+          "presidio:EmailRecognizer",
+          "regex:email"
+        ],
+        "token": "[EMAIL_43]"
+      },
+      {
+        "type": "EMAIL",
+        "locator": "page 26",
+        "block_id": "p26-o22",
+        "start": 48,
+        "end": 66,
+        "confidence": 0.99,
+        "detectors": [
+          "presidio:EmailRecognizer",
+          "regex:email"
+        ],
+        "token": "[EMAIL_42]"
+      },
+      {
+        "type": "EMAIL",
+        "locator": "page 26",
+        "block_id": "p26-o22",
+        "start": 68,
+        "end": 85,
+        "confidence": 0.99,
+        "detectors": [
+          "presidio:EmailRecognizer",
+          "regex:email"
+        ],
+        "token": "[EMAIL_40]"
+      },
+      {
+        "type": "EMAIL",
+        "locator": "page 26",
+        "block_id": "p26-o23",
+        "start": 46,
+        "end": 63,
+        "confidence": 0.99,
+        "detectors": [
+          "presidio:EmailRecognizer",
+          "regex:email"
+        ],
+        "token": "[EMAIL_40]"
+      },
+      {
+        "type": "EMAIL",
+        "locator": "page 26",
+        "block_id": "p26-o23",
+        "start": 65,
+        "end": 84,
+        "confidence": 0.99,
+        "detectors": [
+          "presidio:EmailRecognizer",
+          "regex:email"
+        ],
+        "token": "[EMAIL_45]"
+      },
+      {
+        "type": "EMAIL",
+        "locator": "page 26",
+        "block_id": "p26-o25",
+        "start": 55,
+        "end": 72,
+        "confidence": 0.99,
+        "detectors": [
+          "presidio:EmailRecognizer",
+          "regex:email"
+        ],
+        "token": "[EMAIL_40]"
+      },
+      {
+        "type": "EMAIL",
+        "locator": "page 26",
+        "block_id": "p26-o25",
+        "start": 74,
+        "end": 93,
+        "confidence": 0.99,
+        "detectors": [
+          "presidio:EmailRecognizer",
+          "regex:email"
+        ],
+        "token": "[EMAIL_41]"
+      },
+      {
+        "type": "EMAIL",
+        "locator": "page 26",
+        "block_id": "p26-o26",
+        "start": 44,
+        "end": 63,
+        "confidence": 0.99,
+        "detectors": [
+          "presidio:EmailRecognizer",
+          "regex:email"
+        ],
+        "token": "[EMAIL_45]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 28",
+        "block_id": "p28-o13",
+        "start": 72,
+        "end": 82,
+        "confidence": 0.99,
+        "detectors": [
+          "lexicon:variant",
+          "pattern:name-before-id",
+          "presidio:SpacyRecognizer"
+        ],
+        "token": "[PERSON_51]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 28",
+        "block_id": "p28-o14",
+        "start": 129,
+        "end": 138,
+        "confidence": 0.7,
+        "detectors": [
+          "lexicon:variant"
+        ],
+        "token": "[PERSON_3]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 28",
+        "block_id": "p28-o16",
+        "start": 122,
+        "end": 129,
+        "confidence": 0.7,
+        "detectors": [
+          "lexicon:variant"
+        ],
+        "token": "[PERSON_18]"
+      },
+      {
+        "type": "PHONE",
+        "locator": "page 28",
+        "block_id": "p28-o17",
+        "start": 37,
+        "end": 54,
+        "confidence": 0.99,
+        "detectors": [
+          "presidio:PhoneRecognizer",
+          "regex:phone-intl",
+          "regex:phone-us"
+        ],
+        "token": "[PHONE_58]"
+      },
+      {
+        "type": "EMAIL",
+        "locator": "page 28",
+        "block_id": "p28-o17",
+        "start": 332,
+        "end": 357,
+        "confidence": 0.99,
+        "detectors": [
+          "presidio:EmailRecognizer",
+          "regex:email"
+        ],
+        "token": "[EMAIL_18]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 31",
+        "block_id": "p31-o6",
+        "start": 54,
+        "end": 68,
+        "confidence": 0.98,
+        "detectors": [
+          "lexicon:variant",
+          "presidio:SpacyRecognizer"
+        ],
+        "token": "[PERSON_13]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 31",
+        "block_id": "p31-o10",
+        "start": 79,
+        "end": 88,
+        "confidence": 0.7,
+        "detectors": [
+          "lexicon:variant"
+        ],
+        "token": "[PERSON_19]"
+      },
+      {
+        "type": "EMAIL",
+        "locator": "page 32",
+        "block_id": "p32-o6",
+        "start": 47,
+        "end": 72,
+        "confidence": 0.99,
+        "detectors": [
+          "presidio:EmailRecognizer",
+          "regex:email"
+        ],
+        "token": "[EMAIL_18]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 33",
+        "block_id": "p33-o80",
+        "start": 0,
+        "end": 11,
+        "confidence": 0.92,
+        "detectors": [
+          "heuristic:name-line",
+          "lexicon:variant"
+        ],
+        "token": "[PERSON_13]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 33",
+        "block_id": "p33-o80",
+        "start": 12,
+        "end": 23,
+        "confidence": 0.92,
+        "detectors": [
+          "heuristic:name-line",
+          "lexicon:variant"
+        ],
+        "token": "[PERSON_13]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 33",
+        "block_id": "p33-o90",
+        "start": 0,
+        "end": 13,
+        "confidence": 0.99,
+        "detectors": [
+          "heuristic:name-line",
+          "lexicon:variant",
+          "presidio:SpacyRecognizer"
+        ],
+        "token": "[PERSON_24]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 33",
+        "block_id": "p33-o93",
+        "start": 3,
+        "end": 13,
+        "confidence": 0.8,
+        "detectors": [
+          "lexicon:variant"
+        ],
+        "token": "[PERSON_51]"
+      },
+      {
         "type": "PERSON",
         "locator": "page 34",
         "block_id": "p34-o5",
@@ -358,6 +1044,32 @@
           "presidio:SpacyRecognizer"
         ],
         "token": "[PERSON_52]"
+      },
+      {
+        "type": "EMAIL",
+        "locator": "page 34",
+        "block_id": "p34-o5",
+        "start": 954,
+        "end": 978,
+        "confidence": 0.99,
+        "detectors": [
+          "presidio:EmailRecognizer",
+          "regex:email"
+        ],
+        "token": "[EMAIL_32]"
+      },
+      {
+        "type": "EMAIL",
+        "locator": "page 34",
+        "block_id": "p34-o23",
+        "start": 63,
+        "end": 87,
+        "confidence": 0.99,
+        "detectors": [
+          "presidio:EmailRecognizer",
+          "regex:email"
+        ],
+        "token": "[EMAIL_4]"
       },
       {
         "type": "PHONE",
@@ -396,6 +1108,44 @@
         "token": "[PHONE_64]"
       },
       {
+        "type": "EMAIL",
+        "locator": "page 34",
+        "block_id": "p34-o25",
+        "start": 45,
+        "end": 70,
+        "confidence": 0.99,
+        "detectors": [
+          "presidio:EmailRecognizer",
+          "regex:email"
+        ],
+        "token": "[EMAIL_19]"
+      },
+      {
+        "type": "PHONE",
+        "locator": "page 34",
+        "block_id": "p34-o26",
+        "start": 12,
+        "end": 26,
+        "confidence": 0.965,
+        "detectors": [
+          "presidio:PhoneRecognizer",
+          "regex:phone-us"
+        ],
+        "token": "[PHONE_24]"
+      },
+      {
+        "type": "PHONE",
+        "locator": "page 35",
+        "block_id": "p35-o1",
+        "start": 116,
+        "end": 128,
+        "confidence": 0.65,
+        "detectors": [
+          "presidio:PhoneRecognizer"
+        ],
+        "token": "[PHONE_14]"
+      },
+      {
         "type": "PHONE",
         "locator": "page 35",
         "block_id": "p35-o1",
@@ -406,6 +1156,19 @@
           "verifier:forced"
         ],
         "token": "[PHONE_9]"
+      },
+      {
+        "type": "EMAIL",
+        "locator": "page 35",
+        "block_id": "p35-o1",
+        "start": 389,
+        "end": 414,
+        "confidence": 0.99,
+        "detectors": [
+          "presidio:EmailRecognizer",
+          "regex:email"
+        ],
+        "token": "[EMAIL_18]"
       },
       {
         "type": "PHONE",

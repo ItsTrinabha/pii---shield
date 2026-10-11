@@ -32,7 +32,10 @@
 - PPTX GT is independent. DOCX and PDF GT were built from detector output then hand-pruned => CIRCULAR; regression only.
 - 2026-10-11 eval (`docs/RESULTS.md`): leaked values PPTX 0/61, DOCX 0/23, PDF 0/260. PPTX PASS; DOCX and PDF REVIEW
   (forced redactions by the verifier, incl. OCR-noise name auto-redaction). PDF PHONE precision 0.903 is the cost.
-- PDF and DOCX numbers are regression checks only (circular GT); only PPTX is an accuracy measurement.
+- 2026-10-11 (b): independent GT for DOCX and PDF (`data/ground_truth/ANNOTATION.md`); old GT in
+  `data/ground_truth_regression/`. It exposed leaks the circular GT hid: DOCX 3/23 (two-letter-initial first names; a
+  person named like the UI label "Mark Read", skipped by the OCR-name UI filter), PDF 2/264 (SSN last-4 in brackets,
+  partly masked PESEL). Both documents stay REVIEW. Not fixed yet (tuning on the reporting set; see TODO).
 - Lone country codes (`+1`, `+44`) stay readable when the rest of the number is tokenised: deliberate, see SECURITY.md.
 - Eval memory: run one file at a time with `--only`; `--ocr-workers` defaults to 2. A full 3-file run in one process
   was killed by the OS for low memory before these changes; not re-tried.
@@ -40,9 +43,13 @@
   it (`Frapenecrmas Dana ...`). Not fixed.
 
 ## TODO (in order)
-1. Reduce PDF forced redactions (detector misses split phones whose interleaved cell has standalone numbers, and
+0. Six-step plan of 2026-10-11: [x] 1 independent GT, [ ] 2 structure metric, [ ] 3 OCR vs native, [ ] 4 demo check,
+   [ ] 5 deliverable docs, [ ] 6 RESULTS/STATUS after each.
+1. Close the leaks found by the independent GT (two-letter initials, UI-label-like names in OCR, SSN last-4 in prose,
+   masked national IDs); needs a hold-out split first, since these documents are also the reporting set.
+2. Reduce PDF forced redactions (detector misses split phones whose interleaved cell has standalone numbers, and
    OCR-regrouped digits) so PHONE precision recovers; fix the verifier bigram overlap gap.
-2. Independent GT for DOCX/PDF (annotate from page images). 3. OCR-vs-native eval + structure-retention metric.
+3. OCR-vs-native eval + structure-retention metric.
 4. Visual redaction of scanned PDFs (burn boxes from WordBox geometry). 5. pip-audit.
 6. Benchmarks on ai4privacy/Kaggle/Mendeley (download locally, check licences).
 7. THREAT_MODEL.md, README, RESULTS.md, FILE_ANALYSIS.md, DECISIONS.md, Mermaid diagrams, walkthrough, Optiv deck (14 Oct 2026).

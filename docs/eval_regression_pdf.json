@@ -1,0 +1,424 @@
+{
+  "Cadence_Group_Risk_Management_Policy__v6.0.pdf": {
+    "status": "REVIEW",
+    "gt_values": 260,
+    "gt_occurrences": 1070,
+    "covered": 1070,
+    "recall": 1.0,
+    "recall_ci95": [
+      0.996,
+      1.0
+    ],
+    "precision": 0.9746136865342163,
+    "f1": 0.9871436556735607,
+    "leaked_values_in_sanitised_text": 0,
+    "leak_rate": 0.0,
+    "gt_values_not_extracted": 7,
+    "per_type": {
+      "ADDRESS": {
+        "occurrences": 3,
+        "covered": 3,
+        "recall": 1.0,
+        "recall_ci95": [
+          0.438,
+          1.0
+        ],
+        "typed_recall": 1.0,
+        "precision": 1.0,
+        "f1": 1.0
+      },
+      "DATE_OF_BIRTH": {
+        "occurrences": 2,
+        "covered": 2,
+        "recall": 1.0,
+        "recall_ci95": [
+          0.342,
+          1.0
+        ],
+        "typed_recall": 1.0,
+        "precision": 1.0,
+        "f1": 1.0
+      },
+      "EMAIL": {
+        "occurrences": 166,
+        "covered": 166,
+        "recall": 1.0,
+        "recall_ci95": [
+          0.977,
+          1.0
+        ],
+        "typed_recall": 1.0,
+        "precision": 0.9936305732484076,
+        "f1": 0.9968051118210862
+      },
+      "EMPLOYEE_ID": {
+        "occurrences": 189,
+        "covered": 189,
+        "recall": 1.0,
+        "recall_ci95": [
+          0.98,
+          1.0
+        ],
+        "typed_recall": 1.0,
+        "precision": 1.0,
+        "f1": 1.0
+      },
+      "FINANCIAL_ACCOUNT": {
+        "occurrences": 2,
+        "covered": 2,
+        "recall": 1.0,
+        "recall_ci95": [
+          0.342,
+          1.0
+        ],
+        "typed_recall": 1.0,
+        "precision": 1.0,
+        "f1": 1.0
+      },
+      "PASSPORT": {
+        "occurrences": 1,
+        "covered": 1,
+        "recall": 1.0,
+        "recall_ci95": [
+          0.207,
+          1.0
+        ],
+        "typed_recall": 1.0,
+        "precision": 0.5,
+        "f1": 0.6666666666666666
+      },
+      "PERSON": {
+        "occurrences": 561,
+        "covered": 561,
+        "recall": 1.0,
+        "recall_ci95": [
+          0.993,
+          1.0
+        ],
+        "typed_recall": 0.9126559714795008,
+        "precision": 0.9896907216494846,
+        "f1": 0.9948186528497409
+      },
+      "PHONE": {
+        "occurrences": 140,
+        "covered": 140,
+        "recall": 1.0,
+        "recall_ci95": [
+          0.973,
+          1.0
+        ],
+        "typed_recall": 1.0,
+        "precision": 0.9032258064516129,
+        "f1": 0.9491525423728813
+      },
+      "SSN": {
+        "occurrences": 2,
+        "covered": 2,
+        "recall": 1.0,
+        "recall_ci95": [
+          0.342,
+          1.0
+        ],
+        "typed_recall": 1.0,
+        "precision": 1.0,
+        "f1": 1.0
+      },
+      "TAX_ID": {
+        "occurrences": 4,
+        "covered": 4,
+        "recall": 1.0,
+        "recall_ci95": [
+          0.51,
+          1.0
+        ],
+        "typed_recall": 1.0,
+        "precision": 1.0,
+        "f1": 1.0
+      }
+    },
+    "missed": [],
+    "false_positives": [
+      {
+        "type": "UNCLASSIFIED",
+        "locator": "page 3",
+        "block_id": "p3-o26",
+        "start": 20,
+        "end": 32,
+        "confidence": 0.9,
+        "detectors": [
+          "verifier:forced"
+        ],
+        "token": "[UNCLASSIFIED_1]"
+      },
+      {
+        "type": "PHONE",
+        "locator": "page 4",
+        "block_id": "p4-o9",
+        "start": 119,
+        "end": 127,
+        "confidence": 0.9,
+        "detectors": [
+          "verifier:forced"
+        ],
+        "token": "[PHONE_9]"
+      },
+      {
+        "type": "PHONE",
+        "locator": "page 4",
+        "block_id": "p4-o9",
+        "start": 167,
+        "end": 175,
+        "confidence": 0.9,
+        "detectors": [
+          "verifier:forced"
+        ],
+        "token": "[PHONE_11]"
+      },
+      {
+        "type": "EMAIL",
+        "locator": "page 9",
+        "block_id": "p9-o10",
+        "start": 52,
+        "end": 74,
+        "confidence": 0.99,
+        "detectors": [
+          "presidio:EmailRecognizer",
+          "regex:email"
+        ],
+        "token": "[EMAIL_28]"
+      },
+      {
+        "type": "PHONE",
+        "locator": "page 10",
+        "block_id": "p10-o32",
+        "start": 63,
+        "end": 69,
+        "confidence": 0.93,
+        "detectors": [
+          "regex:phone-split"
+        ],
+        "token": "[PHONE_35]"
+      },
+      {
+        "type": "PHONE",
+        "locator": "page 10",
+        "block_id": "p10-o33",
+        "start": 0,
+        "end": 9,
+        "confidence": 0.93,
+        "detectors": [
+          "regex:phone-split"
+        ],
+        "token": "[PHONE_35]"
+      },
+      {
+        "type": "PHONE",
+        "locator": "page 10",
+        "block_id": "p10-o38",
+        "start": 59,
+        "end": 65,
+        "confidence": 0.93,
+        "detectors": [
+          "regex:phone-split"
+        ],
+        "token": "[PHONE_37]"
+      },
+      {
+        "type": "PHONE",
+        "locator": "page 10",
+        "block_id": "p10-o39",
+        "start": 0,
+        "end": 8,
+        "confidence": 0.93,
+        "detectors": [
+          "regex:phone-split"
+        ],
+        "token": "[PHONE_37]"
+      },
+      {
+        "type": "PHONE",
+        "locator": "page 13",
+        "block_id": "p13-o20",
+        "start": 120,
+        "end": 128,
+        "confidence": 0.9,
+        "detectors": [
+          "verifier:forced"
+        ],
+        "token": "[PHONE_9]"
+      },
+      {
+        "type": "PHONE",
+        "locator": "page 13",
+        "block_id": "p13-o21",
+        "start": 65,
+        "end": 74,
+        "confidence": 0.9,
+        "detectors": [
+          "verifier:forced"
+        ],
+        "token": "[PHONE_40]"
+      },
+      {
+        "type": "PHONE",
+        "locator": "page 13",
+        "block_id": "p13-o24",
+        "start": 78,
+        "end": 86,
+        "confidence": 0.9,
+        "detectors": [
+          "verifier:forced"
+        ],
+        "token": "[PHONE_9]"
+      },
+      {
+        "type": "PHONE",
+        "locator": "page 13",
+        "block_id": "p13-o24",
+        "start": 101,
+        "end": 113,
+        "confidence": 0.9,
+        "detectors": [
+          "verifier:forced"
+        ],
+        "token": "[PHONE_41]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 15",
+        "block_id": "p15-o19",
+        "start": 33,
+        "end": 44,
+        "confidence": 0.96,
+        "detectors": [
+          "pattern:name-before-id"
+        ],
+        "token": "[PERSON_38]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 18",
+        "block_id": "p18-o30",
+        "start": 0,
+        "end": 13,
+        "confidence": 0.62,
+        "detectors": [
+          "presidio:SpacyRecognizer"
+        ],
+        "token": "[PERSON_39]"
+      },
+      {
+        "type": "PASSPORT",
+        "locator": "page 18",
+        "block_id": "p18-o52",
+        "start": 9,
+        "end": 18,
+        "confidence": 0.92,
+        "detectors": [
+          "regex:passport-context"
+        ],
+        "token": "[PASSPORT_1]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 19",
+        "block_id": "p19-o29",
+        "start": 0,
+        "end": 14,
+        "confidence": 0.99,
+        "detectors": [
+          "heuristic:name-line",
+          "lexicon:variant",
+          "presidio:SpacyRecognizer"
+        ],
+        "token": "[PERSON_40]"
+      },
+      {
+        "type": "UNCLASSIFIED",
+        "locator": "page 20",
+        "block_id": "p20-o22",
+        "start": 21,
+        "end": 47,
+        "confidence": 0.9,
+        "detectors": [
+          "verifier:forced"
+        ],
+        "token": "[UNCLASSIFIED_2]"
+      },
+      {
+        "type": "PERSON",
+        "locator": "page 34",
+        "block_id": "p34-o5",
+        "start": 220,
+        "end": 235,
+        "confidence": 0.99,
+        "detectors": [
+          "lexicon:variant",
+          "pattern:name-before-id",
+          "presidio:SpacyRecognizer"
+        ],
+        "token": "[PERSON_52]"
+      },
+      {
+        "type": "PHONE",
+        "locator": "page 34",
+        "block_id": "p34-o23",
+        "start": 89,
+        "end": 95,
+        "confidence": 0.9,
+        "detectors": [
+          "verifier:forced"
+        ],
+        "token": "[PHONE_63]"
+      },
+      {
+        "type": "PHONE",
+        "locator": "page 34",
+        "block_id": "p34-o24",
+        "start": 84,
+        "end": 92,
+        "confidence": 0.9,
+        "detectors": [
+          "verifier:forced"
+        ],
+        "token": "[PHONE_9]"
+      },
+      {
+        "type": "PHONE",
+        "locator": "page 34",
+        "block_id": "p34-o24",
+        "start": 119,
+        "end": 127,
+        "confidence": 0.9,
+        "detectors": [
+          "verifier:forced"
+        ],
+        "token": "[PHONE_64]"
+      },
+      {
+        "type": "PHONE",
+        "locator": "page 35",
+        "block_id": "p35-o1",
+        "start": 314,
+        "end": 322,
+        "confidence": 0.9,
+        "detectors": [
+          "verifier:forced"
+        ],
+        "token": "[PHONE_9]"
+      },
+      {
+        "type": "PHONE",
+        "locator": "page 35",
+        "block_id": "p35-o1",
+        "start": 416,
+        "end": 424,
+        "confidence": 0.9,
+        "detectors": [
+          "verifier:forced"
+        ],
+        "token": "[PHONE_9]"
+      }
+    ]
+  }
+}

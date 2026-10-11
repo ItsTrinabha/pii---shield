@@ -2,33 +2,62 @@
   "Cadence_TPRM_Training.docx": {
     "status": "REVIEW",
     "gt_values": 23,
-    "gt_occurrences": 46,
+    "gt_occurrences": 50,
     "covered": 46,
-    "recall": 1.0,
+    "recall": 0.92,
     "recall_ci95": [
-      0.923,
-      1.0
+      0.812,
+      0.968
     ],
     "precision": 1.0,
-    "f1": 1.0,
-    "leaked_values_in_sanitised_text": 0,
-    "leak_rate": 0.0,
-    "gt_values_not_extracted": 3,
+    "f1": 0.9583333333333334,
+    "leaked_values_in_sanitised_text": 3,
+    "leak_rate": 0.13043478260869565,
+    "gt_values_not_extracted": 0,
     "per_type": {
       "PERSON": {
-        "occurrences": 46,
+        "occurrences": 50,
         "covered": 46,
-        "recall": 1.0,
+        "recall": 0.92,
         "recall_ci95": [
-          0.923,
-          1.0
+          0.812,
+          0.968
         ],
-        "typed_recall": 1.0,
+        "typed_recall": 0.92,
         "precision": 1.0,
-        "f1": 1.0
+        "f1": 0.9583333333333334
       }
     },
-    "missed": [],
+    "missed": [
+      {
+        "type": "PERSON",
+        "locator": "body / table r2c4",
+        "block_id": "bod-168",
+        "start": 35,
+        "end": 44
+      },
+      {
+        "type": "PERSON",
+        "locator": "body / image:word/media/image12.png",
+        "block_id": "img-ffc4a8cc-8-8",
+        "start": 95,
+        "end": 104
+      },
+      {
+        "type": "PERSON",
+        "locator": "body / table r10c4",
+        "block_id": "bod-203",
+        "start": 0,
+        "end": 8
+      },
+      {
+        "type": "PERSON",
+        "locator": "body / image:word/media/image10.png",
+        "block_id": "img-5398ac2a-6-6",
+        "start": 398,
+        "end": 407
+      }
+    ],
     "false_positives": []
   }
 }

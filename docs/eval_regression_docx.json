@@ -1,0 +1,34 @@
+{
+  "Cadence_TPRM_Training.docx": {
+    "status": "REVIEW",
+    "gt_values": 23,
+    "gt_occurrences": 46,
+    "covered": 46,
+    "recall": 1.0,
+    "recall_ci95": [
+      0.923,
+      1.0
+    ],
+    "precision": 1.0,
+    "f1": 1.0,
+    "leaked_values_in_sanitised_text": 0,
+    "leak_rate": 0.0,
+    "gt_values_not_extracted": 3,
+    "per_type": {
+      "PERSON": {
+        "occurrences": 46,
+        "covered": 46,
+        "recall": 1.0,
+        "recall_ci95": [
+          0.923,
+          1.0
+        ],
+        "typed_recall": 1.0,
+        "precision": 1.0,
+        "f1": 1.0
+      }
+    },
+    "missed": [],
+    "false_positives": []
+  }
+}

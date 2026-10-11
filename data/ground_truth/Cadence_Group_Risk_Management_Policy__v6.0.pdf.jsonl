@@ -1,260 +1,264 @@
-{"type": "PERSON", "value": "A. Brightwell"}
-{"type": "PERSON", "value": "A. Chatterjee"}
-{"type": "PERSON", "value": "A. K. Pillai"}
-{"type": "PERSON", "value": "A. P. Brightwell"}
-{"type": "PERSON", "value": "A. V. Chatterjee"}
-{"type": "PERSON", "value": "Adaeze N. Onwuka"}
-{"type": "PERSON", "value": "Adaeze Onwuka"}
-{"type": "PERSON", "value": "Adeyemi"}
-{"type": "PERSON", "value": "Aditya Lawand"}
-{"type": "PERSON", "value": "Aiko Nakamura-Reed"}
-{"type": "PERSON", "value": "Ananya V. Chatterjee"}
-{"type": "PERSON", "value": "Anthony P. Brightwell"}
-{"type": "PERSON", "value": "Arvind K. Pillai"}
-{"type": "PERSON", "value": "B. O. Osei-Tutu"}
-{"type": "PERSON", "value": "Babatunde O. Osei-Tutu"}
-{"type": "PERSON", "value": "Balogun"}
-{"type": "PERSON", "value": "Beatrix S. Lindenau"}
-{"type": "PERSON", "value": "Bienvenido T. Salcedo"}
-{"type": "PERSON", "value": "Brannstrom"}
-{"type": "PERSON", "value": "Brightwell"}
-{"type": "PERSON", "value": "C. A. Whitfield"}
-{"type": "PERSON", "value": "Caleb A. Whitfield"}
-{"type": "PERSON", "value": "D. Kulkarni"}
-{"type": "PERSON", "value": "D. N. Quarshie"}
-{"type": "PERSON", "value": "D. R. Kulkarni"}
-{"type": "PERSON", "value": "D. R. Okonjo"}
-{"type": "PERSON", "value": "Delphine R. Okonjo"}
-{"type": "PERSON", "value": "Denis Kowalczyk"}
-{"type": "PERSON", "value": "Desmond N. Quarshie"}
-{"type": "PERSON", "value": "Devansh R. Kulkarni"}
-{"type": "PERSON", "value": "Eleanor R. Vasquez-Holt"}
-{"type": "PERSON", "value": "Elena Petrovska"}
-{"type": "PERSON", "value": "Emilio Ramos-Vega"}
-{"type": "PERSON", "value": "F. L. Nakagawa"}
-{"type": "PERSON", "value": "F. Z. Qureshi"}
-{"type": "PERSON", "value": "F.L. Nakagawa"}
-{"type": "PERSON", "value": "Fatima Z. Qureshi"}
-{"type": "PERSON", "value": "Fumiko L. Nakagawa"}
-{"type": "PERSON", "value": "Grazyna Wieczorek"}
-{"type": "PERSON", "value": "Gregor Halvorsen"}
-{"type": "PERSON", "value": "H. Marchetti-Lang"}
-{"type": "PERSON", "value": "H. Vorstermann"}
-{"type": "PERSON", "value": "Harriet L. Okafor"}
-{"type": "PERSON", "value": "Helena Vorstermann"}
-{"type": "PERSON", "value": "Hiroshi Yamagata"}
-{"type": "PERSON", "value": "Ifeoma C. Adeyemi"}
-{"type": "PERSON", "value": "Karsten Ohlendorf"}
-{"type": "PERSON", "value": "Lars-Erik Brannstrom"}
-{"type": "PERSON", "value": "Lindqvist"}
-{"type": "PERSON", "value": "M. Achebe"}
-{"type": "PERSON", "value": "M. Szewczyk"}
-{"type": "PERSON", "value": "M. Szewezyk"}
-{"type": "PERSON", "value": "M. T. Achebe"}
-{"type": "PERSON", "value": "Marcus Twilley"}
-{"type": "PERSON", "value": "Marta Szewczyk"}
-{"type": "PERSON", "value": "Marta Szewezyk"}
-{"type": "PERSON", "value": "Mireille Dubois-Kane"}
-{"type": "PERSON", "value": "Miriam T. Achebe"}
-{"type": "PERSON", "value": "Ms Prieto-Ramos"}
-{"type": "PERSON", "value": "N. K. Osadebe"}
-{"type": "PERSON", "value": "N. Okonkwo-Bryce"}
-{"type": "PERSON", "value": "N. Osadebe"}
-{"type": "PERSON", "value": "Naomi K. Osadebe"}
-{"type": "PERSON", "value": "Nathaniel Okonkwo-Bryce"}
-{"type": "PERSON", "value": "Osadebe"}
-{"type": "PERSON", "value": "P. S. Raghavan"}
-{"type": "PERSON", "value": "Priyanka Raghavan"}
-{"type": "PERSON", "value": "Priyanka S. Raghavan"}
-{"type": "PERSON", "value": "R. E. Duarte"}
-{"type": "PERSON", "value": "R. M. Achterberg"}
-{"type": "PERSON", "value": "Rafael Duarte"}
-{"type": "PERSON", "value": "Rafael E. Duarte"}
-{"type": "PERSON", "value": "Raghavan"}
-{"type": "PERSON", "value": "Robert Johnson"}
-{"type": "PERSON", "value": "Rohan Deshmukh"}
-{"type": "PERSON", "value": "Rohan S. Deshmukh"}
-{"type": "PERSON", "value": "Rosalind M. Achterberg"}
-{"type": "PERSON", "value": "S. Marchetti-Lang"}
-{"type": "PERSON", "value": "Sneha M. Vaidyanathan"}
-{"type": "PERSON", "value": "Sofia Marchetti-Lang"}
-{"type": "PERSON", "value": "Sorokina"}
-{"type": "PERSON", "value": "Sunita R. Balakrishnan"}
-{"type": "PERSON", "value": "T. Lindqvist"}
-{"type": "PERSON", "value": "T. Sofia Marchetti-Lang"}
-{"type": "PERSON", "value": "Tobias Lindavist"}
-{"type": "PERSON", "value": "Tobias Lindqvist"}
-{"type": "PERSON", "value": "Whitfield"}
-{"type": "PERSON", "value": "Y. A. Sorokina"}
-{"type": "PERSON", "value": "Y. O. Balogun"}
-{"type": "PERSON", "value": "Yevgeni A. Sorokina"}
-{"type": "PERSON", "value": "Yusuf Balogun"}
-{"type": "PERSON", "value": "Yusuf O. Balogun"}
-{"type": "EMPLOYEE_ID", "value": "DIR-0001"}
-{"type": "EMPLOYEE_ID", "value": "DIR-0042"}
-{"type": "EMPLOYEE_ID", "value": "DIR-0051"}
-{"type": "EMPLOYEE_ID", "value": "DIR-0058"}
-{"type": "EMPLOYEE_ID", "value": "DIR-0063"}
-{"type": "EMPLOYEE_ID", "value": "EMP-35440"}
-{"type": "EMPLOYEE_ID", "value": "EMP-36781"}
-{"type": "EMPLOYEE_ID", "value": "EMP-37012"}
-{"type": "EMPLOYEE_ID", "value": "EMP-37655"}
-{"type": "EMPLOYEE_ID", "value": "EMP-37903"}
-{"type": "EMPLOYEE_ID", "value": "EMP-38066"}
-{"type": "EMPLOYEE_ID", "value": "EMP-38104"}
-{"type": "EMPLOYEE_ID", "value": "EMP-38412"}
-{"type": "EMPLOYEE_ID", "value": "EMP-38550"}
-{"type": "EMPLOYEE_ID", "value": "EMP-38907"}
-{"type": "EMPLOYEE_ID", "value": "EMP-39044"}
-{"type": "EMPLOYEE_ID", "value": "EMP-39220"}
-{"type": "EMPLOYEE_ID", "value": "EMP-39871"}
-{"type": "EMPLOYEE_ID", "value": "EMP-39877"}
-{"type": "EMPLOYEE_ID", "value": "EMP-40318"}
-{"type": "EMPLOYEE_ID", "value": "EMP-40522"}
-{"type": "EMPLOYEE_ID", "value": "EMP-40766"}
-{"type": "EMPLOYEE_ID", "value": "EMP-40944"}
-{"type": "EMPLOYEE_ID", "value": "EMP-41077"}
-{"type": "EMPLOYEE_ID", "value": "EMP-41142"}
-{"type": "EMPLOYEE_ID", "value": "EMP-41157"}
-{"type": "EMPLOYEE_ID", "value": "EMP-41184"}
-{"type": "EMPLOYEE_ID", "value": "EMP-41187"}
-{"type": "EMPLOYEE_ID", "value": "EMP-41310"}
-{"type": "EMPLOYEE_ID", "value": "EMP-41402"}
-{"type": "EMPLOYEE_ID", "value": "EMP-41455"}
-{"type": "EMPLOYEE_ID", "value": "EMP-41488"}
-{"type": "EMPLOYEE_ID", "value": "EMP-41501"}
-{"type": "EMPLOYEE_ID", "value": "EMP-41502"}
-{"type": "EMPLOYEE_ID", "value": "EMP-41519"}
-{"type": "EMPLOYEE_ID", "value": "EMP-41522"}
-{"type": "EMPLOYEE_ID", "value": "EMP-42019"}
-{"type": "EMPLOYEE_ID", "value": "MER-IN-4471"}
-{"type": "EMPLOYEE_ID", "value": "MER-IN-4488"}
-{"type": "EMPLOYEE_ID", "value": "MER-IN-4502"}
-{"type": "EMPLOYEE_ID", "value": "MER-PL-1187"}
-{"type": "EMAIL", "value": "S.marchetti@cadencefg.com"}
-{"type": "EMAIL", "value": "_h.vorstermann@cadencefg.com"}
-{"type": "EMAIL", "value": "_i.adeyemi@cadencefg.com"}
-{"type": "EMAIL", "value": "_n.okonkwobryce@cadencefg.com"}
-{"type": "EMAIL", "value": "_y.sorokina@cadencefg.com"}
-{"type": "EMAIL", "value": "a.brightwell@cadencefg.com"}
-{"type": "EMAIL", "value": "a.chatterjee@cadencefg.com"}
-{"type": "EMAIL", "value": "a.nakamurareed@cadencefg.com"}
-{"type": "EMAIL", "value": "a.pillai@cadencefg.com"}
-{"type": "EMAIL", "value": "b.lindenau@cadencefg.com"}
-{"type": "EMAIL", "value": "b.oseitutu@cadencefg.com"}
-{"type": "EMAIL", "value": "board.chair@cadencefg.com"}
-{"type": "EMAIL", "value": "board@cadencefg.com"}
-{"type": "EMAIL", "value": "brannstrom@cadencefg.com"}
-{"type": "EMAIL", "value": "brc@cadencefg.com"}
-{"type": "EMAIL", "value": "c.whitfield@cadencefg.com"}
-{"type": "EMAIL", "value": "d.kowalczyk@cadencefg.com"}
-{"type": "EMAIL", "value": "d.kulkarni@cadencefg.com"}
-{"type": "EMAIL", "value": "d.okonjo@cadencefg.com"}
-{"type": "EMAIL", "value": "d.quarshie@cadencefg.com"}
-{"type": "EMAIL", "value": "e.petrovska@meridianstaffing.example"}
-{"type": "EMAIL", "value": "f.nakagawa@cadencefg.com"}
-{"type": "EMAIL", "value": "f.qureshi@cadencefg.com"}
-{"type": "EMAIL", "value": "gerc@cadencefg.com"}
-{"type": "EMAIL", "value": "h.okafor@cadencefg.com"}
-{"type": "EMAIL", "value": "h.vorstermann@cadencefg.com"}
-{"type": "EMAIL", "value": "i.adeyemi@cadencefg.com"}
-{"type": "EMAIL", "value": "iadeyemi@cadencefg.com"}
-{"type": "EMAIL", "value": "k.ohlendorf@northwind.example"}
-{"type": "EMAIL", "value": "m.achebe@cadencefg.com"}
-{"type": "EMAIL", "value": "m.duboiskane@cadencefg.com"}
-{"type": "EMAIL", "value": "m.szewcezyk@cadencefg.com"}
-{"type": "EMAIL", "value": "m.szewczyk@cadencefg.com"}
-{"type": "EMAIL", "value": "m.twilley@veritrace.example"}
-{"type": "EMAIL", "value": "n.okonkwobryce@cadencefg.com"}
-{"type": "EMAIL", "value": "n.osadebe @cadencefg.com"}
-{"type": "EMAIL", "value": "n.osadebe@cadencefg.com"}
-{"type": "EMAIL", "value": "orc@cadencefg.com"}
-{"type": "EMAIL", "value": "p.raghavan@cadencefg.com"}
-{"type": "EMAIL", "value": "r.achterberg@cadencefg.com"}
-{"type": "EMAIL", "value": "r.duarte@cadencefg.com"}
-{"type": "EMAIL", "value": "rachterberg@cadencefg.com"}
-{"type": "EMAIL", "value": "remco@cadencefg.com"}
-{"type": "EMAIL", "value": "s.balakrishnan@halloranpike.example"}
-{"type": "EMAIL", "value": "s.marchetti@cadencefg.com"}
-{"type": "EMAIL", "value": "t.lindavist@cadencefy.com"}
-{"type": "EMAIL", "value": "t.lindqvist@cadencefg.com"}
-{"type": "EMAIL", "value": "tachterberg@cadencefg.com"}
-{"type": "EMAIL", "value": "temco@cadencefg.com"}
-{"type": "EMAIL", "value": "tlindqvist@cadencefg.com"}
-{"type": "EMAIL", "value": "y.balogun@cadencefg.com"}
-{"type": "EMAIL", "value": "y.sorokina@cadencefg.com"}
-{"type": "PHONE", "value": "(212) 555-0108"}
-{"type": "PHONE", "value": "(212) 555-0113"}
-{"type": "PHONE", "value": "(212) 555-0147"}
-{"type": "PHONE", "value": "(212) 555-0188"}
-{"type": "PHONE", "value": "(305) 555-0143"}
-{"type": "PHONE", "value": "(646) 555-0129"}
-{"type": "PHONE", "value": "(704) 555-0159"}
-{"type": "PHONE", "value": "+1 (212) 555-0100"}
-{"type": "PHONE", "value": "+1 (212) 555-0108"}
-{"type": "PHONE", "value": "+1 (212) 555-0113"}
-{"type": "PHONE", "value": "+1 (212) 555-0121"}
-{"type": "PHONE", "value": "+1 (212) 555-0136"}
-{"type": "PHONE", "value": "+1 (212) 555-0147"}
-{"type": "PHONE", "value": "+1 (212) 555-0158"}
-{"type": "PHONE", "value": "+1 (212) 555-0174"}
-{"type": "PHONE", "value": "+1 (212) 555-0188"}
-{"type": "PHONE", "value": "+1 (212) 555-0193"}
-{"type": "PHONE", "value": "+1 (646) 555-0119"}
-{"type": "PHONE", "value": "+1 (646) 555-0129"}
-{"type": "PHONE", "value": "+1 (646) 555-0188"}
-{"type": "PHONE", "value": "+1 (704) 555-0131"}
-{"type": "PHONE", "value": "+1 (704) 555-0159"}
-{"type": "PHONE", "value": "+1 (704) 555-0166"}
-{"type": "PHONE", "value": "+1 (800) 555-0177"}
-{"type": "PHONE", "value": "+1 (917) 555-0102"}
-{"type": "PHONE", "value": "+1 (917) 555-0104"}
-{"type": "PHONE", "value": "+1 (917) 555-0119"}
-{"type": "PHONE", "value": "+1 (917) 555-0143"}
-{"type": "PHONE", "value": "+1 (917) 555-0146"}
-{"type": "PHONE", "value": "+1 (917) 555-0177"}
-{"type": "PHONE", "value": "+1 212 555-0147"}
-{"type": "PHONE", "value": "+1 646 555-0188"}
-{"type": "PHONE", "value": "+1 646 555-0203"}
-{"type": "PHONE", "value": "+1 917 555-0111"}
-{"type": "PHONE", "value": "+33 1 5555 0144"}
-{"type": "PHONE", "value": "+44 20 7555 0129"}
-{"type": "PHONE", "value": "+44 20 7555 0163"}
-{"type": "PHONE", "value": "+44 20 7555 0171"}
-{"type": "PHONE", "value": "+44 20 75550163"}
-{"type": "PHONE", "value": "+44 20 75550171"}
-{"type": "PHONE", "value": "+44 7700 555 0163"}
-{"type": "PHONE", "value": "+46 70 555 0188"}
-{"type": "PHONE", "value": "+46 8 5555 0121"}
-{"type": "PHONE", "value": "+48 22 555 0164"}
-{"type": "PHONE", "value": "+48 512 555 0180 30"}
-{"type": "PHONE", "value": "+48 512 555 0193"}
-{"type": "PHONE", "value": "+48 512555 0180"}
-{"type": "PHONE", "value": "+49 69 5555 0148"}
-{"type": "PHONE", "value": "+63 917 555 0119"}
-{"type": "PHONE", "value": "+65 6555 0172"}
-{"type": "PHONE", "value": "+91 22 4555 0117"}
-{"type": "PHONE", "value": "+91 80 4555 0182"}
-{"type": "PHONE", "value": "+91 80 4555 0182 31"}
-{"type": "PHONE", "value": "+91 80 45550182"}
-{"type": "PHONE", "value": "+91 98213 55228"}
-{"type": "PHONE", "value": "+91 98452 55011"}
-{"type": "PHONE", "value": "+91 98860 55107"}
-{"type": "PHONE", "value": "+91 99009 55042"}
-{"type": "PHONE", "value": "20 7555 0129"}
-{"type": "PHONE", "value": "20 7555 0163"}
-{"type": "PHONE", "value": "646-855-0100"}
-{"type": "PHONE", "value": "69 5555 0177"}
-{"type": "ADDRESS", "value": "1180 Ashwood Lane, Apartment 4C, Jersey City, NJ 07302"}
-{"type": "ADDRESS", "value": "2214 Palmetto Crescent, Coral Gables, FL 33134"}
-{"type": "ADDRESS", "value": "88 Willowbank Court, Hoboken, NJ 07030"}
-{"type": "DATE_OF_BIRTH", "value": "14 July 1991"}
-{"type": "DATE_OF_BIRTH", "value": "3 August 1996"}
-{"type": "SSN", "value": "900-42-7781"}
-{"type": "SSN", "value": "900-55-2043"}
-{"type": "PASSPORT", "value": "TK4820913"}
-{"type": "TAX_ID", "value": "AQBPR7741L"}
-{"type": "TAX_ID", "value": "BKTPV2290H"}
-{"type": "TAX_ID", "value": "CDRPK6612M"}
-{"type": "FINANCIAL_ACCOUNT", "value": "2218"}
-{"type": "FINANCIAL_ACCOUNT", "value": "7741"}
+{"type": "PERSON", "value": "Miriam T. Achebe", "pages": ["1"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Tobias Lindqvist", "pages": ["1"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Anthony P. Brightwell", "pages": ["1"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Delphine R. Okonjo", "pages": ["1"], "source": "manual-read-2026-10-11"}
+{"type": "EMPLOYEE_ID", "value": "EMP-38104", "pages": ["1"], "source": "manual-read-2026-10-11"}
+{"type": "EMPLOYEE_ID", "value": "EMP-40522", "pages": ["1"], "source": "manual-read-2026-10-11"}
+{"type": "EMAIL", "value": "m.achebe@cadencefg.com", "pages": ["1"], "source": "manual-read-2026-10-11"}
+{"type": "EMAIL", "value": "t.lindqvist@cadencefg.com", "pages": ["1"], "source": "manual-read-2026-10-11"}
+{"type": "EMAIL", "value": "d.okonjo@cadencefg.com", "pages": ["1"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "+1 (212) 555-0147", "pages": ["1"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "+1 (917) 555-0143", "pages": ["1", "23"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "+1 (212) 555-0188", "pages": ["1"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Rosalind M. Achterberg", "pages": ["2"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Helena Vorstermann", "pages": ["2", "22"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Sunita R. Balakrishnan", "pages": ["2"], "source": "manual-read-2026-10-11"}
+{"type": "EMPLOYEE_ID", "value": "EMP-37012", "pages": ["2"], "source": "manual-read-2026-10-11"}
+{"type": "EMPLOYEE_ID", "value": "EMP-37655", "pages": ["2"], "source": "manual-read-2026-10-11"}
+{"type": "EMAIL", "value": "r.achterberg@cadencefg.com", "pages": ["2"], "source": "manual-read-2026-10-11"}
+{"type": "EMAIL", "value": "h.vorstermann@cadencefg.com", "pages": ["2"], "source": "manual-read-2026-10-11"}
+{"type": "EMAIL", "value": "a.brightwell@cadencefg.com", "pages": ["2"], "source": "manual-read-2026-10-11"}
+{"type": "EMAIL", "value": "s.balakrishnan@halloranpike.example", "pages": ["2"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "+44 20 7555 0171", "pages": ["2"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "+44 20 7555 0163", "pages": ["2"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Mireille Dubois-Kane", "pages": ["3"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Ananya V. Chatterjee", "pages": ["3"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Aiko Nakamura-Reed", "pages": ["3"], "source": "manual-read-2026-10-11"}
+{"type": "EMPLOYEE_ID", "value": "EMP-41501", "pages": ["3"], "source": "manual-read-2026-10-11"}
+{"type": "EMPLOYEE_ID", "value": "EMP-37903", "pages": ["3"], "source": "manual-read-2026-10-11"}
+{"type": "EMPLOYEE_ID", "value": "EMP-42019", "pages": ["3"], "source": "manual-read-2026-10-11"}
+{"type": "EMAIL", "value": "m.duboiskane@cadencefg.com", "pages": ["3"], "source": "manual-read-2026-10-11"}
+{"type": "EMAIL", "value": "a.chatterjee@cadencefg.com", "pages": ["3"], "source": "manual-read-2026-10-11"}
+{"type": "EMAIL", "value": "a.nakamurareed@cadencefg.com", "pages": ["3"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "+33 1 5555 0144", "pages": ["3"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "+91 22 4555 0117", "pages": ["3"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "+65 6555 0172", "pages": ["3"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Yevgeni A. Sorokina", "pages": ["4"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Marta Szewczyk", "pages": ["4"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Desmond N. Quarshie", "pages": ["4"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Devansh R. Kulkarni", "pages": ["4"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Hiroshi Yamagata", "pages": ["4"], "source": "manual-read-2026-10-11"}
+{"type": "EMAIL", "value": "y.sorokina@cadencefg.com", "pages": ["4"], "source": "manual-read-2026-10-11"}
+{"type": "EMAIL", "value": "d.quarshie@cadencefg.com", "pages": ["4"], "source": "manual-read-2026-10-11"}
+{"type": "EMAIL", "value": "d.kulkarni@cadencefg.com", "pages": ["4"], "source": "manual-read-2026-10-11"}
+{"type": "EMAIL", "value": "m.szewczyk@cadencefg.com", "pages": ["4"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "+1 (212) 555-0121", "pages": ["4"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "+48 22 555 0164", "pages": ["4"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "+44 20 7555 0129", "pages": ["4"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "+91 80 4555 0182", "pages": ["4"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Naomi K. Osadebe", "pages": ["5"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Caleb A. Whitfield", "pages": ["5"], "source": "manual-read-2026-10-11"}
+{"type": "EMPLOYEE_ID", "value": "EMP-41077", "pages": ["5"], "source": "manual-read-2026-10-11"}
+{"type": "EMPLOYEE_ID", "value": "EMP-38907", "pages": ["5"], "source": "manual-read-2026-10-11"}
+{"type": "EMAIL", "value": "n.osadebe@cadencefg.com", "pages": ["5", "32"], "source": "manual-read-2026-10-11"}
+{"type": "EMAIL", "value": "c.whitfield@cadencefg.com", "pages": ["5"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "+1 646 555-0188", "pages": ["5"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Eleanor R. Vasquez-Holt", "pages": ["6"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "H. Marchetti-Lang", "pages": ["6"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "B. Osei-Tutu", "pages": ["6"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "C. A. Whitfield", "pages": ["6"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "F. L. Nakagawa", "pages": ["6", "12", "33"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "P. S. Raghavan", "pages": ["6", "33"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "I. C. Adeyemi", "pages": ["6", "33"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Sofia Marchetti-Lang", "pages": ["6"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Babatunde O. Osei-Tutu", "pages": ["6"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Fumiko L. Nakagawa", "pages": ["6"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Priyanka S. Raghavan", "pages": ["6"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Beatrix S. Lindenau", "pages": ["6"], "source": "manual-read-2026-10-11"}
+{"type": "EMAIL", "value": "s.marchetti@cadencefg.com", "pages": ["6", "34"], "source": "manual-read-2026-10-11"}
+{"type": "EMAIL", "value": "b.oseitutu@cadencefg.com", "pages": ["6"], "source": "manual-read-2026-10-11"}
+{"type": "EMAIL", "value": "f.nakagawa@cadencefg.com", "pages": ["6"], "source": "manual-read-2026-10-11"}
+{"type": "EMAIL", "value": "p.raghavan@cadencefg.com", "pages": ["6"], "source": "manual-read-2026-10-11"}
+{"type": "EMAIL", "value": "b.lindenau@cadencefg.com", "pages": ["6"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "+1 (212) 555-0108", "pages": ["6"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "+1 (212) 555-0113", "pages": ["6"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "+1 917 555-0164", "pages": ["6"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "+1 (212) 555-0174", "pages": ["6"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "+1 (212) 555-0136", "pages": ["6"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "+1 (646) 555-0119", "pages": ["6", "27"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "+1 (212) 555-0158", "pages": ["6"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "+49 69 5555 0177", "pages": ["6"], "source": "manual-read-2026-10-11"}
+{"type": "EMPLOYEE_ID", "value": "EMP-38066", "pages": ["6"], "source": "manual-read-2026-10-11"}
+{"type": "EMPLOYEE_ID", "value": "DIR-0042", "pages": ["6"], "source": "manual-read-2026-10-11"}
+{"type": "EMPLOYEE_ID", "value": "DIR-0051", "pages": ["6"], "source": "manual-read-2026-10-11"}
+{"type": "EMPLOYEE_ID", "value": "DIR-0058", "pages": ["6"], "source": "manual-read-2026-10-11"}
+{"type": "EMPLOYEE_ID", "value": "DIR-0063", "pages": ["6"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Ifeoma C. Adeyemi", "pages": ["7"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Rafael E. Duarte", "pages": ["7"], "source": "manual-read-2026-10-11"}
+{"type": "EMPLOYEE_ID", "value": "EMP-41455", "pages": ["7"], "source": "manual-read-2026-10-11"}
+{"type": "EMPLOYEE_ID", "value": "EMP-36781", "pages": ["7"], "source": "manual-read-2026-10-11"}
+{"type": "EMAIL", "value": "i.adeyemi@cadencefg.com", "pages": ["7"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "+1 (704) 555-0159", "pages": ["7"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "+1 (917) 555-0146", "pages": ["7"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "+1 (917) 555-0177", "pages": ["7"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "+1 (917) 555-0104", "pages": ["7"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "+1 917 555-0111", "pages": ["7"], "source": "manual-read-2026-10-11"}
+{"type": "ADDRESS", "value": "88 Willowbank Court, Hoboken, NJ 07030", "pages": ["7"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "M. T. Achebe", "pages": ["8"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "A. P. Brightwell", "pages": ["8"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Karsten Ohlendorf", "pages": ["8"], "source": "manual-read-2026-10-11"}
+{"type": "EMPLOYEE_ID", "value": "EMP-39044", "pages": ["8"], "source": "manual-read-2026-10-11"}
+{"type": "EMAIL", "value": "k.ohlendorf@northwind.example", "pages": ["8"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "+49 69 5555 0148", "pages": ["8"], "source": "manual-read-2026-10-11"}
+{"type": "EMPLOYEE_ID", "value": "EMP-38412", "pages": ["9"], "source": "manual-read-2026-10-11"}
+{"type": "EMPLOYEE_ID", "value": "EMP-39220", "pages": ["9"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "+1 (646) 555-0188", "pages": ["9"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Arjun Mehta", "pages": ["9"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Priya Nair", "pages": ["9"], "source": "manual-read-2026-10-11"}
+{"type": "EMAIL", "value": "arjun.mehta@acmecorp.com", "pages": ["9"], "source": "manual-read-2026-10-11"}
+{"type": "EMAIL", "value": "priya.nair@acmecorp.com", "pages": ["9"], "source": "manual-read-2026-10-11"}
+{"type": "EMPLOYEE_ID", "value": "EMP100245", "pages": ["9"], "source": "manual-read-2026-10-11", "note": "low_legibility"}
+{"type": "PHONE", "value": "+1 (650) 555-0138", "pages": ["9"], "source": "manual-read-2026-10-11", "note": "low_legibility"}
+{"type": "PERSON", "value": "Nathaniel Okonkwo-Bryce", "pages": ["10"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Arvind K. Pillai", "pages": ["10"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Fatima Z. Qureshi", "pages": ["10"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Harriet L. Okafor", "pages": ["10"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Yusuf O. Balogun", "pages": ["10"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Denis Kowalczyk", "pages": ["10"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Grazyna Wieczorek", "pages": ["10"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Lars-Erik Brannstrom", "pages": ["10"], "source": "manual-read-2026-10-11"}
+{"type": "EMPLOYEE_ID", "value": "EMP-41502", "pages": ["10"], "source": "manual-read-2026-10-11"}
+{"type": "EMPLOYEE_ID", "value": "EMP-41519", "pages": ["10"], "source": "manual-read-2026-10-11"}
+{"type": "EMPLOYEE_ID", "value": "EMP-41522", "pages": ["10"], "source": "manual-read-2026-10-11"}
+{"type": "EMPLOYEE_ID", "value": "EMP-41187", "pages": ["10"], "source": "manual-read-2026-10-11"}
+{"type": "EMAIL", "value": "n.okonkwobryce@cadencefg.com", "pages": ["10", "32"], "source": "manual-read-2026-10-11"}
+{"type": "EMAIL", "value": "h.okafor@cadencefg.com", "pages": ["10"], "source": "manual-read-2026-10-11"}
+{"type": "EMAIL", "value": "d.kowalczyk@cadencefg.com", "pages": ["10"], "source": "manual-read-2026-10-11"}
+{"type": "EMAIL", "value": "l.brannstrom@cadencefg.com", "pages": ["10"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "+1 (646) 555-0129", "pages": ["10"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "+1 (704) 555-0166", "pages": ["10"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "+48 22 555 0193", "pages": ["10"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "+46 8 5555 0121", "pages": ["10"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Y. Sorokina", "pages": ["12"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "M. Szewczyk", "pages": ["12"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "M. Achebe", "pages": ["12"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "C. Whitfield", "pages": ["12"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "D. Kulkarni", "pages": ["12"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "H. Vorstermann", "pages": ["12", "33"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "A. Chatterjee", "pages": ["12"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "+1 212 555-0147", "pages": ["12"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "+91 98860 55107", "pages": ["12"], "source": "manual-read-2026-10-11"}
+{"type": "EMPLOYEE_ID", "value": "EMP-38550", "pages": ["13"], "source": "manual-read-2026-10-11"}
+{"type": "EMPLOYEE_ID", "value": "EMP-39877", "pages": ["13"], "source": "manual-read-2026-10-11"}
+{"type": "EMAIL", "value": "a.pillai@cadencefg.com", "pages": ["13"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "R. M. Achterberg", "pages": ["14"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Y. A. Sorokina", "pages": ["14"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "N. K. Osadebe", "pages": ["15", "33"], "source": "manual-read-2026-10-11"}
+{"type": "EMPLOYEE_ID", "value": "EMP-39871", "pages": ["15"], "source": "manual-read-2026-10-11"}
+{"type": "EMAIL", "value": "f.qureshi@cadencefg.com", "pages": ["16", "34"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "+91 98213 55228", "pages": ["16"], "source": "manual-read-2026-10-11"}
+{"type": "EMPLOYEE_ID", "value": "EMP-41402", "pages": ["17"], "source": "manual-read-2026-10-11"}
+{"type": "EMPLOYEE_ID", "value": "EMP-41184", "pages": ["18"], "source": "manual-read-2026-10-11"}
+{"type": "DATE_OF_BIRTH", "value": "14/07/1991", "pages": ["18"], "source": "manual-read-2026-10-11"}
+{"type": "SSN", "value": "900-42-7781", "pages": ["18"], "source": "manual-read-2026-10-11"}
+{"type": "TAX_ID", "value": "AQEPR7741L", "pages": ["18"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "646-555-0188", "pages": ["18"], "source": "manual-read-2026-10-11"}
+{"type": "DATE_OF_BIRTH", "value": "09/12/1994", "pages": ["18"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "G. F. Ashby", "pages": ["18"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "D. R. Kulkarni", "pages": ["18", "33"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Y. O. Balogun", "pages": ["18", "33"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "S. Marchetti-Lang", "pages": ["18", "33"], "source": "manual-read-2026-10-11"}
+{"type": "PASSPORT", "value": "TK4820913", "pages": ["18"], "source": "manual-read-2026-10-11"}
+{"type": "SSN", "value": "900-42-1190", "pages": ["18"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Ashby", "pages": ["18"], "source": "manual-read-2026-10-11", "note": "surname inside HR file path"}
+{"type": "PERSON", "value": "T. Lindqvist", "pages": ["19"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "N. Okonkwo-Bryce", "pages": ["19"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "A. V. Chatterjee", "pages": ["19"], "source": "manual-read-2026-10-11"}
+{"type": "EMPLOYEE_ID", "value": "EMP-40318", "pages": ["19"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "John Davis", "pages": ["19"], "source": "manual-read-2026-10-11"}
+{"type": "EMAIL", "value": "john.davis@acmecorp.com", "pages": ["19"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Sarah Mitchell", "pages": ["19"], "source": "manual-read-2026-10-11"}
+{"type": "EMAIL", "value": "sarah.mitchell@acmecorp.com", "pages": ["19"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Robert Johnson", "pages": ["19"], "source": "manual-read-2026-10-11"}
+{"type": "EMAIL", "value": "robert.johnson@acmecorp.com", "pages": ["19"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Emily Martinez", "pages": ["19"], "source": "manual-read-2026-10-11"}
+{"type": "EMAIL", "value": "emily.martinez@acmecorp.com", "pages": ["19"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Laura Wilson", "pages": ["19"], "source": "manual-read-2026-10-11"}
+{"type": "EMAIL", "value": "laura.wilson@acmecorp.com", "pages": ["19"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Daniel Kim", "pages": ["19"], "source": "manual-read-2026-10-11"}
+{"type": "EMAIL", "value": "daniel.kim@acmecorp.com", "pages": ["19"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Thomas Brown", "pages": ["19"], "source": "manual-read-2026-10-11"}
+{"type": "EMAIL", "value": "thomas.brown@acmecorp.com", "pages": ["19"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Amanda Singh", "pages": ["19"], "source": "manual-read-2026-10-11"}
+{"type": "EMAIL", "value": "amanda.singh@acmecorp.com", "pages": ["19"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Michael Chen", "pages": ["19"], "source": "manual-read-2026-10-11"}
+{"type": "EMAIL", "value": "michael.chen@acmecorp.com", "pages": ["19"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Jessica White", "pages": ["19"], "source": "manual-read-2026-10-11"}
+{"type": "EMAIL", "value": "jessica.white@acmecorp.com", "pages": ["19"], "source": "manual-read-2026-10-11"}
+{"type": "EMAIL", "value": "g.ashby@cadencefg.com", "pages": ["20"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "+1-646-555-0119", "pages": ["20"], "source": "manual-read-2026-10-11"}
+{"type": "IP_ADDRESS", "value": "103.21.244.17", "pages": ["20"], "source": "manual-read-2026-10-11"}
+{"type": "IP_ADDRESS", "value": "198.51.100.62", "pages": ["20"], "source": "manual-read-2026-10-11"}
+{"type": "IP_ADDRESS", "value": "51.140.22.9", "pages": ["20"], "source": "manual-read-2026-10-11"}
+{"type": "FINANCIAL_ACCOUNT", "value": "4111-XXXX-XXXX-1111", "pages": ["20"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "+48 512 555 0180", "pages": ["21"], "source": "manual-read-2026-10-11"}
+{"type": "EMAIL", "value": "y.balogun@cadencefg.com", "pages": ["21"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "L.-E. Brannstrom", "pages": ["21"], "source": "manual-read-2026-10-11"}
+{"type": "EMPLOYEE_ID", "value": "EMP-40944", "pages": ["22"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "+1 (212) 555-0193", "pages": ["22"], "source": "manual-read-2026-10-11"}
+{"type": "EMPLOYEE_ID", "value": "EMP-41142", "pages": ["22"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Elena Petrovska", "pages": ["22"], "source": "manual-read-2026-10-11"}
+{"type": "EMAIL", "value": "e.petrovska@meridianstaffing.example", "pages": ["22"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "+1 646 555-0203", "pages": ["22"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Rafael Duarte", "pages": ["22"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Priyanka Raghavan", "pages": ["22"], "source": "manual-read-2026-10-11"}
+{"type": "DATE_OF_BIRTH", "value": "14 July 1991", "pages": ["22"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Adaeze Onwuka", "pages": ["22"], "source": "manual-read-2026-10-11"}
+{"type": "EMPLOYEE_ID", "value": "EMP-40766", "pages": ["22"], "source": "manual-read-2026-10-11"}
+{"type": "SSN", "value": "900-55-2043", "pages": ["22"], "source": "manual-read-2026-10-11"}
+{"type": "EMPLOYEE_ID", "value": "EMP-41310", "pages": ["22"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Rohan Deshmukh", "pages": ["22"], "source": "manual-read-2026-10-11"}
+{"type": "EMPLOYEE_ID", "value": "EMP-41488", "pages": ["22"], "source": "manual-read-2026-10-11"}
+{"type": "TAX_ID", "value": "AQBPR7741L", "pages": ["22"], "source": "manual-read-2026-10-11"}
+{"type": "ADDRESS", "value": "1180 Ashwood Lane, Apartment 4C, Jersey City, NJ 07302", "pages": ["22"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Prieto-Ramos", "pages": ["23"], "source": "manual-read-2026-10-11"}
+{"type": "FINANCIAL_ACCOUNT", "value": "2218", "pages": ["23"], "source": "manual-read-2026-10-11"}
+{"type": "ADDRESS", "value": "2214 Palmetto Crescent, Coral Gables, FL 33134", "pages": ["23"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "(305) 555-0143", "pages": ["23"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Emilio Ramos-Vega", "pages": ["23"], "source": "manual-read-2026-10-11"}
+{"type": "FINANCIAL_ACCOUNT", "value": "7741", "pages": ["23"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Yusuf Balogun", "pages": ["23"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "+1 (704) 555-0131", "pages": ["23"], "source": "manual-read-2026-10-11"}
+{"type": "SSN", "value": "8827", "pages": ["23"], "source": "manual-read-2026-10-11"}
+{"type": "DATE_OF_BIRTH", "value": "3 August 1996", "pages": ["23"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "+46 70 555 0188", "pages": ["23"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "+1 (917) 555-0119", "pages": ["23"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "+44 7700 555 0163", "pages": ["23"], "source": "manual-read-2026-10-11"}
+{"type": "EMPLOYEE_ID", "value": "EMP-41157", "pages": ["23"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "+48 512 555 0193", "pages": ["23"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Gregor Halvorsen", "pages": ["23"], "source": "manual-read-2026-10-11"}
+{"type": "EMPLOYEE_ID", "value": "EMP-35440", "pages": ["23"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "+1 (917) 555-0102", "pages": ["23"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "+1 (646) 555-0203", "pages": ["25"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Marcus Twilley", "pages": ["25"], "source": "manual-read-2026-10-11"}
+{"type": "EMAIL", "value": "m.twilley@veritrace.example", "pages": ["25"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Rohan S. Deshmukh", "pages": ["25"], "source": "manual-read-2026-10-11"}
+{"type": "EMPLOYEE_ID", "value": "MER-IN-4471", "pages": ["25"], "source": "manual-read-2026-10-11"}
+{"type": "EMPLOYEE_ID", "value": "MER-IN-4488", "pages": ["25"], "source": "manual-read-2026-10-11"}
+{"type": "EMPLOYEE_ID", "value": "MER-IN-4502", "pages": ["25"], "source": "manual-read-2026-10-11"}
+{"type": "EMPLOYEE_ID", "value": "MER-PL-1187", "pages": ["25"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "+91 98452 55011", "pages": ["25"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Sneha M. Vaidyanathan", "pages": ["25"], "source": "manual-read-2026-10-11"}
+{"type": "TAX_ID", "value": "BKTPV2290H", "pages": ["25"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "+91 99009 55042", "pages": ["25"], "source": "manual-read-2026-10-11"}
+{"type": "TAX_ID", "value": "CDRPK6612M", "pages": ["25"], "source": "manual-read-2026-10-11"}
+{"type": "TAX_ID", "value": "890412xxxxx", "pages": ["25"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "A. Brightwell", "pages": ["26"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "N. Osadebe", "pages": ["26"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "+1 917 555-0143", "pages": ["26"], "source": "manual-read-2026-10-11"}
+{"type": "EMAIL", "value": "r.duarte@cadencefg.com", "pages": ["26"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "D. N. Quarshie", "pages": ["26"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Bienvenido T. Salcedo", "pages": ["27"], "source": "manual-read-2026-10-11"}
+{"type": "EMPLOYEE_ID", "value": "MER-PH-2214", "pages": ["27"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "+63 917 555 0119", "pages": ["27"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "Adaeze N. Onwuka", "pages": ["28"], "source": "manual-read-2026-10-11"}
+{"type": "DATE_OF_BIRTH", "value": "28 February 1979", "pages": ["28"], "source": "manual-read-2026-10-11"}
+{"type": "EMPLOYEE_ID", "value": "CFG-38104-0091-2026", "pages": ["28"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "D. R. Okonjo", "pages": ["29"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "R. E. Duarte", "pages": ["29"], "source": "manual-read-2026-10-11"}
+{"type": "EMPLOYEE_ID", "value": "DIR-0001", "pages": ["32"], "source": "manual-read-2026-10-11"}
+{"type": "PHONE", "value": "+1 (212) 555-0100", "pages": ["32"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "B. O. Osei-Tutu", "pages": ["33"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "F. Z. Qureshi", "pages": ["33"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "A. K. Pillai", "pages": ["33"], "source": "manual-read-2026-10-11"}
+{"type": "PERSON", "value": "[OC] Aditya Lawand", "pages": ["metadata"], "source": "manual-read-2026-10-11", "note": "PDF metadata author field"}

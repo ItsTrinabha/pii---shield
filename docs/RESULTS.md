@@ -8,10 +8,9 @@ Every number here was printed by `python -m pii_shield.eval`. Raw output: `docs/
 - **Leaked values is the headline.** A ground-truth (GT) value counts as leaked if it is still readable anywhere in the
   sanitised text. Since `3a180ae` other entities' tokens are deleted before the search, so `+44 20 [PERSON_3] 7555 0171`
   counts as a leak of `+44 20 7555 0171`.
-- **Only the PPTX scores are an accuracy measurement.** Its GT was annotated independently of the detector.
-- **DOCX and PDF scores are regression checks only, not accuracy claims.** Their GT was built from detector output and then
-  hand-pruned, so a value that every detector misses can be missing from the GT as well. Recall of 1.000 on these files means
-  "nothing we once found was lost", not "everything was found".
+- **Since run (b) all three files have independent GT** (see `data/ground_truth/ANNOTATION.md`). Before that, the DOCX and
+  PDF GT was built from detector output and hand-pruned, so the first run's DOCX/PDF scores are regression checks only: a
+  recall of 1.000 there means "nothing we once found was lost", not "everything was found".
 - R = occurrence-level recall (with Wilson 95% interval), P = precision, `not_extracted` = GT values that never appear in the
   extracted text (OCR misreads), so they can be neither detected nor leaked in their annotated form.
 
@@ -62,9 +61,52 @@ of phone numbers, and the two split numbers each differed from their nearest GT 
 earlier version of the branch, not every item in this run, so it is not a claim; the metric counts all 15 as false positives
 and so does this table.
 
+## Run 2026-10-11 (b): independent ground truth for DOCX and PDF
+
+The DOCX and PDF ground truth was rebuilt by reading the documents directly (rendered PDF pages with zoomed figures and
+screenshots; DOCX native text from the OOXML parts plus all 41 embedded images), without opening detector output or the
+old GT. Protocol and inclusion decisions: `data/ground_truth/ANNOTATION.md`. The old detector-derived files are kept in
+`data/ground_truth_regression/` and their last results in `docs/eval_regression_docx.json` / `docs/eval_regression_pdf.json`.
+Code unchanged (commit `3a180ae` + GT only). From now on all three files are accuracy measurements, not regression checks.
+
+| File | GT | Status | Leaked values | Recall [95% CI] | Precision | FP | Missed occurrences | not_extracted |
+|---|---|---|---|---|---|---|---|---|
+| TPRM Training (DOCX), regression GT | detector-derived | REVIEW | 0 / 23 | 1.000 [0.923, 1.0] | 1.000 | 0 | 0 | 3 |
+| TPRM Training (DOCX), **independent GT** | independent | REVIEW | **3 / 23** | 0.920 [0.812, 0.968] | 1.000 | 0 | 4 | 0 |
+| Risk Management Policy (PDF), regression GT | detector-derived | REVIEW | 0 / 260 | 1.000 [0.996, 1.0] | 0.975 | 23 | 0 | 7 |
+| Risk Management Policy (PDF), **independent GT** | independent | REVIEW | **2 / 264** | 0.997 [0.991, 0.999] | 0.911 | 81 | 2 | 52 |
+
+Per-type on the PDF (independent GT, from `docs/eval_pdf.json`): recall 1.000 for ADDRESS, DATE_OF_BIRTH, EMAIL,
+EMPLOYEE_ID, FINANCIAL_ACCOUNT, PASSPORT, PERSON, PHONE; SSN 0.667; TAX_ID 0.800. Precision: EMAIL 0.803, PHONE 0.845,
+PERSON 0.941, PASSPORT 0.500, all others 1.000.
+
+**The circular GT hid real leaks.** Both documents stay REVIEW (no automatic release), but the detector misses:
+
+- DOCX: two people whose first name is written as two capital initials without dots (shape `AA Surname`), once in a native
+  table cell and once in a screenshot; and one person in a screenshot whose name reads like the UI label "Mark Read". The
+  OCR-name auto-redaction deliberately skips UI labels (decision of 2026-10-11), so this leak is a direct cost of that
+  filter. The verifier still raises it as a SOFT hit.
+- PDF: an SSN given only as its last four digits in brackets in customer correspondence (page 23), and a partly masked
+  national ID (PESEL with trailing `x`s, page 25).
+
+**False positives on the PDF (81):** by detector, from the eval JSON: EMAIL `presidio+regex` 30, PHONE `verifier:forced` 11,
+PERSON from the names lexicon in several combinations 22, PHONE `presidio+regex:phone-us` 8, PHONE `presidio` 4, others
+single digits. The new GT excludes role and distribution mailboxes and organisational hotlines by policy, which the
+detector masks anyway; that over-redaction is counted against precision here. Whether every EMAIL FP is such a mailbox
+was not checked value by value.
+
+**not_extracted (PDF 52):** GT values that never appear in the extracted text, so they can neither be detected nor
+leaked in annotated form. A diagnostic pass (shapes and edit distances only) found two causes: whole screenshot or form
+regions OCR did not read (the terminal audit log, the attestation form, the user-list screenshot, small figure captions),
+and single-character OCR losses (a dropped first letter, a split across blocks). No annotation typo was confirmed.
+Because the output is text, an unread region cannot leak through it, but a visual redaction of the scan would have to
+cover these regions (open item).
+
 ## Known limits of these numbers
 
 - Three documents, synthetic data, one OCR engine version. Nothing here transfers to real Cadence documents without
   re-validation.
-- DOCX and PDF GT are circular (see above). Independent GT for both is the next evaluation task.
-- No OCR-vs-native comparison and no structure-retention metric yet.
+- The first run above used circular DOCX/PDF GT; run (b) replaces it with independent GT (single annotator, one pass,
+  no inter-annotator agreement).
+- The detector has been tuned on these same three documents. There is no held-out set, so these numbers are optimistic
+  for unseen documents.
