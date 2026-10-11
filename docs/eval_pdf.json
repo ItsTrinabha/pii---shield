@@ -1182,6 +1182,24 @@
         ],
         "token": "[PHONE_9]"
       }
-    ]
+    ],
+    "structure": {
+      "units": 35,
+      "found": 35,
+      "locator_ok": 35,
+      "in_order": 35,
+      "retained": 35,
+      "found_rate": 1.0,
+      "locator_rate": 1.0,
+      "order_rate": 1.0,
+      "retention": 1.0,
+      "unit_level": "page",
+      "by_kind": {
+        "page": {
+          "units": 35,
+          "retained": 35
+        }
+      }
+    }
   }
 }

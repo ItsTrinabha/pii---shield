@@ -53,7 +53,29 @@
       }
     },
     "missed": [],
-    "false_positives": []
+    "false_positives": [],
+    "structure": {
+      "units": 410,
+      "found": 410,
+      "locator_ok": 410,
+      "in_order": 390,
+      "retained": 390,
+      "found_rate": 1.0,
+      "locator_rate": 1.0,
+      "order_rate": 0.9512195121951219,
+      "retention": 0.9512195121951219,
+      "unit_level": "paragraph/cell",
+      "by_kind": {
+        "slide-text": {
+          "units": 172,
+          "retained": 172
+        },
+        "slide-table": {
+          "units": 238,
+          "retained": 218
+        }
+      }
+    }
   },
   "Cadence_TPRM_Training.docx": {
     "status": "REVIEW",
@@ -114,7 +136,37 @@
         "end": 407
       }
     ],
-    "false_positives": []
+    "false_positives": [],
+    "structure": {
+      "units": 2383,
+      "found": 2383,
+      "locator_ok": 2383,
+      "in_order": 2383,
+      "retained": 2383,
+      "found_rate": 1.0,
+      "locator_rate": 1.0,
+      "order_rate": 1.0,
+      "retention": 1.0,
+      "unit_level": "paragraph/cell",
+      "by_kind": {
+        "table-cell": {
+          "units": 2043,
+          "retained": 2043
+        },
+        "paragraph": {
+          "units": 334,
+          "retained": 334
+        },
+        "footer": {
+          "units": 5,
+          "retained": 5
+        },
+        "header": {
+          "units": 1,
+          "retained": 1
+        }
+      }
+    }
   },
   "Cadence_Group_Risk_Management_Policy__v6.0.pdf": {
     "status": "REVIEW",
@@ -1299,6 +1351,24 @@
         ],
         "token": "[PHONE_9]"
       }
-    ]
+    ],
+    "structure": {
+      "units": 35,
+      "found": 35,
+      "locator_ok": 35,
+      "in_order": 35,
+      "retained": 35,
+      "found_rate": 1.0,
+      "locator_rate": 1.0,
+      "order_rate": 1.0,
+      "retention": 1.0,
+      "unit_level": "page",
+      "by_kind": {
+        "page": {
+          "units": 35,
+          "retained": 35
+        }
+      }
+    }
   }
 }

@@ -102,6 +102,21 @@ and single-character OCR losses (a dropped first letter, a split across blocks).
 Because the output is text, an unread region cannot leak through it, but a visual redaction of the scan would have to
 cover these regions (open item).
 
+## Structure retention (2026-10-11, commit `6e533ea`)
+
+Definition and unit lists: `docs/METRICS.md`. Brief target: >= 0.80. One file per run, `--ocr-workers 2`.
+
+| File | Unit level | Units | Retention | Found | Locator (of found) | Order (of found) |
+|---|---|---|---|---|---|---|
+| Organizational Pack (PPTX) | paragraph / table-cell paragraph / notes | 410 | **0.951** (390) | 1.000 | 1.000 | 0.951 |
+| TPRM Training (DOCX) | paragraph / table-cell paragraph / header / footer | 2383 | **1.000** (2383) | 1.000 | 1.000 | 1.000 |
+| Risk Management Policy (PDF, scanned) | page | 35 | **1.000** (35) | 1.000 | 1.000 | 1.000 |
+
+The 20 PPTX units scored out of order are all one-letter RACI cells on slides 6 and 7, each repeated many times on the
+same slide. The extractor emits table cells in document order, so these are cases where the matcher cannot tell
+identical cells apart rather than real reordering: 0.951 is a lower bound. The PDF figure is page-level only (see
+METRICS.md); text completeness inside scanned pages is reflected by `not_extracted` above, not by this number.
+
 ## Known limits of these numbers
 
 - Three documents, synthetic data, one OCR engine version. Nothing here transfers to real Cadence documents without

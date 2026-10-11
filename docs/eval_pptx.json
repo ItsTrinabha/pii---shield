@@ -53,6 +53,28 @@
       }
     },
     "missed": [],
-    "false_positives": []
+    "false_positives": [],
+    "structure": {
+      "units": 410,
+      "found": 410,
+      "locator_ok": 410,
+      "in_order": 390,
+      "retained": 390,
+      "found_rate": 1.0,
+      "locator_rate": 1.0,
+      "order_rate": 0.9512195121951219,
+      "retention": 0.9512195121951219,
+      "unit_level": "paragraph/cell",
+      "by_kind": {
+        "slide-text": {
+          "units": 172,
+          "retained": 172
+        },
+        "slide-table": {
+          "units": 238,
+          "retained": 218
+        }
+      }
+    }
   }
 }
