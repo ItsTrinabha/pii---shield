@@ -1,0 +1,58 @@
+{
+  "Cadence_Financial_Group_Organizational_Pack.pptx": {
+    "status": "PASS",
+    "gt_values": 61,
+    "gt_occurrences": 124,
+    "covered": 124,
+    "recall": 1.0,
+    "recall_ci95": [
+      0.97,
+      1.0
+    ],
+    "precision": 1.0,
+    "f1": 1.0,
+    "leaked_values_in_sanitised_text": 0,
+    "leak_rate": 0.0,
+    "gt_values_not_extracted": 0,
+    "per_type": {
+      "EMAIL": {
+        "occurrences": 34,
+        "covered": 34,
+        "recall": 1.0,
+        "recall_ci95": [
+          0.898,
+          1.0
+        ],
+        "typed_recall": 1.0,
+        "precision": 1.0,
+        "f1": 1.0
+      },
+      "PERSON": {
+        "occurrences": 56,
+        "covered": 56,
+        "recall": 1.0,
+        "recall_ci95": [
+          0.936,
+          1.0
+        ],
+        "typed_recall": 1.0,
+        "precision": 1.0,
+        "f1": 1.0
+      },
+      "PHONE": {
+        "occurrences": 34,
+        "covered": 34,
+        "recall": 1.0,
+        "recall_ci95": [
+          0.898,
+          1.0
+        ],
+        "typed_recall": 1.0,
+        "precision": 1.0,
+        "f1": 1.0
+      }
+    },
+    "missed": [],
+    "false_positives": []
+  }
+}

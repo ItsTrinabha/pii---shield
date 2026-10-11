@@ -19,6 +19,9 @@
   `patterns.split_phone_pair` + cross-block pass in `engine`; verifier cross-block rule and short `+cc area` rule;
   heal loop redacts around existing tokens (`sanitized_to_original_parts`); leak metric ignores tokens inside a value;
   precision counts split halves by identity fingerprint. Regression: `tests/test_split_phone.py`.
+- 2026-10-11: SOFT name hits in OCR-derived blocks are auto-redacted as forced redactions (native text never; UI labels
+  and business words skipped; status stays REVIEW, reason `OCR_NAME_REDACTION`; audit `forced_ocr_name_candidates`).
+  Tests: `tests/test_ocr_name_redaction.py`. Eval OCR memory capped (`--ocr-workers 2`, page images freed after OCR).
 
 ## Environment notes (Windows)
 - venv at `.venv`; Tesseract is auto-found in `C:\Program Files\Tesseract-OCR` (or set `PII_SHIELD_TESSERACT`).
@@ -27,18 +30,18 @@
 
 ## Known caveats
 - PPTX GT is independent. DOCX and PDF GT were built from detector output then hand-pruned => CIRCULAR; regression only.
-- PDF and DOCX are REVIEW, not PASS: the PDF because the verifier force-redacted split phones the detector missed;
-  the DOCX because one name inside OCR noise of a UI screenshot (image12.png) is missed by the detector and only
-  SOFT-flagged by the verifier (leak 1/23 until a human reviews). Open decision: force-redact SOFT name hits in
-  screenshot OCR blocks?
-- Lone country codes (`+1`, `+44`) can remain readable when the rest of the number is tokenised; accepted (identifies
-  a country, not a person).
+- 2026-10-11 eval (`docs/RESULTS.md`): leaked values PPTX 0/61, DOCX 0/23, PDF 0/260. PPTX PASS; DOCX and PDF REVIEW
+  (forced redactions by the verifier, incl. OCR-noise name auto-redaction). PDF PHONE precision 0.903 is the cost.
+- PDF and DOCX numbers are regression checks only (circular GT); only PPTX is an accuracy measurement.
+- Lone country codes (`+1`, `+44`) stay readable when the rest of the number is tokenised: deliberate, see SECURITY.md.
+- Eval memory: run one file at a time with `--only`; `--ocr-workers` defaults to 2. A full 3-file run in one process
+  was killed by the OS for low memory before these changes; not re-tried.
+- The verifier's name bigram uses non-overlapping matching, so a capitalised noise word directly before a name can hide
+  it (`Frapenecrmas Dana ...`). Not fixed.
 
 ## TODO (in order)
-0. Run `python -m pii_shield.eval --out docs/eval.json` on the current code and write `docs/RESULTS.md` (before/after for
-   the split-phone fix). The official run was stopped by the OS for low memory; numbers are not recorded yet.
-1. DOCX: detector miss of a hyphenated name in screenshot OCR (see caveat). Reduce PDF forced redactions (split phones
-   whose interleaved cell contains standalone numbers, OCR regrouped digits).
+1. Reduce PDF forced redactions (detector misses split phones whose interleaved cell has standalone numbers, and
+   OCR-regrouped digits) so PHONE precision recovers; fix the verifier bigram overlap gap.
 2. Independent GT for DOCX/PDF (annotate from page images). 3. OCR-vs-native eval + structure-retention metric.
 4. Visual redaction of scanned PDFs (burn boxes from WordBox geometry). 5. pip-audit.
 6. Benchmarks on ai4privacy/Kaggle/Mendeley (download locally, check licences).
