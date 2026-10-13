@@ -52,6 +52,9 @@ def _engine(model: str):
             nlp = NlpEngineProvider(
                 nlp_configuration={"nlp_engine_name": "spacy", "models": [{"lang_code": "en", "model_name": model}]}
             ).create_engine()
+            for lang_model in getattr(nlp, "nlp", {}).values():  # the dependency parser is unused (Presidio needs NER,
+                if "parser" in lang_model.pipe_names:              # tokens and lemmas) and is the slowest pipe
+                    lang_model.disable_pipe("parser")
             reg = RecognizerRegistry()
             reg.load_predefined_recognizers(nlp_engine=nlp, languages=["en"])
             analyzer = AnalyzerEngine(nlp_engine=nlp, registry=reg, supported_languages=["en"])
@@ -120,4 +123,9 @@ def run_ner(nblocks: list[NBlock], settings: Settings) -> dict[int, list[Cand]]:
             else:
                 conf = min(0.9, 0.45 + 0.5 * float(r.score))
             out.setdefault(bidx, []).append(Cand(typ, r.start - bs, r.end - bs, conf, f"presidio:{rec}"))
+    if settings.use_gliner:
+        from .gliner_ner import run_gliner
+
+        for bidx, cs in run_gliner(chunks, settings).items():
+            out.setdefault(bidx, []).extend(cs)
     return out

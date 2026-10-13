@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
+import copy
+import hashlib
 import io
 import os
 import shutil
 import threading
-from collections import deque
+from collections import OrderedDict, deque
 from concurrent.futures import Future, ThreadPoolExecutor
 from dataclasses import dataclass, field
 
@@ -86,7 +88,28 @@ def _prep(gray: np.ndarray) -> tuple[np.ndarray, float]:
     return gray, scale
 
 
+_CACHE: OrderedDict[tuple, OcrPage] = OrderedDict()
+_cache_lock = threading.Lock()
+
+
 def ocr_array(bgr: np.ndarray, settings: Settings) -> OcrPage:
+    """Cached by pixel hash + OCR settings: the redacted-file re-scan sees most images/pages unchanged."""
+    key = (hashlib.sha256(bgr.tobytes()).digest(), bgr.shape, settings.ocr_lang, settings.use_rapidocr,
+           settings.rapidocr_always, settings.rapidocr_below_conf)
+    with _cache_lock:
+        hit = _CACHE.get(key)
+        if hit is not None:
+            _CACHE.move_to_end(key)
+            return copy.deepcopy(hit)
+    page = _ocr_array(bgr, settings)
+    with _cache_lock:
+        _CACHE[key] = copy.deepcopy(page)
+        while len(_CACHE) > 256:
+            _CACHE.popitem(last=False)
+    return page
+
+
+def _ocr_array(bgr: np.ndarray, settings: Settings) -> OcrPage:
     gray = cv2.cvtColor(bgr, cv2.COLOR_BGR2GRAY)
     h0, w0 = gray.shape[:2]
     page = OcrPage(width=w0, height=h0)
@@ -108,6 +131,10 @@ def ocr_array(bgr: np.ndarray, settings: Settings) -> OcrPage:
         raise OcrError("OCR timed out") from e
     except pytesseract.TesseractError as e:
         raise OcrError("OCR engine error") from e
+    except OSError as e:  # Tesseract not installed: RapidOCR alone can carry the page
+        if not settings.use_rapidocr:
+            raise OcrError("OCR engine missing") from e
+        d = {k: [] for k in ("text", "block_num", "par_num", "line_num", "left", "top", "width", "height", "conf")}
     del g  # the upscaled copy is only needed by the first OCR pass
 
     n = len(d["text"])
@@ -161,6 +188,13 @@ def ocr_array(bgr: np.ndarray, settings: Settings) -> OcrPage:
             )
             page.char_count += len(text)
     page.mean_confidence = float(np.mean(all_conf)) if all_conf else None
+    weak = not page.paragraphs or (page.mean_confidence or 0.0) < settings.rapidocr_below_conf
+    if settings.use_rapidocr and (settings.rapidocr_always or weak):
+        try:
+            _add_rapidocr(bgr, page)
+        except Exception as e:  # noqa: BLE001 - second engine is best-effort when Tesseract already read the page
+            if not page.paragraphs:
+                raise OcrError("OCR engine error") from e
     try:
         _recover_missed(gray, page, settings)
     except Exception:  # noqa: BLE001 - recovery is best-effort; the coverage metric still reports the gap
@@ -233,6 +267,64 @@ def _recover_missed(gray: np.ndarray, page: OcrPage, settings: Settings, max_reg
                                             confidence=float(np.mean(confs)), bbox=(x0, y0, x1, y1)))
         page.char_count += len(text)
         added += 1
+
+
+_rapid_local = threading.local()
+
+
+def _rapid_engine():
+    """One RapidOCR per worker thread, each ONNX session capped at 2 threads: the default (every core, per call, behind a
+    lock) made a 35-page scan take ~7 minutes; 8 pages in parallel on 2 threads each takes about a minute."""
+    eng = getattr(_rapid_local, "eng", None)
+    if eng is None:
+        import rapidocr_onnxruntime.utils as U
+        from rapidocr_onnxruntime import RapidOCR
+
+        orig = U.SessionOptions
+
+        def capped():
+            o = orig()
+            o.intra_op_num_threads, o.inter_op_num_threads = 2, 1
+            return o
+
+        with _rapid_init_lock:  # patch only while this thread builds its sessions
+            U.SessionOptions = capped
+            try:
+                eng = _rapid_local.eng = RapidOCR()
+            finally:
+                U.SessionOptions = orig
+    return eng
+
+
+_rapid_init_lock = threading.Lock()
+
+
+def _add_rapidocr(bgr: np.ndarray, page: OcrPage) -> None:
+    """Second engine (PP-OCR via ONNX). A line becomes a new paragraph only if Tesseract's boxes do not already cover it
+    with similar text, so a misread ('Jon Smlth') is kept next to the other reading and both get scanned."""
+    from rapidfuzz import fuzz
+
+    res, _ = _rapid_engine()(bgr)
+    if not res:
+        return
+    mask = np.zeros(bgr.shape[:2], dtype=np.uint8)
+    for p in page.paragraphs:
+        for (_, _, x0, y0, x1, y1) in p.words:
+            cv2.rectangle(mask, (x0, y0), (x1, y1), 255, -1)
+    flat = " ".join(p.text for p in page.paragraphs).lower()
+    for box, text, score in res:
+        text = (text or "").strip()
+        if sum(ch.isalnum() for ch in text) < 2 or float(score) < 0.5:
+            continue
+        xs, ys = [int(pt[0]) for pt in box], [int(pt[1]) for pt in box]
+        x0, y0, x1, y1 = max(min(xs), 0), max(min(ys), 0), max(xs), max(ys)
+        area = max((x1 - x0) * (y1 - y0), 1)
+        covered = np.count_nonzero(mask[y0:y1, x0:x1]) / area
+        if covered >= 0.5 and fuzz.partial_ratio(text.lower(), flat) >= 85:
+            continue
+        page.paragraphs.append(OcrParagraph(text=text, words=[(0, len(text), x0, y0, x1, y1)],
+                                            confidence=float(score) * 100, bbox=(x0, y0, x1, y1)))
+        page.char_count += len(text)
 
 
 def _ink_coverage(gray: np.ndarray, page: OcrPage) -> float | None:

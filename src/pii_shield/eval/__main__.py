@@ -25,6 +25,8 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     ap.add_argument("--out", default="")
     ap.add_argument("--only", default="")
     # Each OCR worker holds a rendered page plus Tesseract's working set; 2 keeps a full run within laptop memory.
+    ap.add_argument("--deep", action="store_true", help="also run GLiNER")
+    ap.add_argument("--no-rapidocr", action="store_true", help="ablation: disable the second OCR engine")
     ap.add_argument("--ocr-workers", type=int, default=2)
     ap.add_argument("--render-ocr", action="store_true", help="score the OCR path: render to an image-only PDF first")
     ap.add_argument("--render-dpi", type=int, default=200)
@@ -32,7 +34,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 
 def settings_from_args(a: argparse.Namespace) -> Settings:
-    return Settings(ocr_workers=max(1, a.ocr_workers))
+    return Settings(ocr_workers=max(1, a.ocr_workers), use_gliner=a.deep, use_rapidocr=not a.no_rapidocr)
 
 
 def main(argv: list[str] | None = None) -> None:

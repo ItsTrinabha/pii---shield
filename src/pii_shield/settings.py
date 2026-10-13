@@ -31,13 +31,19 @@ class Settings:
     review_band: float = 0.30  # findings between review_band and mask_threshold -> REVIEW
     ner_model: str = "en_core_web_lg"
     use_ner: bool = True
+    use_gliner: bool = False  # ~30 s per 100k chars on CPU; opt-in via --deep
+    gliner_model: str = "urchade/gliner_multi_pii-v1"
+    gliner_threshold: float = 0.5
+    use_rapidocr: bool = True  # second OCR engine (PP-OCR via ONNX): runs when Tesseract is missing or reads a page poorly
+    rapidocr_always: bool = False  # True = run it on every page/image too (slow: ~10 s per scanned page)
+    rapidocr_below_conf: float = 75.0  # Tesseract mean word confidence under which RapidOCR also reads the page
     # OCR
     ocr_dpi: int = 250
     ocr_lang: str = "eng"
     min_native_chars_for_text_page: int = 40
     low_ocr_confidence: float = 60.0  # page mean word confidence below this => REVIEW
     min_ink_coverage: float = 0.45  # fraction of ink inside OCR word boxes below this => REVIEW
-    ocr_workers: int = max(1, min(4, os.cpu_count() or 1))
+    ocr_workers: int = max(1, min(12, (os.cpu_count() or 2) - 2))  # Tesseract is single-threaded per page
     # verification
     strict_verifier: bool = False  # True: soft hits also BLOCK
     # misc

@@ -32,6 +32,7 @@ def audit_dict(result: PipelineResult, include_time: bool = True) -> dict:
             "stats": doc.stats.model_dump() if doc else None,
             "warnings": doc.warnings if doc else [],
         },
+        "confidentiality": result.notes.get("confidentiality"),
         "exposure": {
             "total_findings": len(result.findings),
             "distinct_values": len(distinct),

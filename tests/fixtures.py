@@ -81,7 +81,7 @@ def rezip(data: bytes, add: dict[str, bytes] | None = None, replace: dict[str, b
     if encrypted_flag:  # zipfile resets flag_bits on write, so set "encrypted" (bit 0) in both headers by hand
         info = zipfile.ZipFile(io.BytesIO(bytes(out))).getinfo(encrypted_flag)
         out[info.header_offset + 6] |= 0x1  # local file header: general purpose flag at +6
-        cd = out.find(b"PK\x01\x02" + bytes(out[info.header_offset + 4:info.header_offset + 6]))
+        cd = out.find(b"PK\x01\x02")
         while cd != -1:
             n = int.from_bytes(out[cd + 28:cd + 30], "little")
             if out[cd + 46:cd + 46 + n] == encrypted_flag.encode():

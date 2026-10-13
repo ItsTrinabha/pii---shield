@@ -158,3 +158,22 @@ pages after rendering, so only the found rate is comparable).
   no inter-annotator agreement).
 - The detector has been tuned on these same three documents. There is no held-out set, so these numbers are optimistic
   for unseen documents.
+
+## 2026-10-13: speed pass (1-minute target) + name-list rule
+
+Machine: 16 cores, 7 GB RAM (WSL2), Tesseract 5.5.0. `python -m pii_shield.eval --corpus data/samples --truth data/ground_truth --only <type>`.
+
+| File | Scan time before | Scan time after | Leak before (2026-10-11) | Leak after | Precision after |
+|---|---|---|---|---|---|
+| PPTX | 36 s | 21 s (incl. redacted file) | 0/61 | 0/61 | 1.000 |
+| DOCX | 225 s | 47 s (incl. redacted file) | 3/23 | 1/23 | 0.942 |
+| PDF (35 scanned pages) | 463 s | 36 s scan; 120 s with redacted file | 2/264 | 2/264 | 0.921 |
+
+Changes: GLiNER off by default (`--deep`; >6 min on the DOCX); RapidOCR only as a fallback (Tesseract missing or page
+confidence < 75); RapidOCR ONNX sessions capped at 2 threads per worker; GLiNER torch threads capped at 8 (16 was 3.5x
+slower, identical output); spaCy dependency parser disabled (NER 20 s -> 11 s on the PDF, identical findings); OCR
+results cached by pixel hash; OCR workers = cores - 2 (max 12).
+Accuracy: a name-shaped line next to a name line gets +0.25 (`KC Burney`, `DK Koran` in user lists); role abbreviations
+(`VP InfoSec`) are excluded. Remaining DOCX leak: `Mark Read` in a screenshot (second word is a UI verb).
+Redacted file: re-scanned after redaction; whatever the re-scan finds is redacted too (max 3 rounds). On the PDF the first
+re-scan found small org-chart text the first OCR pass missed; the second round came back clean.

@@ -93,7 +93,8 @@ def detect_document(doc: ExtractedDocument, settings: Settings) -> DetectionResu
     res.timings["ner"] = time.time() - t0
     for bidx, cs in ner.items():
         for c in cs:
-            if c.type != "PERSON":
+            # a confident GLiNER name is evidence on its own (the name rules reject unusual/non-Western names)
+            if c.type != "PERSON" or (c.detector.startswith("gliner") and c.conf >= 0.85):
                 per_block[bidx].append(c)  # Presidio's structured recognisers act as independent evidence
 
     t0 = time.time()

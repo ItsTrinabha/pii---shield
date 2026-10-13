@@ -7,7 +7,9 @@ import re
 import time
 from pathlib import Path
 
+from .classification import classify
 from .detection import RawFinding, detect_document
+from .detection.propagate import propagate
 from .detection.normalize import normalize
 from .errors import BlockedError, PiiShieldError
 from .extraction import extract
@@ -65,6 +67,7 @@ class Pipeline:
         result.notes["detector_stats"] = det.stats
 
         raw: list[RawFinding] = list(det.findings)
+        raw.extend(propagate(doc.blocks, raw))
         t0 = time.time()
         findings, sanitized = apply_masking(doc.blocks, raw)
         timings["mask"] = round(time.time() - t0, 2)
@@ -137,6 +140,7 @@ class Pipeline:
         result.findings = findings
         result.sanitized_blocks = sanitized
         result.verification = verification
+        result.notes["confidentiality"] = classify(result)
         result.notes["forced_redactions"] = forced_total + ocr_names  # forced, not detections
         result.notes["forced_ocr_names"] = ocr_names
         result.notes["review_candidates"] = [

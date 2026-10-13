@@ -378,18 +378,20 @@ def detect_people(nblocks: list[NBlock], ner: dict[int, list[Cand]], email_cands
                     reg.add(*pn, strong=True)
 
     # ---- 4. stand-alone name-like lines (table cells, list items, lines inside OCR paragraphs) ----------------------
+    # Every short line is kept in reading order so a candidate can see its neighbours: a line between two names is
+    # most likely a name too (directories, attendee lists, user tables: 'KC Burney' between two people).
+    lines: list[tuple[NBlock, int, int, float | None, str]] = []  # (block, start, end, score or None, text)
     for b in nblocks:
         pos = 0
         for line in b.text.split("\n"):
             ls = pos
             pos += len(line) + 1
-            if not line.strip() or len(line) > 48:
+            if not line.strip():
                 continue
-            m = _NAME_LINE.match(line)
-            if not m:
-                continue
-            txt = m.group("n")
-            if not _plausible_name(txt) or not accept_tokens(txt, reg.by_last.keys()):
+            m = _NAME_LINE.match(line) if len(line) <= 48 else None
+            txt = m.group("n") if m else ""
+            if not m or not _plausible_name(txt) or not accept_tokens(txt, reg.by_last.keys()):
+                lines.append((b, ls, ls + len(line), None, line))
                 continue
             toks = _tokens(txt)
             fn = ln(toks[0][2])
@@ -404,12 +406,32 @@ def detect_people(nblocks: list[NBlock], ner: dict[int, list[Cand]], email_cands
                 score += 0.35
             if ln_last in surname_gazetteer():
                 score += 0.15
-            add(b, s0, e0, min(score, 0.95), "heuristic:name-line")
-            stats["line"] += 1
-            if score >= 0.8:
-                pn = parse_name(txt)
-                if pn:
-                    reg.add(*pn, strong=True)
+            lines.append((b, s0, e0, score, txt))
+
+    # two capitals before a word are initials ('KC Burney') unless they are a role/department ('VP InfoSec', 'HR Ops')
+    role_abbr = {"VP", "HR", "IT", "QA", "PM", "GM", "MD", "UK", "US", "EU", "AI", "BU", "CX", "UX", "UI", "PR", "BD",
+                 "FX", "IR", "ML", "OT", "RM", "SG", "SA", "AM", "PA", "EA", "CS", "CEO", "CFO", "CTO", "CIO", "COO", "CRO"}
+
+    def _is_person_line(i: int) -> bool:
+        b, s0, e0, score, _ = lines[i]
+        if score is not None and score >= 0.45:
+            return True
+        return any(c.type == "PERSON" and c.start <= s0 + 1 and c.end >= e0 - 1
+                   for c in cands.get(b.idx, []) + ner_kept.get(b.idx, []))
+
+    for i, (b, s0, e0, score, txt) in enumerate(lines):
+        if score is None:
+            continue
+        if score < 0.45 and txt.split()[0] not in role_abbr:
+            near = [j for j in (i - 1, i + 1) if 0 <= j < len(lines) and lines[j][0].unit_key == b.unit_key]
+            if any(_is_person_line(j) for j in near):
+                score += 0.25
+        add(b, s0, e0, min(score, 0.95), "heuristic:name-line")
+        stats["line"] += 1
+        if score >= 0.8:
+            pn = parse_name(txt)
+            if pn:
+                reg.add(*pn, strong=True)
 
     # ---- 5. lexicon expansion: every spelling of every established person ------------------------------------
     index: dict[tuple[str, ...], tuple[str, float]] = {}
