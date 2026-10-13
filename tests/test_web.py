@@ -75,3 +75,45 @@ def test_pdf_page_render(client) -> None:
 
 def test_unknown_document(client) -> None:
     assert client.get("/api/docs/nope").status_code == 404
+
+
+def test_manual_redaction_and_reapproval(client) -> None:
+    d = _scan(client, docx_bytes(["Project codename Bluefinch launches next quarter."]), "m.docx")
+    did, tok = d["id"], client.cookies["pii_csrf"]
+    b = next(x for x in client.get(f"/api/docs/{did}/blocks").json() if "Bluefinch" in x["text"])
+    s = b["text"].index("Bluefinch")
+    r = client.post(f"/api/docs/{did}/redact", headers={"x-csrf-token": tok},
+                    json={"block_id": b["id"], "start": s, "end": s + 9, "coords": "sanitized", "type": "UNCLASSIFIED"})
+    assert r.status_code == 200, r.text
+    assert r.json()["status"] == "REVIEW" and not r.json()["released"] and r.json()["added"] == 1
+    assert "Bluefinch" not in client.get(f"/api/docs/{did}/blocks").text
+    assert client.get(f"/api/docs/{did}/download/sanitized.txt").status_code == 409  # an edit needs a named approval
+    again = client.post(f"/api/docs/{did}/redact", headers={"x-csrf-token": tok},
+                        json={"block_id": b["id"], "start": s, "end": s + 9, "coords": "original", "type": "UNCLASSIFIED"})
+    assert again.status_code == 409  # already masked
+    ok = client.post(f"/api/docs/{did}/approve", json={"name": "Tester"}, headers={"x-csrf-token": tok})
+    assert ok.status_code == 200
+    out = client.get(f"/api/docs/{did}/download/sanitized.txt").text
+    assert "Bluefinch" not in out and "[UNCLASSIFIED_1]" in out
+
+
+def test_redact_requires_csrf_and_valid_span(client) -> None:
+    d = _scan(client, docx_bytes(), "a.docx")
+    did, tok = d["id"], client.cookies["pii_csrf"]
+    bid = client.get(f"/api/docs/{did}/blocks").json()[0]["id"]
+    assert client.post(f"/api/docs/{did}/redact", json={"block_id": bid, "start": 0, "end": 3}).status_code == 403
+    assert client.post(f"/api/docs/{did}/redact", headers={"x-csrf-token": tok}, json={"block_id": bid}).status_code == 400
+    det = client.get(f"/api/docs/{did}").json()
+    assert "attention" in det
+
+
+def test_selection_across_a_token(client) -> None:
+    d = _scan(client, docx_bytes(["Reach her at o.brennagh@example.test before Friday."]), "t.docx")
+    did, tok = d["id"], client.cookies["pii_csrf"]
+    b = next(x for x in client.get(f"/api/docs/{did}/blocks").json() if "[EMAIL_" in x["text"])
+    s, e = b["text"].index("her"), b["text"].index("Friday") + len("Friday")
+    r = client.post(f"/api/docs/{did}/redact", headers={"x-csrf-token": tok},
+                    json={"block_id": b["id"], "start": s, "end": e, "coords": "sanitized", "type": "UNCLASSIFIED"})
+    assert r.status_code == 200, r.text
+    after = next(x for x in client.get(f"/api/docs/{did}/blocks").json() if x["id"] == b["id"])["text"]
+    assert "Friday" not in after and "her at" not in after and "[EMAIL_" in after

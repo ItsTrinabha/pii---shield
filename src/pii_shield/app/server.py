@@ -10,7 +10,9 @@ data/ground_truth (rule 6: measure, don't claim); other files get verification-b
 from __future__ import annotations
 
 import asyncio
+import importlib.util
 import io
+import os
 import re
 import secrets
 import time
@@ -34,7 +36,18 @@ from ..settings import Limits, Settings
 from .view import hidden_sanitized_blocks
 
 STATIC = Path(__file__).with_name("static")
-TRUTH_DIR = Path(__file__).resolve().parents[3] / "data" / "ground_truth"
+
+
+def _truth_dir() -> Path:
+    """Ground truth for the accuracy panel: $CLOAK_TRUTH_DIR, the source checkout, or ./data/ground_truth."""
+    for c in (os.environ.get("CLOAK_TRUTH_DIR"), Path(__file__).resolve().parents[3] / "data" / "ground_truth",
+              Path.cwd() / "data" / "ground_truth"):
+        if c and Path(c).is_dir():
+            return Path(c)
+    return Path.cwd() / "data" / "ground_truth"
+
+
+TRUTH_DIR = _truth_dir()
 _TOKEN = re.compile(r"\[[A-Z_]+_\d+\]")
 _SCAN = ThreadPoolExecutor(max_workers=1)  # the pipeline already uses every core; scans queue instead of competing
 _WORK = ThreadPoolExecutor(max_workers=2)  # page renders, redacted files
@@ -54,6 +67,7 @@ class Entry:
     approved_by: str | None = None
     redacted: bytes | None = None
     pages: dict = field(default_factory=dict)  # (page, reveal) -> png
+    rev: int = 0  # bumps on every manual edit; the UI puts it in page URLs so browsers fetch the new render
 
 
 DOCS: dict[str, Entry] = {}
@@ -175,7 +189,7 @@ def _summary(e: Entry) -> dict:
     return {
         "id": e.id, "name": e.name, "type": doc.file_type if doc else Path(e.name).suffix.lstrip("."),
         "size": doc.size_bytes if doc else None, "status": r.status.value, "reasons": r.reasons,
-        "created": e.created, "elapsed": round(e.elapsed, 1), "deep": e.deep,
+        "created": e.created, "elapsed": round(e.elapsed, 1), "deep": e.deep, "rev": e.rev,
         "approved_by": e.approved_by, "released": e.released is not None,
         "needs_approval": r.status == Status.REVIEW and e.released is None,
         "counts": {"findings": len(r.findings), "distinct": len(distinct), "by_type": r.counts_by_type(),
@@ -302,6 +316,157 @@ _TYPE_RGB = {"PERSON": (10, 132, 255), "EMAIL": (94, 92, 230), "PHONE": (48, 176
              "ADDRESS": (162, 132, 94), "FINANCIAL_ACCOUNT": (255, 159, 10), "IP_ADDRESS": (100, 210, 255)}
 
 
+# ------------------------------------------------------------------------------------- precise locations + manual edits
+def _bfind(r: PipelineResult, bid: str) -> list:
+    return sorted((f for f in r.findings if f.block_id == bid), key=lambda f: f.start)
+
+
+def _orig_to_san(r: PipelineResult, bid: str, s: int, e: int) -> tuple[int, int] | None:
+    """Original span -> span in the block's sanitised text, checked by comparing the text (None if it cannot map)."""
+    b = next((x for x in r.document.blocks if x.id == bid), None) if r.document else None
+    san = next((x.text for x in r.sanitized_blocks if x.id == bid), None)
+    if b is None or san is None:
+        return None
+    delta = 0
+    for f in _bfind(r, bid):
+        if f.start < e and s < f.end:
+            return None
+        if f.end <= s:
+            delta += len(f.token) - (f.end - f.start)
+    ss, se = s + delta, e + delta
+    return (ss, se) if san[ss:se] == b.text[s:e] else None
+
+
+def _san_to_orig(r: PipelineResult, bid: str, s: int, e: int) -> tuple[int, int] | None:
+    from ..masking.tokens import sanitized_to_original
+
+    b = next((x for x in r.document.blocks if x.id == bid), None) if r.document else None
+    san = next((x.text for x in r.sanitized_blocks if x.id == bid), None)
+    m = sanitized_to_original(_bfind(r, bid), s, e)
+    if b is None or san is None or m is None or b.text[m[0]:m[1]] != san[s:e]:
+        return None
+    return m
+
+
+def _page_box(e: Entry, bid: str, s: int, e_: int) -> tuple[int, list[float]] | None:
+    """(page, [x0, y0, x1, y1] as fractions of the page) for a span of an OCR'd PDF block."""
+    r = e.result
+    b = next((x for x in r.document.blocks if x.id == bid), None) if r.document else None
+    if b is None or r.document.file_type != "pdf" or not b.locator.index or not b.geometry:
+        return None
+    size = e.pages.get(("size", b.locator.index))
+    if size is None:
+        import pymupdf
+
+        with _render_lock:
+            pdf = pymupdf.open(stream=r.document.source_bytes, filetype="pdf")
+            rect = pdf[b.locator.index - 1].rect
+            pdf.close()
+        size = e.pages[("size", b.locator.index)] = (rect.width, rect.height)
+    k = (b.render_dpi or 250) / 72.0
+    W, H = size[0] * k, size[1] * k
+    ws = [w for w in b.geometry if w.start < e_ and s < w.end]
+    if not ws:
+        return None
+    return b.locator.index, [round(min(w.x0 for w in ws) / W, 4), round(min(w.y0 for w in ws) / H, 4),
+                             round(max(w.x1 for w in ws) / W, 4), round(max(w.y1 for w in ws) / H, 4)]
+
+
+def _attention(e: Entry) -> list[dict]:
+    """Everything a reviewer should look at, each with the exact place: sanitised snippet, span and page box."""
+    r = e.result
+    if r.document is None:
+        return []
+    san = {x.id: x.text for x in r.sanitized_blocks}
+    blocks = {b.id: b for b in r.document.blocks}
+    items: list[dict] = []
+
+    def add(kind: str, typ: str | None, bid: str, os_: int | None, oe: int | None, ss: int | None, se: int | None, why: str) -> None:
+        b = blocks.get(bid)
+        if b is None:
+            return
+        if ss is None and os_ is not None:
+            m = _orig_to_san(r, bid, os_, oe)
+            ss, se = m if m else (None, None)
+        if os_ is None and ss is not None:
+            m = _san_to_orig(r, bid, ss, se)
+            os_, oe = m if m else (None, None)
+        t = san.get(bid, "")
+        snip = None
+        if ss is not None:
+            a, z = max(0, ss - 48), min(len(t), se + 48)
+            snip = [("…" if a else "") + t[a:ss], t[ss:se], t[se:z] + ("…" if z < len(t) else "")]
+        box = _page_box(e, bid, os_, oe) if os_ is not None else None
+        items.append({"key": f"{kind}:{bid}:{os_}:{oe}:{ss}", "kind": kind, "type": typ, "where": _group(b.locator)[1],
+                      "block_id": bid, "o": [os_, oe] if os_ is not None else None, "s": [ss, se] if ss is not None else None,
+                      "snippet": snip, "page": box[0] if box else b.locator.index, "box": box[1] if box else None, "why": why,
+                      "redactable": os_ is not None})
+
+    v = r.verification
+    for h in (v.hard_hits + v.soft_hits) if v else []:
+        add("hard" if h.severity == "HARD" else "soft", None, h.block_id, None, None, h.start, h.end, h.rule)
+    for c in r.notes.get("review_candidates", []):
+        add("cand", c["type"], c["block_id"], c["start"], c["end"], None, None, f"low confidence {c['confidence']:.2f}")
+    if e.accuracy:
+        for m in e.accuracy["missed"]:
+            if m.get("start") is not None:
+                add("miss", m["type"], m["block_id"], m["start"], m["end"], None, None, "missed by the detectors (ground truth)")
+    dismissed = set(r.notes.get("dismissed_keys", []))
+    return [i for i in items if i["key"] not in dismissed]
+
+
+def _add_manual(e: Entry, bid: str, s: int, e_: int, typ: str, who: str, propagate: bool = True) -> int:
+    """Mask a reviewer-chosen original span, and every other exact occurrence of the same value. Returns count."""
+    from ..masking.tokens import fingerprint, get_hmac_key
+    from ..models import Finding
+
+    r = e.result
+    blocks = {b.id: b for b in r.document.blocks}
+    value = blocks[bid].text[s:e_]
+    if not value.strip():
+        raise ValueError("empty selection")
+    n_existing = [int(m.group(1)) for f in r.findings if (m := re.fullmatch(rf"\[{typ}_(\d+)\]", f.token))]
+    token = f"[{typ}_{max(n_existing, default=0) + 1}]"
+    fp = fingerprint(typ, re.sub(r"\s+", " ", value.strip().lower()), get_hmac_key())
+    sb = {x.id: x for x in r.sanitized_blocks}
+    added = 0
+    rx = re.compile(r"(?<!\w)" + re.escape(value) + r"(?!\w)")
+    targets = [(bid, s, e_)] + ([(b.id, m.start(), m.end()) for b in r.document.blocks for m in rx.finditer(b.text)
+                                 if (b.id, m.start()) != (bid, s)] if propagate and len(value.strip()) >= 3 else [])
+    for tb, ts, te in targets:
+        mapped = _orig_to_san(r, tb, ts, te)
+        if mapped is None or tb not in sb:
+            continue  # already masked, or not mappable safely: leave it
+        ss, se = mapped
+        sb[tb].text = sb[tb].text[:ss] + token + sb[tb].text[se:]
+        b = blocks[tb]
+        r.findings.append(Finding(id=f"M{len(r.findings) + 1:05d}", type=typ, block_id=tb, start=ts, end=te, confidence=1.0,
+                                  detectors=[f"manual:{who}"[:60]], locator=b.locator, token=token, action="MASKED",
+                                  fingerprint=fp, length=te - ts, ocr_derived=b.source == "ocr", note="added by reviewer"))
+        added += 1
+    if not added:
+        raise ValueError("that text is already masked")
+    r.notes["review_candidates"] = [c for c in r.notes.get("review_candidates", [])
+                                    if not (c["block_id"] == bid and c["start"] < e_ and s < c["end"])]
+    r.notes.setdefault("manual_redactions", []).append({"type": typ, "occurrences": added, "by": who, "token": token})
+    return added
+
+
+def _changed(e: Entry) -> None:
+    """A manual edit invalidates earlier releases and renders: the edited version needs a named approval."""
+    import contextlib
+
+    e.pages = {k: v for k, v in e.pages.items() if k[0] == "size"}
+    e.redacted, e.released, e.approved_by = None, None, None
+    e.rev += 1
+    if e.result.status == Status.PASS:
+        e.result.status = Status.REVIEW
+    if "edited by a reviewer: needs a named approval" not in e.result.reasons:
+        e.result.reasons = [*e.result.reasons, "edited by a reviewer: needs a named approval"]
+    with contextlib.suppress(Exception):
+        e.accuracy = _accuracy(e.result, e.name)
+
+
 def _entry(request: Request) -> Entry:
     e = DOCS.get(request.path_params["doc_id"])
     if e is None:
@@ -336,6 +501,8 @@ async def scan(request: Request) -> Response:
     name = Path(up.filename or "upload").name
     data = await up.read()
     deep = form.get("deep") == "1"
+    if deep and importlib.util.find_spec("gliner") is None:
+        return _err("The deep name model is not installed here (pip install -e '.[deep]' and run scripts/fetch_models.py)", 400)
     settings = Settings(use_gliner=deep)
 
     def run() -> Entry:
@@ -376,6 +543,7 @@ async def get_doc(request: Request) -> Response:
     }
     out["review_candidates"] = [{**c, "confidence": round(c["confidence"], 2),
                                  "where": c["locator"]} for c in r.notes.get("review_candidates", [])]
+    out["attention"] = await asyncio.get_running_loop().run_in_executor(_WORK, _attention, e)
     return JSONResponse(out)
 
 
@@ -419,6 +587,66 @@ async def approve(request: Request) -> Response:
         return _err(str(ex), 409)
     e.approved_by = name
     return JSONResponse(_summary(e))
+
+
+async def redact(request: Request) -> Response:
+    if not _csrf_ok(request):
+        return _err("missing or invalid CSRF token", 403)
+    try:
+        e = _entry(request)
+    except KeyError:
+        return _err("unknown document", 404)
+    if e.result.status == Status.BLOCKED or e.result.document is None:
+        return _err("a BLOCKED document cannot be edited", 409)
+    body = await request.json()
+    bid, typ = str(body.get("block_id", "")), str(body.get("type", "PERSON")).upper()
+    if typ not in _TYPE_RGB and typ != "UNCLASSIFIED":
+        return _err("unknown type", 400)
+    try:
+        s, e_ = int(body["start"]), int(body["end"])
+    except (KeyError, TypeError, ValueError):
+        return _err("start and end are required", 400)
+    if not any(b.id == bid for b in e.result.document.blocks):
+        return _err("unknown block", 400)
+    text = next(b.text for b in e.result.document.blocks if b.id == bid)
+    if body.get("coords") == "sanitized":
+        # a selection may include existing tokens: redact the plain pieces between them
+        from ..masking.tokens import sanitized_to_original_parts
+
+        spans = sanitized_to_original_parts(_bfind(e.result, bid), s, e_)
+    else:
+        spans = [(s, e_)]
+    who = str(body.get("by", "reviewer"))[:40] or "reviewer"
+    n = 0
+    for a, z in spans:
+        a, z = max(0, a), min(len(text), z)
+        while a < z and not text[a].isalnum():
+            a += 1
+        while z > a and not text[z - 1].isalnum():
+            z -= 1
+        if z > a:
+            try:
+                n += _add_manual(e, bid, a, z, typ, who, propagate=len(spans) == 1)
+            except ValueError:
+                continue
+    if not n:
+        return _err("that text is already redacted", 409)
+    _changed(e)
+    out = _summary(e)
+    out["added"] = n
+    return JSONResponse(out)
+
+
+async def dismiss(request: Request) -> Response:
+    if not _csrf_ok(request):
+        return _err("missing or invalid CSRF token", 403)
+    try:
+        e = _entry(request)
+    except KeyError:
+        return _err("unknown document", 404)
+    key = str((await request.json()).get("key", ""))[:200]
+    e.result.notes.setdefault("dismissed_keys", []).append(key)
+    return JSONResponse({"ok": True})
 
 
 async def download(request: Request) -> Response:
@@ -474,6 +702,8 @@ def create_app() -> Starlette:
         Route("/api/docs/{doc_id}/blocks", get_blocks),
         Route("/api/docs/{doc_id}/page/{page:int}", get_page),
         Route("/api/docs/{doc_id}/approve", approve, methods=["POST"]),
+        Route("/api/docs/{doc_id}/redact", redact, methods=["POST"]),
+        Route("/api/docs/{doc_id}/dismiss", dismiss, methods=["POST"]),
         Route("/api/docs/{doc_id}/download/{kind}", download),
         Mount("/static", StaticFiles(directory=STATIC), name="static"),
     ])

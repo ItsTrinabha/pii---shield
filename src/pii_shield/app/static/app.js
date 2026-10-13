@@ -112,7 +112,7 @@ function emptyState(title, text, cta = true) {
     ${cta ? `<a class="btn primary" href="#/scan">${ICON.upload}Scan a document</a>` : ""}</div></div>`;
 }
 function tokenHTML(text) {
-  return esc(text).replace(/\[([A-Z]+(?:_[A-Z]+)*)_(\d+)\]/g, (m, t) => { const i = tinfo(t); return `<span class="tok" style="color:${i.c};background:${i.bg}">${m}</span>`; });
+  return esc(text).replace(/\[([A-Z]+(?:_[A-Z]+)*)_(\d+)\]/g, (m, t) => { const i = tinfo(t); return `<span class="tok" style="--tc:${i.c}" data-tip="${esc(i.n)} · redacted">${m}</span>`; });
 }
 function blockHTML(b, reveal = false) {
   if (b.hidden && !reveal) return `<em>Hidden: this block still contains residual PII. Hold the eye button to inspect it.</em>`;
@@ -381,11 +381,9 @@ async function vReview(d) {
   const byGroup = {};
   for (const f of det.findings) (byGroup[f.where] = byGroup[f.where] || []).push(f);
   const order = d.groups.map((g) => g.label).filter((l) => byGroup[l]);
-  const attn = [
-    ...det.verification.hits.map((h) => ({ cls: h.severity === "HARD" ? "hard" : "soft", tag: h.severity === "HARD" ? "RESIDUAL" : "VERIFIER", type: null, where: h.where, tip: h.rule, block: h.block_id })),
-    ...det.review_candidates.map((c) => ({ cls: "cand", tag: "UNSURE", type: c.type, where: c.where, tip: `confidence ${c.confidence}`, block: c.block_id })),
-    ...(d.accuracy ? d.accuracy.missed.map((m) => ({ cls: "miss", tag: "MISSED", type: m.type, where: m.where, tip: "not detected (ground truth)", block: m.block_id })) : []),
-  ];
+  const TAG = { hard: "RESIDUAL", soft: "VERIFIER", cand: "UNSURE", miss: "MISSED" };
+  const attn = det.attention || [];
+  S.review.attn = attn;
   const tab = S.review.tab, grouped = {};
   for (const b of bl) (grouped[b.group] = grouped[b.group] || []).push(b);
   const body = mode === "pages"
@@ -401,6 +399,7 @@ async function vReview(d) {
         ${d.has_pages ? `<div class="seg" id="mode"><span class="thumb"></span><button data-m="pages" class="${mode === "pages" ? "on" : ""}">Pages</button><button data-m="text" class="${mode === "text" ? "on" : ""}">Text</button></div>` : ""}
         <span class="pg" id="pgind">${mode === "pages" ? `Page 1 of ${npages}` : `${Object.keys(grouped).length} sections`}</span>
         <span class="grow"></span>
+        ${mode === "text" && d.status !== "BLOCKED" ? `<span class="sub" style="font-size:12px">Select text to redact it</span>` : ""}
         <button class="btn sm peek" id="peek" data-tip="Press and hold to see the original values">${ICON.eye}Hold to peek</button>
         <button class="btn sm icon" id="zout" data-tip="Zoom out">−</button><button class="btn sm icon" id="zin" data-tip="Zoom in">+</button>
       </div>
@@ -414,7 +413,13 @@ async function vReview(d) {
       <div class="panel-scroll">
         ${tab === "hits" ? order.map((g, gi) => `<div class="grp ${gi === 0 || S.focus === g ? "open" : ""}"><button>${ICON.chev}${esc(g)}<span class="c">${byGroup[g].length}</span></button>
           <div class="items"><div>${byGroup[g].map((f) => `<div class="hit" data-f="${esc(f.id)}" data-tip="${esc(f.detectors.join(", "))}">${tpill(f.type)}<span class="tk">${esc(f.token)}</span><span class="cf">${f.confidence.toFixed(2)}</span></div>`).join("")}</div></div></div>`).join("") || `<div class="note">No personal data found.</div>`
-        : attn.map((x) => `<div class="attn ${x.cls}" data-b="${esc(x.block)}" data-tip="${esc(x.tip)}"><b>${x.tag}</b>${x.type ? tpill(x.type) : ""}<span>${esc(x.where)}</span></div>`).join("") || `<div class="pill-line ok">${ICON.ok}Nothing needs attention.</div>`}
+        : attn.map((x) => `<div class="attn ${x.kind}" data-k="${esc(x.key)}">
+            <div class="ah"><b>${TAG[x.kind]}</b>${x.type ? tpill(x.type) : ""}<span>${esc(x.where)}${x.box && x.page ? "" : ""}</span></div>
+            ${x.snippet ? `<div class="snip">${esc(x.snippet[0])}<mark>${esc(x.snippet[1])}</mark>${esc(x.snippet[2])}</div>` : ""}
+            <div class="why">${esc(x.why)}</div>
+            ${d.status !== "BLOCKED" ? `<div class="aa"><select class="input tsel">${Object.keys(TYPE).map((t) => `<option value="${t}" ${t === (x.type || "PERSON") ? "selected" : ""}>${esc(tinfo(t).n)}</option>`).join("")}</select>
+              <button class="btn sm primary" data-redact="${esc(x.key)}">Redact</button><button class="btn sm" data-dismiss="${esc(x.key)}">Dismiss</button></div>` : ""}
+          </div>`).join("") || `<div class="pill-line ok">${ICON.ok}Nothing needs attention.</div>`}
       </div>
       <div class="pfoot">
         ${d.needs_approval ? `<div class="approve" style="margin:0"><input class="input" id="ap-rev" placeholder="Reviewer name" data-approve-input="${d.id}"><button class="btn primary" data-approve="${d.id}" data-input="ap-rev">Approve</button></div>`
@@ -432,7 +437,7 @@ MOUNT.review = (d) => {
   const zoom = (k) => { S.review.zoom = Math.max(0.6, Math.min(1.8, S.review.zoom * k)); $$(".page, .paper", pages).forEach((p) => { p.style.maxWidth = Math.round(860 * S.review.zoom) + "px"; }); };
   $("#zin").onclick = () => zoom(1.15); $("#zout").onclick = () => zoom(1 / 1.15);
   $$(".grp > button").forEach((b) => b.addEventListener("click", () => b.parentElement.classList.toggle("open")));
-  const pageSrc = (n, rv) => `/api/docs/${d.id}/page/${n}?reveal=${rv ? 1 : 0}`;
+  const pageSrc = (n, rv) => `/api/docs/${d.id}/page/${n}?reveal=${rv ? 1 : 0}&v=${d.rev || 0}`;
   const swapImg = (img, src) => { const pre = new Image(); pre.onload = () => { img.src = src; }; pre.src = src; };
 
   /* hold-to-peek: originals are on screen only while the button is held */
@@ -466,6 +471,75 @@ MOUNT.review = (d) => {
       ind.textContent = `Page ${cur} of ${figs.length}`;
     }, { passive: true });
   }
+  const attnByKey = Object.fromEntries((S.review.attn || []).map((x) => [x.key, x]));
+  const placeMarks = (fig) => {
+    for (const x of S.review.attn || []) if (x.box && String(x.page) === fig.dataset.n && !fig.querySelector(`[data-mk="${CSS.escape(x.key)}"]`)) {
+      const m = document.createElement("div"); m.className = `amark ${x.kind}`; m.dataset.mk = x.key;
+      const [x0, y0, x1, y1] = x.box; Object.assign(m.style, { left: x0 * 100 + "%", top: y0 * 100 + "%", width: (x1 - x0) * 100 + "%", height: (y1 - y0) * 100 + "%" });
+      fig.appendChild(m);
+    }
+  };
+  $$(".page", pages).forEach(placeMarks);
+  const focusAttn = (x) => {
+    if (S.review.mode === "pages" && d.has_pages) {
+      const fig = x.page && $(`#pg-${x.page}`);
+      if (fig) { flash(fig); const mk = fig.querySelector(`[data-mk="${CSS.escape(x.key)}"]`); if (mk) { mk.scrollIntoView({ behavior: "smooth", block: "center" }); mk.classList.remove("pulse"); void mk.offsetWidth; mk.classList.add("pulse"); } return; }
+      S.review.mode = "text"; S.focus = "attn:" + x.key; return render();
+    }
+    const el = $(`#blk-${CSS.escape(x.block_id)}`);
+    if (!el) return;
+    if (x.s) { const b = (S.blocks[d.id] || []).find((y) => y.id === x.block_id); if (b && !b.hidden) $(".tx", el).innerHTML = tokenHTML(b.text.slice(0, x.s[0])) + `<mark class="focus">${tokenHTML(b.text.slice(x.s[0], x.s[1]))}</mark>` + tokenHTML(b.text.slice(x.s[1])); }
+    flash(el);
+  };
+  const afterEdit = async (doc, msg) => {
+    S.review.keep = pages.scrollTop;
+    upsert(doc); delete S.blocks[d.id]; delete S.rblocks[d.id];
+    toast(msg, "ok"); render();
+  };
+  $(".panel-scroll").addEventListener("click", async (e) => {
+    const rb = e.target.closest("[data-redact]"), db = e.target.closest("[data-dismiss]");
+    if (rb) {
+      const x = attnByKey[rb.dataset.redact], typ = rb.parentElement.querySelector(".tsel").value;
+      const body = x.o ? { block_id: x.block_id, start: x.o[0], end: x.o[1], coords: "original", type: typ } : { block_id: x.block_id, start: x.s[0], end: x.s[1], coords: "sanitized", type: typ };
+      rb.classList.add("busy");
+      try { const doc = await api(`/api/docs/${d.id}/redact`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) }); afterEdit(doc, `Redacted ${doc.added} occurrence(s). Approve to release.`); }
+      catch (err) { rb.classList.remove("busy"); toast(err.message, "err"); }
+      return;
+    }
+    if (db) {
+      const card = db.closest(".attn");
+      try { await api(`/api/docs/${d.id}/dismiss`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ key: db.dataset.dismiss }) }); } catch (err) { toast(err.message, "err"); return; }
+      delete S.detail[d.id]; card.style.transition = "opacity .3s, transform .3s"; card.style.opacity = 0; card.style.transform = "translateX(16px)";
+      $(`[data-mk="${CSS.escape(db.dataset.dismiss)}"]`)?.remove(); setTimeout(() => card.remove(), 300);
+      return;
+    }
+    if (e.target.closest("select")) return;
+    const ak = e.target.closest("[data-k]");
+    if (ak && attnByKey[ak.dataset.k]) focusAttn(attnByKey[ak.dataset.k]);
+  });
+  /* select text (text view) -> redact */
+  let bar = null;
+  const hideBar = () => { bar?.remove(); bar = null; };
+  if (d.status !== "BLOCKED") pages.addEventListener("mouseup", () => setTimeout(() => {
+    const sel = getSelection();
+    hideBar();
+    if (!sel || sel.isCollapsed || !sel.rangeCount) return;
+    const r = sel.getRangeAt(0), tx = r.startContainer.parentElement?.closest(".tx");
+    if (!tx || tx !== r.endContainer.parentElement?.closest(".tx") || r.toString().trim().length < 2) return;
+    const pre = document.createRange(); pre.selectNodeContents(tx); pre.setEnd(r.startContainer, r.startOffset);
+    const start = pre.toString().length, end = start + r.toString().length, bid = tx.closest(".blk").dataset.id, rect = r.getBoundingClientRect();
+    bar = document.createElement("div"); bar.className = "selbar glass";
+    bar.innerHTML = `<select class="input tsel">${Object.keys(TYPE).map((t) => `<option value="${t}">${esc(tinfo(t).n)}</option>`).join("")}</select><button class="btn sm primary">Redact selection</button>`;
+    bar.style.left = Math.max(12, Math.min(innerWidth - 300, rect.left)) + "px"; bar.style.top = Math.max(80, rect.top - 52) + "px";
+    document.body.appendChild(bar);
+    bar.querySelector("button").onclick = async () => {
+      try { const doc = await api(`/api/docs/${d.id}/redact`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ block_id: bid, start, end, coords: "sanitized", type: bar.querySelector("select").value }) }); hideBar(); afterEdit(doc, `Redacted ${doc.added} occurrence(s). Approve to release.`); }
+      catch (err) { toast(err.message, "err"); }
+    };
+  }, 0));
+  pages.addEventListener("scroll", hideBar, { passive: true });
+  window.addEventListener("hashchange", hideBar, { once: true });
+  if (S.review.keep != null) { pages.style.scrollBehavior = "auto"; pages.scrollTop = S.review.keep; pages.style.scrollBehavior = ""; S.review.keep = null; }
   const byId = Object.fromEntries((S.detail[d.id]?.findings || []).map((f) => [f.id, f]));
   const blockInfo = Object.fromEntries((S.blocks[d.id] || []).map((b) => [b.id, b]));
   const focusBlock = (bid) => {
@@ -477,13 +551,14 @@ MOUNT.review = (d) => {
     flash($(`#blk-${CSS.escape(bid)}`));
   };
   $(".panel-scroll").addEventListener("click", (e) => {
-    const h = e.target.closest("[data-f]"), a = e.target.closest("[data-b]");
-    if (h && byId[h.dataset.f]) focusBlock(byId[h.dataset.f].block_id); else if (a) focusBlock(a.dataset.b);
+    const h = e.target.closest("[data-f]");
+    if (h && byId[h.dataset.f]) focusBlock(byId[h.dataset.f].block_id);
   });
   if (S.focus) {
     const f = S.focus; S.focus = null;
     setTimeout(() => {
       if (f.startsWith("block:")) return focusBlock(f.slice(6));
+      if (f.startsWith("attn:")) { const x = attnByKey[f.slice(5)]; if (x) focusAttn(x); return; }
       const g = d.groups.find((x) => x.label === f);
       if (g && S.review.mode === "pages" && g.index) flash($(`#pg-${g.index}`)); else flash($(`#grp-${slug(f)}`));
     }, 120);

@@ -1,0 +1,18 @@
+services:
+  cloak:
+    build:
+      context: .
+      args:
+        INSTALL_LIBREOFFICE: "false"   # "true" also OCRs EMF/WMF drawings in DOCX/PPTX (+~500 MB image)
+    image: cloak:latest
+    container_name: cloak
+    ports:
+      - "127.0.0.1:8765:8765"          # reachable from this machine only
+    environment:
+      # Optional: set a fixed secret so the same value gets the same token across restarts.
+      - PII_SHIELD_KEY=${PII_SHIELD_KEY:-}
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    restart: unless-stopped
