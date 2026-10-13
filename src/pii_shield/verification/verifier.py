@@ -37,6 +37,19 @@ _DOB = re.compile(rf"(?:(?i:\bDOB\b|date of birth|born(?: on)?))\W{{0,12}}(?:\d|
 _STREET = re.compile(
     r"\b\d{1,5}[A-Za-z]?\s+(?:[A-Z][\w'’.\-]*\s+){1,4}(?:Street|St|Avenue|Ave|Road|Rd|Lane|Ln|Drive|Dr|Crescent|Boulevard|Blvd|Court|Ct|Way|Place|Pl|Terrace)\b"
 )
+# Deliberately looser than the detectors: any known secret prefix with a long tail, any key/credential marker.
+_SECRET = re.compile(
+    r"\b(?:AKIA|ASIA|AGPA|AIDA|AROA)[0-9A-Z]{12,}|\bgh[pousr]_\w{20,}|\bAIza[\w\-]{20,}|\bxox[a-z]-[\w\-]{8,}"
+    r"|\b[rs]k_(?:live|test)_\w{8,}|\beyJ[\w\-]{4,}\.[\w\-]{4,}\.[\w\-]{4,}|PRIVATE KEY-----|://[^\s/:@]+:[^\s/@]+@"
+)
+_NINO = re.compile(r"\b[A-Z]{2} ?\d{2} ?\d{2} ?\d{2} ?[A-D]\b")
+_GSTIN = re.compile(r"\b\d{2}[A-Z]{5}\d{4}[A-Z][0-9A-Z]{3}\b")
+_MAC = re.compile(r"\b(?:[0-9A-Fa-f]{2}[:\-]){5}[0-9A-Fa-f]{2}\b")
+_IPV6 = re.compile(r"(?<![\w:])[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{0,4}){2,7}(?![\w:])")
+# Loose on purpose: any 4 small numbers joined by dots/commas with OCR spacing. Section numbers ('4.2.1.3') are excluded by
+# the digit count in verify(), not by the pattern.
+_IPV4_ANY = re.compile(r"(?<![\w.,])\d{1,3}(?:[ ]?[.,][ ]?\d{1,3}){3}(?![\w]|[.,]\d)")
+_CRYPTO = re.compile(r"\b0x[0-9a-fA-F]{40}\b|\bbc1[a-z0-9]{25,}\b")
 _GENERIC_ID = re.compile(r"(?<![A-Za-z0-9\[])[A-Z]{2,4}-\d{4,6}(?![A-Za-z0-9\]])")
 _BIGRAM = re.compile(r"\b([A-Z][a-z]{2,})\s+([A-Z][a-z'’]{2,}(?:-[A-Z][a-z]+)?)\b")
 _NAME_MIDINIT = re.compile(r"\b([A-Z][a-z]{2,})[ \t]+[A-Z]\.[ \t]+([A-Z][a-z]{3,}(?:-[A-Z][a-z]+)?)\b")
@@ -117,9 +130,18 @@ def verify(blocks: Iterable[SanitizedBlock], known_values: Iterable[str] = (), a
         low = t.lower()
         for rule, rx in (("residual-email", _EMAIL), ("residual-ssn-shape", _SSN), ("residual-phone-intl", _PHONE_A),
                          ("residual-phone-local", _PHONE_B), ("residual-employee-id", _EMPID), ("residual-pan-shape", _PAN),
-                         ("residual-passport", _PASSPORT), ("residual-dob-context", _DOB)):
+                         ("residual-passport", _PASSPORT), ("residual-dob-context", _DOB), ("residual-secret", _SECRET),
+                         ("residual-nino-shape", _NINO), ("residual-gstin-shape", _GSTIN), ("residual-mac", _MAC),
+                         ("residual-crypto-address", _CRYPTO)):
             for m in rx.finditer(t):
                 hit("HARD", rule, b, m.start(), m.end())
+        for m in _IPV4_ANY.finditer(t):
+            parts = re.findall(r"\d+", m.group(0))
+            if sum(map(len, parts)) >= 7 and all(int(p) <= 255 for p in parts) and parts[0] not in ("0", "127"):
+                hit("HARD", "residual-ipv4", b, m.start(), m.end())
+        for m in _IPV6.finditer(t):
+            if "::" in m.group(0) or m.group(0).count(":") == 7:  # '10:30:45' is a time, not an address
+                hit("HARD", "residual-ipv6", b, m.start(), m.end())
         for m in _PHONE_PREFIX.finditer(t):
             if sum(ch.isdigit() for ch in m.group(0)) >= 4 and not any(h.block_id == b.id and h.start <= m.start() < h.end for h in hard):
                 hit("HARD", "residual-phone-intl", b, m.start(), m.end())
@@ -168,4 +190,5 @@ def verify(blocks: Iterable[SanitizedBlock], known_values: Iterable[str] = (), a
     passed = not hard and (not soft if strict else True)
     return Verification(passed=passed, hard_hits=hard, soft_hits=soft,
                         rules_run=["email", "ssn", "phone", "employee-id", "pan", "passport", "dob-context", "long-digit-run",
-                                   "street-address", "known-value-residual", "identifier-shape", "unmasked-name", "name-fragment"])
+                                   "street-address", "known-value-residual", "secret", "nino", "gstin", "mac", "ipv4", "ipv6",
+                                   "crypto-address", "identifier-shape", "unmasked-name", "name-fragment"])

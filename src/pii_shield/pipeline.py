@@ -26,6 +26,8 @@ _RULE_TYPE = {
     "residual-email": "EMAIL", "residual-ssn-shape": "SSN", "residual-phone-intl": "PHONE", "residual-phone-local": "PHONE",
     "residual-employee-id": "EMPLOYEE_ID", "residual-pan-shape": "TAX_ID", "residual-passport": "PASSPORT",
     "residual-dob-context": "DATE_OF_BIRTH", "residual-street-address": "ADDRESS", "residual-long-digit-run": "UNCLASSIFIED",
+    "residual-secret": "SECRET", "residual-nino-shape": "GOV_ID", "residual-gstin-shape": "TAX_ID", "residual-mac": "TECH_ID",
+    "residual-ipv6": "IP_ADDRESS", "residual-ipv4": "IP_ADDRESS", "residual-crypto-address": "FINANCIAL_ACCOUNT",
 }
 _SOFT_NAME_RULES = ("possible-unmasked-name", "name-fragment-next-to-token")
 

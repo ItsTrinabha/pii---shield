@@ -3,7 +3,8 @@ services:
     build:
       context: .
       args:
-        INSTALL_LIBREOFFICE: "false"   # "true" also OCRs EMF/WMF drawings in DOCX/PPTX (+~500 MB image)
+        INSTALL_LIBREOFFICE: "true"    # also OCRs EMF/WMF drawings in DOCX/PPTX (+~500 MB image); "false" to skip
+        INSTALL_DEEP: "true"           # GLiNER deep mode, CPU torch + weights baked in (+~1 GB image); "false" to skip
     image: cloak:latest
     container_name: cloak
     ports:

@@ -30,6 +30,10 @@ class EntityType(str, enum.Enum):
     ADDRESS = "ADDRESS"
     FINANCIAL_ACCOUNT = "FINANCIAL_ACCOUNT"
     IP_ADDRESS = "IP_ADDRESS"
+    GOV_ID = "GOV_ID"
+    TECH_ID = "TECH_ID"
+    SECRET = "SECRET"
+    GENERIC_ID = "GENERIC_ID"
 
 
 # Human-readable classification used in the audit report.
@@ -45,6 +49,10 @@ CLASSIFICATION: dict[str, tuple[str, str]] = {
     "ADDRESS": ("Contact detail", "Residential / postal address"),
     "FINANCIAL_ACCOUNT": ("Financial identifier", "Card / account number or fragment"),
     "IP_ADDRESS": ("Technical identifier", "IP address"),
+    "GOV_ID": ("Government-issued ID", "National ID (Aadhaar, UK NINO, Canadian SIN)"),
+    "TECH_ID": ("Technical identifier", "Device / vehicle identifier (MAC, VIN, registration plate)"),
+    "SECRET": ("Credential / secret", "API key, token, password or private key"),
+    "GENERIC_ID": ("Other identifier", "Unrecognised reference / record number (PREFIX-...-digits)"),
 }
 
 

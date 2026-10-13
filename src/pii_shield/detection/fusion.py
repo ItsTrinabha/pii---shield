@@ -6,8 +6,8 @@ from .patterns import Cand
 
 # Higher wins when two DIFFERENT types claim the same characters.
 PRIORITY = {
-    "EMAIL": 10, "SSN": 9, "TAX_ID": 9, "PASSPORT": 9, "FINANCIAL_ACCOUNT": 9, "EMPLOYEE_ID": 9,
-    "DATE_OF_BIRTH": 8, "PHONE": 8, "ADDRESS": 7, "IP_ADDRESS": 5, "PERSON": 3,
+    "SECRET": 10, "EMAIL": 10, "SSN": 9, "GOV_ID": 9, "TAX_ID": 9, "PASSPORT": 9, "FINANCIAL_ACCOUNT": 9, "EMPLOYEE_ID": 9,
+    "DATE_OF_BIRTH": 8, "PHONE": 8, "ADDRESS": 7, "IP_ADDRESS": 5, "TECH_ID": 5, "PERSON": 3, "GENERIC_ID": 2,
 }
 
 

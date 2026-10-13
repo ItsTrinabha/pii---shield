@@ -313,7 +313,8 @@ def _render_page(e: Entry, page: int, reveal: bool) -> bytes:
 
 _TYPE_RGB = {"PERSON": (10, 132, 255), "EMAIL": (94, 92, 230), "PHONE": (48, 176, 199), "EMPLOYEE_ID": (52, 199, 89),
              "SSN": (255, 69, 58), "PASSPORT": (255, 55, 95), "TAX_ID": (255, 149, 0), "DATE_OF_BIRTH": (191, 90, 242),
-             "ADDRESS": (162, 132, 94), "FINANCIAL_ACCOUNT": (255, 159, 10), "IP_ADDRESS": (100, 210, 255)}
+             "ADDRESS": (162, 132, 94), "FINANCIAL_ACCOUNT": (255, 159, 10), "IP_ADDRESS": (100, 210, 255),
+             "GOV_ID": (215, 0, 64), "TECH_ID": (90, 200, 250), "SECRET": (88, 86, 214), "GENERIC_ID": (142, 142, 147)}
 
 
 # ------------------------------------------------------------------------------------- precise locations + manual edits

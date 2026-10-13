@@ -14,7 +14,8 @@ const TYPE = {
   PERSON: ["Person", "#0a6fe0", "#e3f0ff"], EMAIL: ["Email", "#5e5ce6", "#ecebff"], PHONE: ["Phone", "#13879e", "#dff5f9"],
   EMPLOYEE_ID: ["Employee ID", "#1f8a4c", "#e1f5e8"], SSN: ["SSN", "#d62c22", "#ffe6e4"], PASSPORT: ["Passport", "#c81e55", "#ffe4ec"],
   TAX_ID: ["Tax ID", "#b25f00", "#fff0d9"], DATE_OF_BIRTH: ["Date of birth", "#8e3fd0", "#f3e8ff"], ADDRESS: ["Address", "#7d5f36", "#f5eee3"],
-  FINANCIAL_ACCOUNT: ["Financial acct", "#a8520a", "#ffecd9"], IP_ADDRESS: ["IP address", "#1f7fb0", "#e0f1fb"], UNCLASSIFIED: ["Unclassified", "#5f6e82", "#edf0f4"],
+  FINANCIAL_ACCOUNT: ["Financial acct", "#a8520a", "#ffecd9"], IP_ADDRESS: ["IP address", "#1f7fb0", "#e0f1fb"],
+  GOV_ID: ["National ID", "#b0123f", "#ffe3ea"], TECH_ID: ["Device ID", "#2a6f8f", "#e2f2f8"], SECRET: ["Secret", "#4b3fb0", "#ebe9ff"], GENERIC_ID: ["Other ID", "#5b6470", "#eef0f3"], UNCLASSIFIED: ["Unclassified", "#5f6e82", "#edf0f4"],
 };
 const tinfo = (t) => { const v = TYPE[t] || [String(t || "?").replace(/_/g, " "), "#5f6e82", "#edf0f4"]; return { n: v[0], c: v[1], bg: v[2] }; };
 const tpill = (t) => { const i = tinfo(t); return `<span class="tp" style="color:${i.c};background:${i.bg}">${esc(i.n)}</span>`; };

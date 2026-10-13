@@ -52,9 +52,10 @@ def detect_email(t: str) -> list[Cand]:
 # ------------------------------------------------------------------------------------------------ PHONE
 _SEP = r"[ \t.–\-]"
 _PHONE_INTL = re.compile(rf"(?<![\w+])\+\d{{1,3}}(?:{_SEP}?\(\d{{1,4}}\))?(?:{_SEP}?\d{{1,5}}){{1,5}}(?!\d)")
-_PHONE_US = re.compile(r"(?<![\w+\-])(?:\(\d{3}\)[ \t]?|\d{3}[\-. \t])\d{3}[\-. \t]\d{4}(?![\w\-])")
+# NANP area codes never start with 0 or 1 ('123-456-7890' is an order/reference number, not a phone)
+_PHONE_US = re.compile(r"(?<![\w+\-])(?:\([2-9]\d{2}\)[ \t]?|[2-9]\d{2}[\-. \t])\d{3}[\-. \t]\d{4}(?![\w\-])")
 _PHONE_CTX = re.compile(
-    r"(?i)\b(?:tel(?:ephone)?|phone|mobile|mob|cell|fax|direct line|direct dial|contact(?: number)?|call)\b\.?[ \t:]*"
+    r"(?i)\b(?:tel(?:ephone)?|phone|mobile|mob|cell|fax|whatsapp|direct line|direct dial|contact(?: number)?|call)\b\.?[ \t:]*"
     r"((?:\+\s?)?\(?\d[\d \t().\-]{6,18}\d)"
 )
 _YEAR_TAIL = re.compile(r"[ \t.\-](?:19|20|21)\d{2}$")
@@ -170,13 +171,22 @@ def detect_phone(t: str) -> list[Cand]:
         n = len(_digits(m.group(1)))
         if 7 <= n <= 15:
             out.append(Cand("PHONE", m.start(1), m.end(1), 0.88, "regex:phone-context"))
+    for m in _PHONE_UK.finditer(t):
+        out.append(Cand("PHONE", m.start(), m.end(), 0.88, "regex:phone-uk-mobile"))
+    for m in _PHONE_IN.finditer(t):
+        # a bare 10-digit run starting 6-9 could also be an account or order number: weaker without the prefix
+        out.append(Cand("PHONE", m.start(), m.end(), 0.85 if m.group(1) else 0.7, "regex:phone-in-mobile"))
     return out
 
 
+_PHONE_UK = re.compile(r"(?<!\d)(?:\+44[ \t]?7\d{3}|\(?07\d{3}\)?)[ \t]?\d{3}[ \t]?\d{3}(?!\d)")
+_PHONE_IN = re.compile(r"(?<![\d+])(\+91[ \t\-]?|0)?[6-9]\d{4}[ \t\-]?\d{5}(?!\d)")
+
+
 # ------------------------------------------------------------------------------------------------ EMPLOYEE ID
-_EMP = re.compile(r"(?<![A-Za-z0-9])(?:EMP|DIR|EID)[ \t]?[\-–][ \t]?[0-9OoIlSB]{4,6}(?![A-Za-z0-9])")
+_EMP = re.compile(r"(?<![A-Za-z0-9])(?:EMP|DIR|EID|STF|WRK)[ \t]?[\-–_][ \t]?[0-9OoIlSB]{4,8}(?![A-Za-z0-9])")
 _EMP_CTX = re.compile(
-    r"(?i)\b(?:employee|staff|badge|personnel|worker)[ \t]*(?:id|number|no\.?|#)[ \t]*[:#]?[ \t]*([A-Z]{0,4}[\-]?\d{4,10})\b"
+    r"(?i)\b(?:employee|staff|badge|personnel|worker|emp)[ \t]*(?:id|number|no\.?|#)[ \t]*[:#]?[ \t]*([A-Z]{0,4}[\-]?\d{4,10})\b"
 )
 
 
@@ -207,9 +217,17 @@ _SSN_LAST4_B = re.compile(
 _SSN_MASKED = re.compile(r"(?i)(?:XXX|\*{3})[\-– ](?:XX|\*{2})[\-– ](\d{4})(?!\d)")
 
 
+def _ssn_ok(s: str) -> bool:
+    """SSA never issues area 000/666, group 00 or serial 0000. Area 9xx is kept: ITINs and synthetic test SSNs live there."""
+    d = _digits(s)
+    return d[:3] not in ("000", "666") and d[3:5] != "00" and d[5:] != "0000"
+
+
 def detect_ssn(t: str) -> list[Cand]:
-    out = [Cand("SSN", m.start(), m.end(), 0.95, "regex:ssn") for m in _SSN.finditer(t)]
+    out = [Cand("SSN", m.start(), m.end(), 0.95, "regex:ssn") for m in _SSN.finditer(t) if _ssn_ok(m.group(0))]
     for m in _SSN_SPACE.finditer(t):
+        if not _ssn_ok(m.group(0)):
+            continue
         ctx = t[max(0, m.start() - 40):m.start()].lower()
         out.append(Cand("SSN", m.start(), m.end(), 0.9 if ("social" in ctx or "ssn" in ctx) else 0.5, "regex:ssn-spaced"))
     for rx, name, conf in ((_SSN_CTX_FULL, "ssn-context-9", 0.9), (_SSN_LAST4_A, "ssn-last4", 0.9),
@@ -351,21 +369,255 @@ def detect_financial(t: str) -> list[Cand]:
 
 
 # ------------------------------------------------------------------------------------------------ IP
-_IPV4 = re.compile(r"(?<![\d.])(?:(?:25[0-5]|2[0-4]\d|1?\d?\d)\.){3}(?:25[0-5]|2[0-4]\d|1?\d?\d)(?![\d.])")
+# Octets are 1-3 digits checked numerically (zero-padded '203.000.113.045' is valid). (?![\d.]\d): a full stop after the
+# address ends the sentence, it does not make it a version number. A letter before it ('2O3.0.113.45') is OCR noise in
+# the first octet: the clean rule must not mask only the tail, the OCR rule below takes the whole thing.
+_IPV4 = re.compile(r"(?<![\w.])\d{1,3}(?:\.\d{1,3}){3}(?![\d.]\d|\d)")
+# OCR damage: a space next to a dot, a comma for a dot, O/o for 0, l/I/| for 1.
+_IPV4_OCR = re.compile(r"(?<![\w.,])[\dOolI|]{1,3}(?:[ \t]?[.,][ \t]?[\dOolI|]{1,3}){3}(?![\w]|[.,]\d)")
+_OCR_DIGIT = str.maketrans("OolI|", "00111")
+_IP_CTX = re.compile(r"(?i)\b(?:ip|ipv4|address|addr|host|server|source|src|dst|destination|from|login|client|gateway)\b[^\n]{0,25}$")
+# IPv6: any hex/colon run with '::' or 7 colons, then the stdlib parser decides (covers every compressed form).
+_IPV6 = re.compile(r"(?<![\w:])[0-9A-Fa-f]{0,4}(?::[0-9A-Fa-f]{0,4}){2,7}(?![\w:])")
+_MAC = re.compile(r"(?<![\w:\-])(?:[0-9A-Fa-f]{2}[:\-]){5}[0-9A-Fa-f]{2}(?![\w:\-])")
+
+
+def _ipv4_ok(octets: list[str]) -> bool:
+    return len(octets) == 4 and all(o.isdigit() and int(o) <= 255 for o in octets) and octets[0] not in ("0", "00", "000", "127") \
+        and octets != ["255"] * 4
 
 
 def detect_ip(t: str) -> list[Cand]:
+    import ipaddress
+
     out = []
+    clean: list[tuple[int, int]] = []
     for m in _IPV4.finditer(t):
-        if m.group(0).startswith(("0.", "127.")) or m.group(0) == "255.255.255.255":
+        if _ipv4_ok(m.group(0).split(".")):
+            clean.append((m.start(), m.end()))
+            # '4.2.1.3' is far more often a section/version number than an address: short ones need IP context
+            if sum(ch.isdigit() for ch in m.group(0)) < 7 and not _IP_CTX.search(t[max(0, m.start() - 30):m.start()]):
+                continue
+            out.append(Cand("IP_ADDRESS", m.start(), m.end(), 0.6, "regex:ipv4"))
+    for m in _IPV4_OCR.finditer(t):
+        if any(s <= m.start() < e for s, e in clean):
             continue
-        out.append(Cand("IP_ADDRESS", m.start(), m.end(), 0.6, "regex:ipv4"))
+        octets = re.split(r"[ \t]?[.,][ \t]?", m.group(0).translate(_OCR_DIGIT))
+        if not _ipv4_ok(octets) or sum(len(o) for o in octets) < 7:
+            continue  # '1. 2. 3. 4' is a numbered list, not an address
+        # damaged text is weaker evidence: masked with IP context, otherwise it sends the document to review
+        ctx = bool(_IP_CTX.search(t[max(0, m.start() - 30):m.start()]))
+        out.append(Cand("IP_ADDRESS", m.start(), m.end(), 0.7 if ctx else 0.4, "regex:ipv4-ocr"))
+    for m in _IPV6.finditer(t):
+        v = m.group(0)
+        if ("::" not in v and v.count(":") != 7) or not any(ch.isdigit() for ch in v):
+            continue  # '10:30:45' is a time
+        try:
+            ip = ipaddress.IPv6Address(v)
+        except ValueError:
+            continue
+        if not ip.is_loopback and not ip.is_unspecified:
+            out.append(Cand("IP_ADDRESS", m.start(), m.end(), 0.8, "regex:ipv6"))
+    for m in _MAC.finditer(t):
+        out.append(Cand("TECH_ID", m.start(), m.end(), 0.85, "regex:mac-address"))
     return out
+
+
+# ------------------------------------------------------------------------------------------------ OBFUSCATED E-MAIL (words)
+_EMAIL_WORDS = re.compile(r"(?i)\b[\w.+\-]+[ \t]+at[ \t]+[\w\-]+[ \t]+dot[ \t]+[a-z]{2,}\b")
+
+
+def detect_email_words(t: str) -> list[Cand]:
+    """'jane.doe at example dot com' (the bracketed '[at]' form is detect_email's)."""
+    return [Cand("EMAIL", m.start(), m.end(), 0.9, "regex:email-obfuscated-words") for m in _EMAIL_WORDS.finditer(t)]
+
+
+# ------------------------------------------------------------------------------------------------ NATIONAL IDS (GOV_ID)
+_VD = [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 0, 6, 7, 8, 9, 5], [2, 3, 4, 0, 1, 7, 8, 9, 5, 6], [3, 4, 0, 1, 2, 8, 9, 5, 6, 7],
+       [4, 0, 1, 2, 3, 9, 5, 6, 7, 8], [5, 9, 8, 7, 6, 0, 4, 3, 2, 1], [6, 5, 9, 8, 7, 1, 0, 4, 3, 2], [7, 6, 5, 9, 8, 2, 1, 0, 4, 3],
+       [8, 7, 6, 5, 9, 3, 2, 1, 0, 4], [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]]
+_VP = [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 5, 7, 6, 2, 8, 3, 0, 9, 4], [5, 8, 0, 3, 7, 9, 6, 1, 4, 2], [8, 9, 1, 6, 0, 4, 3, 5, 2, 7],
+       [9, 4, 5, 3, 1, 2, 6, 8, 7, 0], [4, 2, 8, 6, 5, 7, 3, 9, 0, 1], [2, 7, 9, 3, 8, 0, 6, 4, 1, 5], [7, 0, 4, 6, 9, 1, 3, 2, 5, 8]]
+
+
+def _verhoeff(s: str) -> bool:
+    d = _digits(s)
+    c = 0
+    for i, ch in enumerate(reversed(d)):
+        c = _VD[c][_VP[i % 8][int(ch)]]
+    return len(d) == 12 and c == 0
+
+
+def _sin_ok(s: str) -> bool:
+    d = _digits(s)
+    t = 0
+    for i, ch in enumerate(d):
+        x = int(ch) * (2 if i % 2 else 1)
+        t += x - 9 if x > 9 else x
+    return len(d) == 9 and t % 10 == 0
+
+
+_AADHAAR = re.compile(r"(?<![\d\-])[2-9]\d{3}[ \t\-]?\d{4}[ \t\-]?\d{4}(?![\d\-])")
+_NINO = re.compile(r"\b(?!BG|GB|NK|KN|TN|NT|ZZ)[A-CEGHJ-PR-TW-Z][A-CEGHJ-NPR-TW-Z] ?\d{2} ?\d{2} ?\d{2} ?[A-D]\b")
+_SIN = re.compile(r"(?<![\d\-])\d{3}[ \t\-]\d{3}[ \t\-]\d{3}(?![\d\-])")
+_SIN_CTX = re.compile(r"(?i)\b(?:SIN|social insurance(?: number)?|NAS)\b[^\n]{0,20}$")
+_GSTIN = re.compile(r"\b\d{2}[A-Z]{5}\d{4}[A-Z][1-9A-Z]Z[0-9A-Z]\b")
+
+
+def detect_gov_id(t: str) -> list[Cand]:
+    out = [Cand("GOV_ID", m.start(), m.end(), 0.92, "regex:aadhaar-verhoeff") for m in _AADHAAR.finditer(t) if _verhoeff(m.group(0))]
+    out += [Cand("GOV_ID", m.start(), m.end(), 0.92, "regex:uk-nino") for m in _NINO.finditer(t)]
+    for m in _SIN.finditer(t):
+        if _sin_ok(m.group(0)):
+            # Luhn passes for 1 in 10 random 9-digit numbers: without 'SIN' context it only sends the document to review
+            ctx = bool(_SIN_CTX.search(t[max(0, m.start() - 30):m.start()]))
+            out.append(Cand("GOV_ID", m.start(), m.end(), 0.9 if ctx else 0.4, "regex:ca-sin"))
+    out += [Cand("TAX_ID", m.start(), m.end(), 0.92, "regex:gstin") for m in _GSTIN.finditer(t)]
+    return out
+
+
+# ------------------------------------------------------------------------------------------------ MORE FINANCIAL
+_B58 = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
+_BTC_B58 = re.compile(r"\b[13][a-km-zA-HJ-NP-Z1-9]{25,34}\b")
+_BTC_BECH32 = re.compile(r"\bbc1[ac-hj-np-z02-9]{25,59}\b")
+_ETH = re.compile(r"\b0x[a-fA-F0-9]{40}\b")
+_IFSC = re.compile(r"\b[A-Z]{4}0[A-Z0-9]{6}\b")
+_SWIFT = re.compile(r"\b[A-Z]{4}(?:AU|BE|BR|CA|CH|CN|DE|ES|FR|GB|HK|IE|IN|IT|JP|NL|SG|US)[A-Z0-9]{2}(?:[A-Z0-9]{3})?\b")
+_SWIFT_CTX = re.compile(r"(?i)\b(?:swift|bic)\b[^\n]{0,15}$")
+_ABA = re.compile(r"(?i)\b(?:routing|aba|rtn)\b\W{0,10}(\d{9})\b")
+_ACCT_CTX = re.compile(r"(?i)\b(?:a/c|acct?|account)\W{0,6}(?:no\.?|number|#)?\W{0,4}(\d{8,18})\b")
+
+
+def _base58check(s: str) -> bool:
+    import hashlib
+
+    n = 0
+    for ch in s:
+        n = n * 58 + _B58.index(ch)
+    raw = n.to_bytes((n.bit_length() + 7) // 8, "big")
+    raw = b"\x00" * (len(s) - len(s.lstrip("1"))) + raw
+    if len(raw) < 5:
+        return False
+    return hashlib.sha256(hashlib.sha256(raw[:-4]).digest()).digest()[:4] == raw[-4:]
+
+
+def _aba_ok(s: str) -> bool:
+    d = _digits(s)
+    return len(d) == 9 and sum(int(a) * b for a, b in zip(d, [3, 7, 1] * 3)) % 10 == 0
+
+
+def detect_financial_extra(t: str) -> list[Cand]:
+    out = [Cand("FINANCIAL_ACCOUNT", m.start(), m.end(), 0.85, "regex:btc-base58check") for m in _BTC_B58.finditer(t)
+           if _base58check(m.group(0))]
+    out += [Cand("FINANCIAL_ACCOUNT", m.start(), m.end(), 0.8, "regex:btc-bech32") for m in _BTC_BECH32.finditer(t)]
+    out += [Cand("FINANCIAL_ACCOUNT", m.start(), m.end(), 0.85, "regex:eth-address") for m in _ETH.finditer(t)]
+    out += [Cand("FINANCIAL_ACCOUNT", m.start(), m.end(), 0.88, "regex:ifsc") for m in _IFSC.finditer(t)]
+    for m in _SWIFT.finditer(t):
+        ctx = bool(_SWIFT_CTX.search(t[max(0, m.start() - 20):m.start()]))
+        if ctx:
+            out.append(Cand("FINANCIAL_ACCOUNT", m.start(), m.end(), 0.88, "regex:swift-bic"))
+        elif any(ch.isdigit() for ch in m.group(0)):  # all-letter shapes are mostly SHOUTED headings: ignore them
+            out.append(Cand("FINANCIAL_ACCOUNT", m.start(), m.end(), 0.4, "regex:swift-bic-shape"))
+    out += [Cand("FINANCIAL_ACCOUNT", m.start(1), m.end(1), 0.9, "regex:aba-routing") for m in _ABA.finditer(t) if _aba_ok(m.group(1))]
+    out += [Cand("FINANCIAL_ACCOUNT", m.start(1), m.end(1), 0.88, "regex:account-context") for m in _ACCT_CTX.finditer(t)]
+    return out
+
+
+# ------------------------------------------------------------------------------------------------ POSTAL CODES (ADDRESS)
+_UK_POSTCODE = re.compile(r"\b[A-Z]{1,2}\d[A-Z\d]?[ \t]?\d[A-Z]{2}\b")
+_US_STATES = frozenset(re.findall(r"[A-Z]{2}", "AL AK AZ AR CA CO CT DE FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE "
+                                              "NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY DC PR"))
+_US_ZIP = re.compile(r"(,[ \t]*)?\b([A-Z]{2})[ \t](\d{5}(?:-\d{4})?)\b")
+_PIN_CTX = re.compile(r"(?i)\b(?:pin(?:code)?|postal code)\W{0,4}([1-9]\d{5})\b")
+_ADDR_CTX = re.compile(r"(?i)\b(?:home|address|resid|lives|living|mailing|reside|post ?code)")
+
+
+def detect_postal(t: str) -> list[Cand]:
+    """A postcode alone is weak (offices have them too): masked with address context or after 'City,', else review."""
+    out: list[Cand] = []
+    for m in _UK_POSTCODE.finditer(t):
+        ctx = bool(_ADDR_CTX.search(t[max(0, m.start() - 45):m.start()]))
+        out.append(Cand("ADDRESS", m.start(), m.end(), 0.8 if ctx else 0.4, "regex:uk-postcode"))
+    for m in _US_ZIP.finditer(t):
+        if m.group(2) in _US_STATES:
+            ctx = bool(m.group(1)) or bool(_ADDR_CTX.search(t[max(0, m.start() - 45):m.start()]))
+            out.append(Cand("ADDRESS", m.start(2), m.end(3), 0.75 if ctx else 0.4, "regex:us-state-zip"))
+    out += [Cand("ADDRESS", m.start(1), m.end(1), 0.8, "regex:in-pincode") for m in _PIN_CTX.finditer(t)]
+    return out
+
+
+# ------------------------------------------------------------------------------------------------ PASSPORT / VEHICLE / VIN (gated)
+_IN_PASSPORT = re.compile(r"\b[A-PR-WY][1-9]\d{5}[1-9]\b")
+_PASSPORT_CTX2 = re.compile(r"(?i)\bpassport\W{0,10}(?:no\.?|number|#)?\W{0,4}([A-Z0-9]{6,9})\b")
+_PLATE = re.compile(r"\b[A-Z]{2}[ \-]?\d{1,2}[ \-]?[A-Z]{1,3}[ \-]?\d{4}\b")
+_VIN = re.compile(r"\b[A-HJ-NPR-Z0-9]{17}\b")
+_VEHICLE_CTX = re.compile(r"(?i)\b(?:vin|vehicle|car|chassis|registration|reg(?:\.|istration)? no|plate|licen[cs]e plate)\b[^\n]{0,20}$")
+
+
+def detect_passport_vehicle(t: str) -> list[Cand]:
+    out: list[Cand] = []
+    for m in _PASSPORT_CTX2.finditer(t):
+        if sum(ch.isdigit() for ch in m.group(1)) >= 5:  # 'Passport number process' is a word, not a number
+            out.append(Cand("PASSPORT", m.start(1), m.end(1), 0.92, "regex:passport-context"))
+    out += [Cand("PASSPORT", m.start(), m.end(), 0.4, "regex:in-passport-shape") for m in _IN_PASSPORT.finditer(t)]
+    for rx, name, strong in ((_PLATE, "vehicle-plate", 0.85), (_VIN, "vin", 0.85)):
+        for m in rx.finditer(t):
+            v = m.group(0)
+            if name == "vin" and not (any(ch.isdigit() for ch in v) and any(ch.isalpha() for ch in v)):
+                continue
+            ctx = bool(_VEHICLE_CTX.search(t[max(0, m.start() - 30):m.start()]))
+            if ctx:
+                out.append(Cand("TECH_ID", m.start(), m.end(), strong, f"regex:{name}"))
+            elif name == "vehicle-plate":
+                out.append(Cand("TECH_ID", m.start(), m.end(), 0.4, f"regex:{name}-shape"))
+            # a bare 17-character code is far more often a document/hash id than a VIN: no candidate without context
+    return out
+
+
+# ------------------------------------------------------------------------------------------------ SECRETS
+_SECRETS = [
+    ("aws-access-key", re.compile(r"\b(?:AKIA|ASIA|AGPA|AIDA|AROA)[A-Z0-9]{16}\b"), 0.98),
+    ("github-token", re.compile(r"\bgh[pousr]_[A-Za-z0-9]{36,255}\b"), 0.98),
+    ("google-api-key", re.compile(r"\bAIza[0-9A-Za-z_\-]{35}(?![0-9A-Za-z_\-])"), 0.97),
+    ("slack-token", re.compile(r"\bxox[abprs]-[A-Za-z0-9\-]{10,72}\b"), 0.97),
+    ("stripe-key", re.compile(r"\b[sr]k_(?:live|test)_[0-9A-Za-z]{16,99}\b"), 0.97),
+    ("jwt", re.compile(r"\beyJ[A-Za-z0-9_\-]{8,}\.eyJ[A-Za-z0-9_\-]{8,}\.[A-Za-z0-9_\-]{8,}"), 0.97),
+    ("private-key-block", re.compile(r"-----BEGIN (?:RSA |EC |DSA |OPENSSH |PGP )?PRIVATE KEY(?: BLOCK)?-----"), 0.99),
+    ("url-credentials", re.compile(r"(?i)\b[a-z][a-z0-9+.\-]*://[^\s/:@]+:[^\s/@]+@[^\s/]+"), 0.95),
+    ("url-token-param", re.compile(r"(?i)[?&](?:token|api[_\-]?key|access[_\-]?token|secret|sig|password)=[^&\s]{6,}"), 0.9),
+]
+_SECRET_ASSIGN = re.compile(r"(?i)\b(?:password|passwd|pwd|secret|api[_\-]?key|token)[ \t]*[:=][ \t]*['\"]?([^\s'\"]{6,})")
+
+
+def detect_secret(t: str) -> list[Cand]:
+    out = [Cand("SECRET", m.start(), m.end(), conf, f"regex:{name}") for name, rx, conf in _SECRETS for m in rx.finditer(t)]
+    for m in _SECRET_ASSIGN.finditer(t):
+        v = m.group(1)
+        # policy prose ('Password: minimum 12 characters') has plain words; a credential has digits or symbols,
+        # and a placeholder ('********', 'xxxxxx') is not one
+        if v.isalpha() or not set(v.lower()) - set("*x•."):
+            continue
+        out.append(Cand("SECRET", m.start(1), m.end(1), 0.85, "regex:secret-assignment"))
+    return out
+
+
+# ------------------------------------------------------------------------------------------------ GENERIC ID (catch-all)
+# Any PREFIX[-_/]...[-_/]digits code ('CUST-48213', 'HR/EMP/2291'). Lowest fusion priority, so a specific type claiming the
+# same characters wins. Reference prefixes listed as non-PII in the allowlist and standards bodies are skipped.
+GENERIC_ID = re.compile(r"\b[A-Z]{2,6}(?:[-_/][A-Z0-9]{1,6}){0,3}[-_/]\d{3,10}\b")
+_STANDARD_PREFIXES = frozenset({"ISO", "IEC", "NIST", "SOC", "PCI", "GDPR", "CVE", "RFC"})
+
+
+def detect_generic_id(t: str) -> list[Cand]:
+    skip = _STANDARD_PREFIXES | {p.upper() for p in allowlist().get("non_pii_id_prefixes", [])}
+    return [Cand("GENERIC_ID", m.start(), m.end(), 0.6, "regex:generic-id") for m in GENERIC_ID.finditer(t)
+            if re.split(r"[-_/]", m.group(0))[0] not in skip]
 
 
 def run_patterns(t: str) -> list[Cand]:
     out: list[Cand] = []
-    for fn in (detect_email, detect_phone, detect_employee_id, detect_ssn, detect_tax_id, detect_passport,
-               detect_dob, detect_address, detect_financial, detect_ip):
+    for fn in (detect_email, detect_email_words, detect_phone, detect_employee_id, detect_ssn, detect_tax_id, detect_passport,
+               detect_dob, detect_address, detect_financial, detect_ip, detect_gov_id, detect_financial_extra, detect_postal,
+               detect_passport_vehicle, detect_secret, detect_generic_id):
         out.extend(fn(t))
     return out

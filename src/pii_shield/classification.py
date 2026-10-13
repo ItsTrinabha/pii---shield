@@ -8,8 +8,9 @@ from collections import Counter
 from .models import PipelineResult
 
 _WEIGHT = {"SSN": 5, "PASSPORT": 5, "TAX_ID": 5, "FINANCIAL_ACCOUNT": 5, "DATE_OF_BIRTH": 4, "ADDRESS": 3, "EMPLOYEE_ID": 3,
-           "PHONE": 1.5, "EMAIL": 1.5, "IP_ADDRESS": 1, "PERSON": 1}
-_RESTRICTED_TYPES = {"SSN", "PASSPORT", "TAX_ID", "FINANCIAL_ACCOUNT", "DATE_OF_BIRTH"}
+           "PHONE": 1.5, "EMAIL": 1.5, "IP_ADDRESS": 1, "PERSON": 1,
+           "GOV_ID": 5, "SECRET": 5, "TECH_ID": 1, "GENERIC_ID": 1}
+_RESTRICTED_TYPES = {"SSN", "PASSPORT", "TAX_ID", "FINANCIAL_ACCOUNT", "DATE_OF_BIRTH", "GOV_ID", "SECRET"}
 _MARK = [("RESTRICTED", re.compile(r"\b(strictly confidential|restricted|secret|highly confidential)\b", re.I)),
          ("CONFIDENTIAL", re.compile(r"\b(confidential|proprietary|do not (distribute|share)|nda)\b", re.I)),
          ("INTERNAL", re.compile(r"\b(internal use( only)?|internal only)\b", re.I))]
