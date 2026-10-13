@@ -34,7 +34,7 @@ docs/
 - Setup: `python -m venv .venv && source .venv/bin/activate && pip install -e ".[dev]"`
 - Tests: `pytest -q`   Lint/types: `ruff check . && mypy src`
 - Eval: `python -m pii_shield.eval --corpus data/samples --truth data/ground_truth`
-- Demo: `streamlit run src/pii_shield/app/main.py`
+- Demo: `python -m pii_shield.app` (web UI, http://127.0.0.1:8765)
 - System deps: `tesseract-ocr`, `poppler-utils` (PyMuPDF renders pages itself)
 
 ## Working style

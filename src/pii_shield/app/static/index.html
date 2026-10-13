@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cloak</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%23eaf4ff'/%3E%3Ctext x='16' y='22' font-family='-apple-system,Segoe UI,sans-serif' font-size='18' font-weight='600' text-anchor='middle' fill='%230b1a2b'%3EC%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+  <div class="ambient"><i class="blob a"></i><i class="blob b"></i><i class="blob c"></i><i class="blob d"></i></div>
+
+  <header class="topnav glass">
+    <a class="brand" href="#/scan">Cloak</a>
+    <nav class="tabs" id="tabs">
+      <span class="thumb"></span>
+      <a data-v="scan" href="#/scan">Scan</a>
+      <a data-v="review" href="#/review">Review</a>
+      <a data-v="audit" href="#/audit">Audit</a>
+    </nav>
+    <div class="docpick" id="docpick"></div>
+  </header>
+
+  <main class="scroll" id="scroll"><div id="view"></div></main>
+
+  <div class="tip" id="tip"></div>
+  <div class="toasts" id="toasts"></div>
+  <script src="/static/app.js"></script>
+</body>
+</html>
