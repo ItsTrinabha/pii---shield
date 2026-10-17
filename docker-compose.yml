@@ -10,8 +10,8 @@ services:
     ports:
       - "127.0.0.1:8765:8765"          # reachable from this machine only
     environment:
-      # Optional: set a fixed secret so the same value gets the same token across restarts.
-      - PII_SHIELD_KEY=${PII_SHIELD_KEY:-}
+      # Optional: set a fixed secret so audit fingerprints remain stable across restarts.
+      - CLOAK_KEY=${CLOAK_KEY:-}
     security_opt:
       - no-new-privileges:true
     cap_drop:

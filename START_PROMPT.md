@@ -1,4 +1,4 @@
-Paste this as your first message in Claude Code, from the unzipped pii-shield folder:
+Paste this as your first message in your coding assistant, from the unzipped Cloak folder:
 
 Read CLAUDE.md, docs/CONTEXT.md, docs/STATUS.md and docs/PLAN.md. Then:
 1. Set up the venv and run `python -m pii_shield scan` on the three files in data/samples to confirm it works.

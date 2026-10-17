@@ -14,7 +14,7 @@ from .settings import Settings
 
 
 def main(argv: list[str] | None = None) -> int:
-    ap = argparse.ArgumentParser(prog="pii-shield", description="Fail-closed PII sanitising gateway")
+    ap = argparse.ArgumentParser(prog="cloak", description="Local, fail-closed PII sanitising gateway")
     sub = ap.add_subparsers(dest="cmd", required=True)
     sc = sub.add_parser("scan", help="scan a PDF/PPTX/DOCX and write sanitised text + audit report")
     sc.add_argument("files", nargs="+")

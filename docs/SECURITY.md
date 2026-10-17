@@ -35,7 +35,7 @@ Each item names the control and the test that proves it. "Accepted" items are kn
 - [x] No network while processing (sockets patched to fail) - `test_no_network_during_processing`, `test_no_network_with_ner`
 - [x] tldextract forced onto its bundled suffix list (Presidio would otherwise fetch it)
 - [x] Streamlit telemetry off, error details hidden, original text hidden until "reveal" is switched on
-- [x] No reversible vault: tokens are per-document sequence numbers; fingerprints need `PII_SHIELD_KEY`
+- [x] No reversible vault: tokens are per-document sequence numbers; fingerprints need `CLOAK_KEY`
 
 ## LLM boundary (`gateway.py`)
 - [x] Only a sealed `SanitizedText` from `release()` is accepted; plain strings, hand-built or edited objects are refused - `test_gateway.py`

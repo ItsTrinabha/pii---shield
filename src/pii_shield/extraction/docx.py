@@ -4,7 +4,6 @@ comments, tracked deletions, hidden text, alt text, embedded images (OCR), metad
 from __future__ import annotations
 
 import io
-import zipfile
 
 import docx
 from lxml import etree
@@ -32,7 +31,6 @@ def extract_docx(data: bytes, file_name: str, settings: Settings) -> ExtractedDo
     order = 0
     images: dict[str, bytes] = {}
     pending_images: dict[int, list[str]] = {}  # index in `blocks` after which OCR text is inserted -> image keys
-    page_marker = {"n": 0}
 
     def add(text: str, unit: str, part: str = "", source: str = "native") -> int:
         nonlocal order
@@ -55,7 +53,7 @@ def extract_docx(data: bytes, file_name: str, settings: Settings) -> ExtractedDo
 
     def handle_paragraph(p: etree._Element, unit: str, part_prefix: str, owner_part) -> None:
         text = para_text(p, True)
-        idx = add(text, unit, part_prefix)
+        add(text, unit, part_prefix)
         # tracked deletions / hidden text / alt text / field codes
         deleted = "".join((e.text or "") for e in p.iter(W + "delText"))
         if deleted.strip():

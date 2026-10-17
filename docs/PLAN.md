@@ -1,4 +1,4 @@
-# PII Shield — Full Project Plan
+# Cloak — Full Project Plan
 
 Scope: build the complete system, not a cut-down demo. Timeline is secondary; correctness and honesty of results come first.
 

@@ -83,11 +83,11 @@ def audit_html(result: PipelineResult) -> str:
     types = "".join(f"<tr><td>{e(k)}</td><td>{v}</td></tr>" for k, v in d["exposure"]["by_type"].items())
     reasons = "".join(f"<li>{e(r)}</li>" for r in d["reasons"]) or "<li>none</li>"
     col = _COLOR.get(d["status"], "#444")
-    return f"""<!doctype html><meta charset="utf-8"><title>PII Shield audit - {e(str(d['document']['name']))}</title>
+    return f"""<!doctype html><meta charset="utf-8"><title>Cloak audit - {e(str(d['document']['name']))}</title>
 <style>body{{font:14px system-ui;margin:2rem;max-width:1100px}}table{{border-collapse:collapse;width:100%;margin:1rem 0}}
 td,th{{border:1px solid #ccc;padding:4px 8px;text-align:left}}th{{background:#f4f4f4}}
 .badge{{display:inline-block;padding:4px 14px;border-radius:12px;color:#fff;background:{col};font-weight:700}}</style>
-<h1>PII Shield exposure report</h1>
+<h1>Cloak exposure report</h1>
 <p>File: <b>{e(str(d['document']['name']))}</b> &middot; sha256 <code>{e(str(d['document']['sha256']))[:16]}</code> &middot;
 status <span class="badge">{e(d['status'])}</span></p>
 <p>This report contains no raw PII values: only types, locations, tokens and keyed fingerprints.</p>

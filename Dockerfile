@@ -20,7 +20,7 @@ RUN apt-get update \
 WORKDIR /app
 
 # Dependencies first (cached unless pyproject.toml changes), then the pinned spaCy model, then the code.
-COPY pyproject.toml README.md ./
+COPY pyproject.toml README.md LICENSE ./
 RUN python -c "import tomllib; print('\n'.join(tomllib.load(open('pyproject.toml','rb'))['project']['dependencies']))" > /tmp/requirements.txt \
  && pip install -r /tmp/requirements.txt \
  && pip install https://github.com/explosion/spacy-models/releases/download/en_core_web_lg-3.8.0/en_core_web_lg-3.8.0-py3-none-any.whl

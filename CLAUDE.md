@@ -1,4 +1,4 @@
-# PII Shield — project rules for Claude Code
+# Cloak — project rules for coding assistants
 
 Security gateway that sits between business documents (PDF incl. scanned, PPTX, DOCX) and an LLM.
 It extracts text with source locators, detects and classifies PII, replaces it with stable tokens,

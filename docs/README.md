@@ -1,10 +1,10 @@
-# PII Shield
+# Cloak
 
 A local, fail-closed gateway between business documents and an LLM. It extracts text from PDFs (including scanned ones),
 PowerPoint and Word files, finds and classifies personal data, replaces it with stable tokens, verifies the result with
 independent logic, and releases text only when it is sure, or when a named human approves.
 
-Origin: Optiv / Cadence case study 2. All sample data is synthetic.
+Originally developed for a document-privacy case study. All included sample data is synthetic.
 
 ## What it does
 
@@ -36,31 +36,30 @@ pip install -e ".[dev]"
 python -m spacy download en_core_web_lg     # NER model (one-time download)
 ```
 
-- **Tesseract:** Windows installer from UB Mannheim, or `apt install tesseract-ocr`. The gateway finds it on `PATH`, in
-  the default Windows install folders, or via `PII_SHIELD_TESSERACT`.
+- **Tesseract:** Windows installer from UB Mannheim, or `apt install tesseract-ocr`. Cloak finds it on `PATH`, in the
+  default Windows install folders, or via `CLOAK_TESSERACT` (`PII_SHIELD_TESSERACT` remains a compatibility alias).
 - **LibreOffice (optional):** found on `PATH` or in the default install folder.
-- **Fingerprint key (optional):** set `PII_SHIELD_KEY` to make audit fingerprints comparable across runs; otherwise a
-  random per-process key is used.
+- **Fingerprint key (optional):** set `CLOAK_KEY` to make audit fingerprints comparable across runs; otherwise a random
+  per-process key is used (`PII_SHIELD_KEY` remains a compatibility alias).
 
 Check: `pytest -q` (the `slow` marker runs OCR on the real samples).
 
 ## Use
 
-**Demo app**
+**Web app**
 
 ```bash
-streamlit run src/pii_shield/app/main.py
+python -m pii_shield.app
 ```
 
-Upload a PDF/PPTX/DOCX or pick a Cadence sample. You get the status and its reasons, a findings table (no values), the
-original next to the sanitised text (original hidden until you switch on "Reveal original text"), the verifier's hits,
-audit downloads, and the sanitised text if the gate releases it.
+Open `http://127.0.0.1:8765` and upload a PDF/PPTX/DOCX. You get the status and reasons, a findings table (no raw values
+by default), review controls, verifier hits, audit downloads, sanitized text, and verified redacted-file output.
 
 **Command line**
 
 ```bash
-python -m pii_shield scan data/samples/*.pptx --out out/
-python -m pii_shield scan report.docx --out out/ --approve "Reviewer Name"   # release a REVIEW document
+cloak scan data/samples/*.pptx --out out/
+cloak scan report.docx --out out/ --approve "Reviewer Name"   # release a REVIEW document
 ```
 
 Writes `<name>.audit.json`, `<name>.audit.html` and, if released, `<name>.sanitized.txt`. Exit code: 0 released,
@@ -99,11 +98,11 @@ src/pii_shield/
   gateway.py     the only door to an LLM
   reporting/     audit JSON / HTML
   eval/          metrics, structure retention, OCR-vs-native rendering, CLI
-  app/           Streamlit demo
-data/samples/            the three synthetic Cadence files
+  app/           Starlette API + static browser UI; legacy Streamlit demo
+data/samples/            synthetic demonstration documents
 data/ground_truth/       independent value-based ground truth (+ ANNOTATION.md)
 tests/                   unit, security, fail-closed, privacy, regression, app smoke tests
-scripts/demo_check.py    drives the demo headlessly on every sample
+scripts/demo_check.py    drives the legacy Streamlit demo headlessly
 ```
 
 ## Privacy rules for contributors

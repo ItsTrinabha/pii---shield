@@ -10,12 +10,11 @@ from pathlib import Path
 from .classification import classify
 from .detection import RawFinding, detect_document
 from .detection.propagate import propagate
-from .detection.normalize import normalize
 from .errors import BlockedError, PiiShieldError
 from .extraction import extract
-from .masking import apply_masking, get_hmac_key, sanitized_to_original_parts
+from .masking import apply_masking, sanitized_to_original_parts
 from .models import (
-    Block, ExtractedDocument, Finding, PipelineResult, SanitizedBlock, SanitizedText, Status, Verification, compute_seal,
+    Block, ExtractedDocument, Finding, PipelineResult, SanitizedText, Status, Verification, compute_seal,
 )
 from .settings import Settings, allowlist
 from .verification import verify

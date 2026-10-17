@@ -1,4 +1,4 @@
-"""PII Shield demo UI.  Run:  streamlit run src/pii_shield/app/main.py
+"""Cloak legacy demo UI. Run: streamlit run src/pii_shield/app/main.py
 
 Privacy rules for this UI: original text is hidden unless the operator deliberately turns on "reveal"; the sanitised
 download goes through release() (the same gate an LLM integration uses); audit downloads carry no raw values."""
@@ -29,7 +29,7 @@ _BANNER = {
     Status.BLOCKED: ("error", "BLOCKED: this document will not be released."),
 }
 
-st.set_page_config(page_title="PII Shield", page_icon=":shield:", layout="wide")
+st.set_page_config(page_title="Cloak", page_icon=":shield:", layout="wide")
 
 
 @st.cache_resource(show_spinner=False, max_entries=8)
@@ -57,7 +57,7 @@ def _mark_tokens(text: str) -> str:
 
 # ---- sidebar: input + settings -------------------------------------------------------------------------------
 with st.sidebar:
-    st.title(":shield: PII Shield")
+    st.title(":shield: Cloak")
     st.caption("Fail-closed PII gateway between documents and an LLM. Processing is local; nothing leaves this machine.")
     src = st.radio("Input", ["Upload a file", "Cadence sample"], horizontal=True)
     data: bytes | None = None

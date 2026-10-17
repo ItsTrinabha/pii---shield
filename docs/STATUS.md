@@ -30,7 +30,7 @@
   deprecated `use_container_width` replaced.
 
 ## Environment notes (Windows)
-- venv at `.venv`; Tesseract is auto-found in `C:\Program Files\Tesseract-OCR` (or set `PII_SHIELD_TESSERACT`).
+- venv at `.venv`; Tesseract is auto-found in `C:\Program Files\Tesseract-OCR` (or set `CLOAK_TESSERACT`).
 - LibreOffice installed 2026-10-11 (EMF/WMF OCR, `--render-ocr`); auto-found in `C:\Program Files\LibreOffice\program`.
 - Without Tesseract all three samples are BLOCKED (OCR_FAILED): every sample contains images. This is intended.
 

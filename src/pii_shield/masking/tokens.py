@@ -17,7 +17,8 @@ _RUN_KEY = os.urandom(32)
 
 
 def get_hmac_key() -> bytes:
-    env = os.environ.get("PII_SHIELD_KEY")
+    # CLOAK_KEY is the public name; PII_SHIELD_KEY remains a compatibility alias for existing deployments.
+    env = os.environ.get("CLOAK_KEY") or os.environ.get("PII_SHIELD_KEY")
     return env.encode() if env else _RUN_KEY
 
 
@@ -43,7 +44,6 @@ def fingerprint(typ: str, key: str, hkey: bytes) -> str:
 
 def apply_masking(blocks: list[Block], raw: list[RawFinding], hkey: bytes | None = None) -> tuple[list[Finding], list[SanitizedBlock]]:
     hkey = hkey or get_hmac_key()
-    order = {b.id: i for i, b in enumerate(blocks)}
     by_block: dict[str, list[RawFinding]] = {}
     for rf in raw:
         by_block.setdefault(rf.block.id, []).append(rf)

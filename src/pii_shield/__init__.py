@@ -1,4 +1,4 @@
-"""PII Shield: fail-closed PII detection and sanitisation gateway for LLM pipelines."""
+"""Cloak: fail-closed PII detection and sanitisation gateway for LLM pipelines."""
 
 __version__ = "1.0.0"
 

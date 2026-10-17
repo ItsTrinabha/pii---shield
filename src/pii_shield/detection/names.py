@@ -436,24 +436,24 @@ def detect_people(nblocks: list[NBlock], ner: dict[int, list[Cand]], email_cands
     # ---- 5. lexicon expansion: every spelling of every established person ------------------------------------
     index: dict[tuple[str, ...], tuple[str, float]] = {}
     for p in reg.persons.values():
-        f, m, l = p.first, p.mid, p.last
-        if len(l) < 4 and looks_common(l):
+        first, middle, last = p.first, p.mid, p.last
+        if len(last) < 4 and looks_common(last):
             continue
-        if f and len(f) > 1:
-            index[(f, l)] = (p.pid, 0.9)
-            if m:
-                index[(f, m, l)] = (p.pid, 0.92)
-        if f:
-            index[(f[:1], l)] = (p.pid, 0.8)
-            if m:
-                index[(f[:1], m, l)] = (p.pid, 0.85)
+        if first and len(first) > 1:
+            index[(first, last)] = (p.pid, 0.9)
+            if middle:
+                index[(first, middle, last)] = (p.pid, 0.92)
+        if first:
+            index[(first[:1], last)] = (p.pid, 0.8)
+            if middle:
+                index[(first[:1], middle, last)] = (p.pid, 0.85)
         # surname-only: only for distinctive surnames
-        if len(l) >= 5 and l not in _AMBIGUOUS and l not in _vocab() and zipf(l) < 4.6:
-            index[(l,)] = (p.pid, 0.7)
-        elif len(l) >= 4 and l not in _AMBIGUOUS and l not in _vocab() and zipf(l) < 4.0 and not p.strong:
-            index[(l,)] = (p.pid, 0.6)
-        if f and len(f) >= 4 and f not in _AMBIGUOUS and f not in _vocab() and p.strong and zipf(f) < 4.6:
-            index[(f,)] = (p.pid, 0.55)
+        if len(last) >= 5 and last not in _AMBIGUOUS and last not in _vocab() and zipf(last) < 4.6:
+            index[(last,)] = (p.pid, 0.7)
+        elif len(last) >= 4 and last not in _AMBIGUOUS and last not in _vocab() and zipf(last) < 4.0 and not p.strong:
+            index[(last,)] = (p.pid, 0.6)
+        if first and len(first) >= 4 and first not in _AMBIGUOUS and first not in _vocab() and p.strong and zipf(first) < 4.6:
+            index[(first,)] = (p.pid, 0.55)
 
     for b in nblocks:
         toks = _tokens(b.text)

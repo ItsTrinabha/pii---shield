@@ -29,7 +29,7 @@ extract -> normalise -> detect -> fuse -> mask -> INDEPENDENT verify -> heal -> 
   text boxes, alt text, hyperlinks, metadata). EMF/WMF rendered via LibreOffice. XXE / zip-bomb / path-traversal / type-confusion guards.
 - Unicode normalisation with exact offset map (zero-width, NFKC, Cyrillic/Greek confusables).
 - tldextract forced offline (Presidio otherwise fetches the suffix list).
-- Stable per-document tokens [PERSON_1]; HMAC fingerprints (key from PII_SHIELD_KEY or random per run).
+- Stable per-document tokens [PERSON_1]; HMAC fingerprints (key from `CLOAK_KEY` or random per run).
 
 ## Bugs already fixed (do not reintroduce)
 Spawn ProcessPool crash; tldextract network fetch; flawed ink-coverage metric; EMF unsupported; NER false positives

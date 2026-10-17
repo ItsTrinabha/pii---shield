@@ -1,4 +1,4 @@
-# DECK INPUT: Optiv Case Study 2 (PII Shield / "Cloak")
+# DECK INPUT: Optiv Case Study 2 (Cloak)
 
 Status of this file: **THEORETICAL PASS ONLY** (written 2026-10-14 from reading the source at commit `b02df7d`).
 No pipeline, eval, test, benchmark or screenshot was run for this version. Every place that needs a measurement says
@@ -14,7 +14,7 @@ any sample.
 
 | Item | Value | Source |
 |---|---|---|
-| Name | `pii-shield` (UI and Docker image are branded "Cloak") | `pyproject.toml`, `Dockerfile` |
+| Name | `cloak` | `pyproject.toml`, `Dockerfile` |
 | Version | 1.0.0 | `pyproject.toml` |
 | Commit | `b02df7dae0596d02e330ce0c246853349a81c501`, 2026-10-13 19:04:23 +0000 | `git log -1` |
 | Python (Docker) | 3.12 (`python:3.12-slim` base) | `Dockerfile` |
@@ -162,7 +162,7 @@ So deep mode works locally but not in Docker.
 | `reporting/audit.py` | audit JSON/HTML without raw values | result -> report |
 | `redact.py` | redacted file in the original format, re-scanned before it is returned | result -> bytes or `BlockedError` |
 | `gateway.py` | `ask_llm()` accepts only a sealed `SanitizedText`; also verifies the instruction | sealed text -> injected `llm()` |
-| `cli.py` | `pii-shield scan FILE... --out --redact-file --deep --approve` | files -> audit/sanitised/redacted outputs |
+| `cli.py` | `cloak scan FILE... --out --redact-file --deep --approve` | files -> audit/sanitised/redacted outputs |
 | `eval/` | value-based metrics, structure retention, OCR-vs-native rendering | corpus + GT -> metrics JSON |
 | `app/server.py` + `static/` | Starlette web UI on 127.0.0.1:8765 (scan, view, approve, manual redact, downloads) | browser <-> pipeline |
 | `app/main.py` | legacy Streamlit UI | |
@@ -443,7 +443,7 @@ Entry counts are in section 1. They are used for: organisation names (never PERS
 
 ### 6.6 Masking (`masking/tokens.py`)
 - Tokens `[TYPE_n]`, numbered in document order, **stable inside one document**: the same entity key gives the same token. Keys: PERSON = registry id; EMAIL = lower-cased without spaces; PHONE/SSN/FINANCIAL = digits only; others = alphanumerics upper-cased.
-- **No vault**: there is no reverse mapping anywhere. The audit carries `fingerprint = HMAC-SHA256(key, "TYPE|entity_key")[:12]`. The key is `PII_SHIELD_KEY` if set (stable across runs), else 32 random bytes per process.
+- **No vault**: there is no reverse mapping anywhere. The audit carries `fingerprint = HMAC-SHA256(key, "TYPE|entity_key")[:12]`. The key is `CLOAK_KEY` if set (stable across runs), else 32 random bytes per process.
 - Overlaps in original offsets are resolved by keeping the most confident. Replacement goes right to left, so only finding spans change and the surrounding text is untouched.
 
 ### 6.7 Independent verifier (`verification/verifier.py`)
@@ -532,7 +532,7 @@ Nothing below was run for this version. Old numbers in `docs/RESULTS.md` must **
 | 7b | synthetic test set | **`testset/` does not exist in the repo** (checked 2026-10-14: `ls testset` -> not found). NOT MEASURED until a set is provided or built |
 | 7c | structure retention | printed by 7a (`structure` key). Definition: see below |
 | 7d | OCR vs native | `python -m pii_shield.eval --render-ocr --only pptx` / `--only docx`. **Needs LibreOffice: not possible in the current Docker image** |
-| 7e | performance | `timings` in each audit + wall clock + peak RSS per file (`/usr/bin/time -v` in Docker, or psutil locally); CPU model and thread count; batch: `pii-shield scan <dir>/* --out out/` |
+| 7e | performance | `timings` in each audit + wall clock + peak RSS per file (`/usr/bin/time -v` in Docker, or psutil locally); CPU model and thread count; batch: `cloak scan <dir>/* --out out/` |
 | 7f | tests / lint | `pytest -q`; `ruff check .`; `mypy src` |
 | 7g | GLiNER ablation | same as 7a with `--deep` (needs a deep image or a local venv with `gliner` + weights) |
 | 7h | RapidOCR ablation | same as 7a with `--no-rapidocr` |
@@ -608,7 +608,7 @@ Note: the prompt mentions Streamlit. **The current demo is the Starlette web UI 
   5. Original vs sanitised: original values hidden unless "reveal" is turned on.
   6. REVIEW: enter an approver name and approve (`POST /approve`). Optional manual redaction (`POST /redact`) or dismissing a candidate (`POST /dismiss`).
   7. Downloads: `audit.json`, `audit.html` (always); `sanitized.txt` and the redacted file (only after release; otherwise HTTP 409).
-- Demo artifacts (`docs/deck_pack/demo/`: audit.json, audit.html, sanitized.txt, redacted copy, plus a grep against ground-truth values with 0 hits expected): **PENDING**. Command: `pii-shield scan data/samples/<file> --out docs/deck_pack/demo --redact-file [--approve "Demo Reviewer"]`.
+- Demo artifacts (`docs/deck_pack/demo/`: audit.json, audit.html, sanitized.txt, redacted copy, plus a grep against ground-truth values with 0 hits expected): **PENDING**. Command: `cloak scan data/samples/<file> --out docs/deck_pack/demo --redact-file [--approve "Demo Reviewer"]`.
 - Demo script (target 3 minutes; timings PENDING until measured):
   1. (0:00) Problem slide -> open the UI.
   2. (0:20) Upload the PPTX (fastest, expected PASS from earlier notes; to be re-measured) -> status, exposure by type.
@@ -651,7 +651,7 @@ per distinct value. Score >=10 => CONFIDENTIAL; any high-sensitivity type => RES
 | "100% recall" | NOT SUPPORTED: unmeasured in this pass, and earlier notes list leaks | "Measured recall on the 3 synthetic samples: X (95% CI a-b); leaked values: n" |
 | "No unidentified instances passed" | PARTLY: design intent (verifier + fail-closed gate), not proven | "Every output is independently re-scanned; anything uncertain is held for review or blocked. On the samples, n values leaked" |
 | "Scalable" | NOT SUPPORTED: no throughput measurement; OCR-bound; single-process web UI, in-memory documents | "Runs locally on a laptop; OCR is parallel per page; measured X s/page on [CPU]. Scale-out not yet tested" |
-| "Repeatable / deterministic" | PARTLY: rules are deterministic; tokens are stable within a document; fingerprints are stable only with `PII_SHIELD_KEY`; OCR/ONNX determinism not tested | "Same input and configuration give the same findings (config digest in every report); verified by [test]" |
+| "Repeatable / deterministic" | PARTLY: rules are deterministic; tokens are stable within a document; fingerprints are stable only with `CLOAK_KEY`; OCR/ONNX determinism not tested | "Same input and configuration give the same findings (config digest in every report); verified by [test]" |
 | "Uses AI/ML (GLiNER)" | NOT SUPPORTED for the Docker build (measured twice: not installed); WORKS in the local venv with `--deep` (measured: loads offline, 53 s first load); recall gain unmeasured | "spaCy NER by default; an optional zero-shot model (GLiNER) can be enabled for extra name recall" |
 | "Two OCR engines" | PARTLY: RapidOCR is in the image but runs only on low-confidence pages | "Tesseract primary, with an automatic second engine on pages Tesseract reads poorly" |
 | "Never sends PII to an LLM" | SUPPORTED by design (typed gateway + seal + verifier); test PENDING | "The only path to an LLM accepts sealed, verified text" |

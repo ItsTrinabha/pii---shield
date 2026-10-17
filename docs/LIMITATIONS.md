@@ -29,7 +29,9 @@ Stated up front so results are read correctly. Numbers referenced here are in `d
 - No public benchmark has been run yet.
 
 ## Product
-- Output is sanitised text; there is no visual redaction of scans or layout-preserving output files.
+- Cloak creates redacted PDF and Office copies, but layout preservation is best-effort. PDF redaction depends on native
+  text matches or OCR word boxes; Office paragraph formatting can be simplified, and an embedded image containing a
+  finding may be blanked as a whole rather than edited pixel by pixel.
 - Prompt injection inside documents is passed through as (sanitised) content; downstream prompts must treat document text
   as data.
 - The release seal prevents mistakes, not malicious code in the same process.

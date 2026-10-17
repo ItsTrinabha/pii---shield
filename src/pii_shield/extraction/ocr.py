@@ -24,8 +24,8 @@ os.environ.setdefault("OMP_THREAD_LIMIT", "1")  # one core per Tesseract process
 
 
 def find_tesseract() -> str | None:
-    """PII_SHIELD_TESSERACT, then PATH, then the default Windows installer locations (which skip PATH)."""
-    cands = [os.environ.get("PII_SHIELD_TESSERACT"), shutil.which("tesseract")]
+    """CLOAK_TESSERACT, legacy alias, PATH, then default Windows locations (which often skip PATH)."""
+    cands = [os.environ.get("CLOAK_TESSERACT"), os.environ.get("PII_SHIELD_TESSERACT"), shutil.which("tesseract")]
     for base in (os.environ.get("ProgramFiles"), os.environ.get("ProgramFiles(x86)"), os.environ.get("LOCALAPPDATA")):
         if base:
             cands.append(os.path.join(base, "Tesseract-OCR", "tesseract.exe"))

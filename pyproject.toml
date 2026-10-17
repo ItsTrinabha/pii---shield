@@ -3,10 +3,23 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "pii-shield"
+name = "cloak"
 version = "1.0.0"
-description = "Fail-closed PII detection and sanitisation gateway between business documents and LLMs"
+description = "Local, fail-closed PII sanitisation gateway for documents and LLM workflows"
+readme = "README.md"
+license = { file = "LICENSE" }
 requires-python = ">=3.10"
+keywords = ["pii", "privacy", "redaction", "ocr", "presidio", "spacy", "llm"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Security",
+  "Topic :: Text Processing",
+]
 dependencies = [
   "pymupdf>=1.24",
   "python-pptx>=1.0",
@@ -31,12 +44,12 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=8", "pytest-timeout", "ruff", "mypy", "reportlab", "pip-audit", "httpx", "streamlit>=1.35"]
+dev = ["build", "pytest>=8", "pytest-timeout", "ruff", "mypy", "reportlab", "pip-audit", "httpx", "streamlit>=1.35"]
 legacy-ui = ["streamlit>=1.35"]  # the old Streamlit demo (src/pii_shield/app/main.py)
 deep = ["gliner>=0.2"]  # --deep: GLiNER name model (slow on CPU); weights via scripts/fetch_models.py
 
 [project.scripts]
-pii-shield = "pii_shield.cli:main"
+cloak = "pii_shield.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -53,3 +66,6 @@ markers = ["slow: runs OCR on the real sample files"]
 [tool.ruff]
 line-length = 110
 target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F"]

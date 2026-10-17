@@ -18,7 +18,7 @@ block it.
 
 ## D4. Stable tokens, no vault
 `[TYPE_n]` per document, same entity -> same token, so an LLM keeps relationships. The value-to-token mapping is not
-stored; there is no de-masking feature. Audit fingerprints are keyed HMACs (`PII_SHIELD_KEY`).
+stored; there is no de-masking feature. Audit fingerprints are keyed HMACs (`CLOAK_KEY`).
 
 ## D5. Text output, not visual redaction
 The product releases sanitised **text** for an LLM. Visual redaction of scanned pages (burning boxes into images) is not

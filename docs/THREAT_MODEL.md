@@ -1,6 +1,6 @@
 # Threat model
 
-Scope: the PII Shield gateway as a local process (CLI, Python API, Streamlit demo) that receives business documents and
+Scope: the Cloak gateway as a local process (CLI, Python API, and web UI) that receives business documents and
 releases sanitised text to an LLM integration. Controls and their tests are listed in `docs/SECURITY.md`.
 
 ## Assets
@@ -10,7 +10,7 @@ releases sanitised text to an LLM integration. Controls and their tests are list
 | Personal data inside documents | The thing being protected; leaking it to an LLM provider, logs or a screen is the main harm. |
 | Sanitised text and its release decision | If a wrong PASS is issued, PII leaves the trust boundary. |
 | Audit reports and logs | Read by more people than the documents; must not become a second copy of the PII. |
-| HMAC key (`PII_SHIELD_KEY`) | Lets fingerprints be correlated across runs; with it, guessed values can be confirmed. |
+| HMAC key (`CLOAK_KEY`) | Lets fingerprints be correlated across runs; with it, guessed values can be confirmed. |
 | Gateway host | Parsing hostile files can be used to attack the machine. |
 
 ## Actors

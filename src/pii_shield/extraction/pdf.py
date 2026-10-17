@@ -100,10 +100,10 @@ def extract_pdf(data: bytes, file_name: str, settings: Settings) -> ExtractedDoc
                     if isinstance(v, str) and v.strip():
                         loc = Locator(file=name, unit="page", index=pno, part="form-field", block_id=f"p{pno}-w{w}")
                         pb.append(Block(id=loc.block_id, text=v, locator=loc, source="native", order=0))
-                for l, link in enumerate(page.get_links()):
+                for link_index, link in enumerate(page.get_links()):
                     uri = link.get("uri")
                     if uri and uri.lower().startswith(("mailto:", "tel:", "http")):
-                        loc = Locator(file=name, unit="page", index=pno, part="link", block_id=f"p{pno}-l{l}")
+                        loc = Locator(file=name, unit="page", index=pno, part="link", block_id=f"p{pno}-l{link_index}")
                         pb.append(Block(id=loc.block_id, text=uri, locator=loc, source="native", order=0))
             except Exception:  # noqa: BLE001
                 warnings.append(f"page {pno}: annotations/links could not be read")

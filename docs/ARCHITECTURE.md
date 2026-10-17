@@ -1,6 +1,6 @@
 # Architecture
 
-PII Shield is a local, fail-closed gateway between business documents and an LLM. It turns a PDF (native or scanned),
+Cloak is a local, fail-closed gateway between business documents and an LLM. It turns a PDF (native or scanned),
 PPTX or DOCX into sanitised text in which every detected personal value is replaced by a stable token, verifies that
 output with independent logic, and releases it only through a sealed gate.
 
@@ -11,7 +11,7 @@ flowchart LR
     subgraph Input["Untrusted input"]
         F[PDF / PPTX / DOCX]
     end
-    subgraph Gateway["PII Shield (local process, no network)"]
+    subgraph Gateway["Cloak (local process, no network)"]
         R[router + security checks<br/>extraction/router.py, security.py]
         X[extractors<br/>pdf.py · pptx.py · docx.py · ooxml.py]
         O[OCR<br/>ocr.py · vector.py]

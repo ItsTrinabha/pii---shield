@@ -10,7 +10,7 @@ from dataclasses import dataclass, field
 from ..models import Block, ExtractedDocument
 from ..settings import Settings, allowlist
 from .fusion import fuse
-from .names import ln, detect_people
+from .names import detect_people
 from .ner import NBlock, run_ner
 from .normalize import NormText, normalize
 from .patterns import Cand, phone_split_cands, run_patterns, split_phone_pair
